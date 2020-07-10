@@ -1,3 +1,6 @@
+Original App Design Project - README 
+===
+
 # Hitchapp
 
 ## Table of Contents
@@ -45,6 +48,7 @@ Your app incorporates an external library to add visual polish
 * Driver can submit where they're going and riders can request to join
 * User can edit profile
 * User can view somebody else's profile
+* Driver can see posts at the top of the RecyclerView
 
 **Optional Nice-to-have Stories**
 
@@ -52,9 +56,8 @@ Your app incorporates an external library to add visual polish
 * Notifications
 * View reviews
 * Write reviews
-* Rider can submit where they want to go and driver can request to give ride, which would automatically move it to the "Ride" page so other rides could join
-* Users can switch to and from driver/rider mode easily
 * Beautiful UI with intuitive animations
+* multiple stops
 
 ### 2. Screen Archetypes
 
@@ -68,8 +71,6 @@ Your app incorporates an external library to add visual polish
    * Uses Google maps API to find ETA
    * Has cards with each offered drive and option to request to ride
    * Car seat count to see how many spaces are left in the car with bar animation to see how full it is
-* "Drive" screen (stretch)
-   * Rider can submit where they want to go and driver can request to give ride, which would automatically move it to the "Ride" page so other rides could join
 * Chat screen
    * Chat between driver and rider
 * Pay screen (stretch)
@@ -90,7 +91,7 @@ Your app incorporates an external library to add visual polish
 **Tab Navigation** (Tab to Screen)
 
 * Ride
-* Drive (Stretch)
+* Post ride
 * Chat
 * Profile
 
@@ -100,13 +101,15 @@ Your app incorporates an external library to add visual polish
 * Login -> Ride screen
 * Sign up -> "Ride" screen
 * Chat screen -> Pay screen (Stretch)
-* Profile screen -> review screen (Stretch)
-* "Ride" screen -> other users' profile screen
-* "Drive" screen -> other users' profile screen (Stretch)
+* "Ride screen" -> other users' profile screen
+* chat screen -> other users' profile screen
+* other users' profile screen -> review screen (Stretch)
+* Post ride -> "Ride screen"
+* "Ride screen" -> request to join ride screen
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="wireframe1.jpg" width=600>
+![](https://i.imgur.com/4t1Z3rj.jpg")
+
 
 ### [BONUS] Digital Wireframes & Mockups
 
@@ -115,8 +118,89 @@ Your app incorporates an external library to add visual polish
 ## Schema 
 [This section will be completed in Unit 9]
 ### Models
-[Add table of models]
+
+Post
+
+| Property            | Type            | Description                                       |
+|---------------------|-----------------|---------------------------------------------------|
+| objectId            | String          | the id of the post                                |
+| author              | Pointer to User | the user that posted it                           |
+| from                | String          | departure location                                |
+| to                  | String          | arrival location                                  |
+| createdAt           | DateTime        | date when the post was created                    |
+| updatedAt           | DateTime        | date when the post was updated                    |
+| departureTime       | DateTime        | date that the driver will depart                  |
+| arrivalTime         | DateTime        | date the the driver will arrive                   |
+| participants        | Array           | array of Users that will be on this ride          |
+| price               | Number          | the price that the driver sets for the ride       |
+| pricePerParticipant | Boolean         | price per participant or total price for ride     |
+| carCapacity         | Number          | How many people fit in the car                    |
+| seatsAvailable      | Number          | How many seats are left in the car                |
+
+**Perhaps instead of to and from there could be an Array of locations, to do multiple stops
+**For that we would need an array of times to represent departure/arrival time
+**pricePerParticipant: True if the driver sets the price to be per participant or False if it's price for the whole ride which gets divided between all participants 
+
+User
+
+| Property       | Type     | Description                                           |
+|----------------|----------|-------------------------------------------------------|
+| objectId       | String   | the id of the user                                    |
+| username       | String   | the username of the user                              |
+| email          | String   | the email of the user (must be .edu)                  |
+| password       | String   | the password of the user                              |
+| car            | Pointer  | Pointer to car object                                 |
+| profilePicture | File     | users profile picture                                 |
+| biography      | String   | user mini biography                                   |
+| reviews        | Array    | reviews of that user                                  |
+| college        | String   | college that they attend                              |
+| firstName      | String   | first name                                            |
+| lastName       | String   | last name                                             |
+| driverType     | Array    | qualities of the driver (fast, slow, music, no music) |
+| createdAt      | DateTime | profile creation time                                 |
+| birthday       | DateTime | birthdate                                             |
+| driversLicense | File     | picture of drivers license                            |
+
+
+
 ### Networking
 - [Add list of network requests by screen ]
+* Ride screen:
+    * (GET) Post -> Author
+    * (GET) Post -> Author -> reviews
+    * (GET) Post -> Author -> Car
+    * (GET) Post -> Author -> College
+    * (GET) Post -> carCapacity
+    * (GET) Post -> seatsAvailable
+    * (GET) Post -> Author -> firstName
+    * (GET) Post -> price
+    * (GET) Post -> pricePerParticipant
+    * (GET) Post -> from
+    * (GET) Post -> to
+    * (GET) Post -> departureTime
+    * (GET) Post -> arrivalTime
+    * (GET) Post -> createdAt
+* Signup screen:
+    * (POST) User -> firstName
+    * (POST) User -> lastName
+    * (POST) User -> driversLicense
+    * (POST) User -> createdAt
+    * (POST) User -> username
+    * (POST) User -> email
+    * (POST) User -> password
+    * (POST) User -> college
+    * (POST) User -> biography
+    * (POST) User -> objectId
+* Post ride screen:
+    * (POST) Post -> carCapacity
+    * (POST) Post -> seatsAvailable
+    * (POST) Post -> price
+    * (POST) Post -> pricePerParticipant
+    * (POST) Post -> from
+    * (POST) Post -> to
+    * (POST) Post -> departureTime
+    * (POST) Post -> arrivalTime
+    * (POST) Post -> createdAt
+
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
