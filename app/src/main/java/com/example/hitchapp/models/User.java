@@ -61,10 +61,6 @@ public class User extends ParseUser {
 
     public void setDriverType(JSONArray driverType){put(KEY_DRIVER_TYPE, driverType);}
 
-    public Date getBirthday(){return getDate(KEY_BIRTHDAY);}
-
-    public void setBirthday(Date birthday){put(KEY_BIRTHDAY, birthday);}
-
 
 
 }

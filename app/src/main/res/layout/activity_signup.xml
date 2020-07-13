@@ -4,14 +4,36 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <EditText
+        android:id="@+id/etFirstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="First Name" />
+
+    <EditText
+        android:id="@+id/etLastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/etFirstName"
+        android:hint="Last Name" />
+
+    <EditText
+        android:id="@+id/etCollege"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/etLastName"
+        android:hint="College" />
 
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_below="@+id/instagramLogo"
-        android:hint="username" />
+        android:layout_below="@+id/etCollege"
+        android:hint="Username" />
 
     <EditText
         android:id="@+id/etEmail"
@@ -20,7 +42,7 @@
         android:layout_below="@+id/etUsername"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="email" />
+        android:hint="Email" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -29,15 +51,24 @@
         android:layout_below="@+id/etEmail"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:hint="password"
+        android:hint="Password"
         android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btnUploadStudentId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etPassword"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Upload Student ID" />
 
     <Button
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etPassword"
+        android:layout_below="@+id/btnUploadStudentId"
         android:layout_marginTop="10dp"
-        android:backgroundTint="#88D840"
+        android:backgroundTint="@color/colorPrimary"
         android:text="Signup" />
 </RelativeLayout>
