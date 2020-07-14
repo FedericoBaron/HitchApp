@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
 import com.example.hitchapp.activities.LoginActivity;
+import com.example.hitchapp.models.Car;
 import com.example.hitchapp.models.User;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -43,7 +44,10 @@ public class ProfileFragment extends Fragment {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
     private User currentUser;
     private Button btnLogout;
+    private Car car;
     private View view;
+
+    // User stuff
     private ImageView profilePicture;
     private EditText etUsername;
     private EditText etPassword;
@@ -55,6 +59,14 @@ public class ProfileFragment extends Fragment {
     private Button btnUpdateProfile;
     private Button btnChangePassword;
     private Switch switchDriver;
+
+    // Car stuff
+    private EditText etCarCapacity;
+    private Button btnSaveDriverProfile;
+    private EditText etCarModel;
+    private EditText etCarMaker;
+    private EditText etCarYear;
+    private EditText etLicensePlate;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -90,7 +102,11 @@ public class ProfileFragment extends Fragment {
         // Listens for profile picture click
         updateProfilePicListener();
 
+        // Listens for switch to driver
         switchDriverListener();
+
+        // Listens for update to driver profile
+        saveDriverProfileListener();
 
         // Listens for logout button click
         logoutListener();
@@ -98,20 +114,32 @@ public class ProfileFragment extends Fragment {
 
     // Sets variables to views
     private void wireUI(){
+        // Buttons
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
+        btnChangePassword = view.findViewById(R.id.btnChangePassword);
+        btnSaveDriverProfile = view.findViewById(R.id.btnSaveDriverProfile);
+
+        // Profile
         etUsername = view.findViewById(R.id.etUsername);
         etPassword = view.findViewById(R.id.etPassword);
         etEmail = view.findViewById(R.id.etEmail);
         etFirstName = view.findViewById(R.id.etFirstName);
         etLastName = view.findViewById(R.id.etLastName);
         etCollege = view.findViewById(R.id.etCollege);
-        btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
-        btnChangePassword = view.findViewById(R.id.btnChangePassword);
         profilePicture = view.findViewById(R.id.profilePicture);
         etBiography = view.findViewById(R.id.etBiography);
         switchDriver = view.findViewById(R.id.switchDriver);
+
+        // Driver Profile
+        etCarCapacity = view.findViewById(R.id.etCarCapacity);
+        etCarMaker = view.findViewById(R.id.etCarMaker);
+        etLicensePlate = view.findViewById(R.id.etLicensePlate);
+        etCarModel = view.findViewById(R.id.etCarModel);
+        etCarYear = view.findViewById(R.id.etCarYear);
     }
 
+    // If button update profile is clicked, the changes get saved in Parse
     private void updateProfileListener() {
         btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +149,9 @@ public class ProfileFragment extends Fragment {
                 currentUser.setCollege(etCollege.getText().toString());
                 currentUser.setFirstName(etFirstName.getText().toString());
                 currentUser.setLastName(etLastName.getText().toString());
+                currentUser.setBiography(etBiography.getText().toString());
+                currentUser.setIsDriver(switchDriver.isChecked());
+
                 save();
             }
         });
@@ -147,14 +178,69 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    private void saveDriverProfileListener(){
+        btnSaveDriverProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // If the user has no car object and is driver then make car object
+                if(switchDriver.isChecked() && currentUser.getCar() == null){
+                    car = new Car();
+                }
+
+                // Fills out car object with info
+                try {
+                    car.setCarCapacity(Integer.parseInt(etCarCapacity.getText().toString()));
+                    car.setCarMaker(etCarMaker.getText().toString());
+                    car.setCarModel(etCarModel.getText().toString());
+                    car.setCarYear(Integer.parseInt(etCarYear.getText().toString()));
+                    car.setLicensePlate(etLicensePlate.getText().toString());
+                    currentUser.setCar(car);
+                    save();
+                } catch(Exception e){
+                    Log.e(TAG, "Some input field is empty for driver profile!");
+                    Toast.makeText(getContext(), "Make sure to fill out all fields", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
     private void switchDriverListener(){
         switchDriver.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                // Sets isDriver to be true or false based on isChecked
                 currentUser.setIsDriver(isChecked);
-                save();
+
+                if(isChecked){
+                    setVisibleDriverProfile();
+                }
+                else{
+                    setGoneDriverProfile();
+                }
+
             }
         });
+    }
+
+    private void setVisibleDriverProfile(){
+        btnSaveDriverProfile.setVisibility(View.VISIBLE);
+        etCarCapacity.setVisibility(View.VISIBLE);
+        etCarMaker.setVisibility(View.VISIBLE);
+        etCarModel.setVisibility(View.VISIBLE);
+        etCarYear.setVisibility(View.VISIBLE);
+        etLicensePlate.setVisibility(View.VISIBLE);
+    }
+
+    private void setGoneDriverProfile(){
+        btnSaveDriverProfile.setVisibility(View.GONE);
+        etCarCapacity.setVisibility(View.GONE);
+        etCarMaker.setVisibility(View.GONE);
+        etCarModel.setVisibility(View.GONE);
+        etCarYear.setVisibility(View.GONE);
+        etLicensePlate.setVisibility(View.GONE);
     }
 
     private void logoutListener(){
@@ -200,7 +286,6 @@ public class ProfileFragment extends Fragment {
         switchDriver.setChecked(currentUser.getIsDriver());
         etBiography.setText(currentUser.getBiography());
         ParseFile image = currentUser.getProfilePicture();
-        Log.i(TAG, image.getUrl());
         if(image != null) {
             Log.i(TAG, "here" + image);
             Glide.with(getContext())
@@ -208,6 +293,28 @@ public class ProfileFragment extends Fragment {
                     .fitCenter()
                     .circleCrop()
                     .into(profilePicture);
+        }
+
+        car = currentUser.getCar();
+        if(switchDriver.isChecked() && car != null){
+            setVisibleDriverProfile();
+
+            // fetch car data
+            try {
+                car.fetch();
+            } catch(Exception e){
+                Log.e(TAG, "Couldn't fetch car", e);
+            }
+
+            etCarCapacity.setText(String.valueOf(car.getCarCapacity()));
+            etCarModel.setText(car.getCarModel());
+            etCarMaker.setText(car.getCarMaker());
+            etCarYear.setText(String.valueOf(car.getCarYear()));
+            etLicensePlate.setText(car.getLicensePlate());
+        }
+        else{
+            setGoneDriverProfile();
+            switchDriver.setChecked(false);
         }
     }
 
