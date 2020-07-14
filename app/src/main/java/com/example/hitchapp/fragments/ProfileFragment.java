@@ -12,8 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,8 +51,10 @@ public class ProfileFragment extends Fragment {
     private EditText etFirstName;
     private EditText etLastName;
     private EditText etCollege;
+    private EditText etBiography;
     private Button btnUpdateProfile;
     private Button btnChangePassword;
+    private Switch switchDriver;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -86,6 +90,8 @@ public class ProfileFragment extends Fragment {
         // Listens for profile picture click
         updateProfilePicListener();
 
+        switchDriverListener();
+
         // Listens for logout button click
         logoutListener();
     }
@@ -102,6 +108,8 @@ public class ProfileFragment extends Fragment {
         btnUpdateProfile = view.findViewById(R.id.btnUpdateProfile);
         btnChangePassword = view.findViewById(R.id.btnChangePassword);
         profilePicture = view.findViewById(R.id.profilePicture);
+        etBiography = view.findViewById(R.id.etBiography);
+        switchDriver = view.findViewById(R.id.switchDriver);
     }
 
     private void updateProfileListener() {
@@ -139,6 +147,16 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    private void switchDriverListener(){
+        switchDriver.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentUser.setIsDriver(isChecked);
+                save();
+            }
+        });
+    }
+
     private void logoutListener(){
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +186,6 @@ public class ProfileFragment extends Fragment {
                 }
                 Log.i(TAG, "update save was successful!");
                 Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-                setProfileInfo();
             }
         });
     }
@@ -180,15 +197,18 @@ public class ProfileFragment extends Fragment {
         etCollege.setText(currentUser.getCollege());
         etFirstName.setText(currentUser.getFirstName());
         etLastName.setText(currentUser.getLastName());
+        switchDriver.setChecked(currentUser.getIsDriver());
+        etBiography.setText(currentUser.getBiography());
         ParseFile image = currentUser.getProfilePicture();
+        Log.i(TAG, image.getUrl());
         if(image != null) {
+            Log.i(TAG, "here" + image);
             Glide.with(getContext())
-                    .load(currentUser.getProfilePicture().getUrl())
+                    .load(image.getUrl())
                     .fitCenter()
                     .circleCrop()
                     .into(profilePicture);
         }
-
     }
 
     private void launchCamera() {
@@ -223,14 +243,9 @@ public class ProfileFragment extends Fragment {
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
                 profilePicture.setImageBitmap(takenImage);
-                final ParseFile photo = new ParseFile(photoFile);
-                photo.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(null == e)
-                            currentUser.setProfilePicture(photo);
-                    }
-                });
+                currentUser.setProfilePicture(new ParseFile(photoFile));
+                save();
+                setProfileInfo();
 
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();

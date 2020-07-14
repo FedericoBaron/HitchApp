@@ -6,12 +6,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginBottom="0dp">
+        android:layout_alignParentBottom="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,6 +23,8 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:visibility="visible"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <EditText
@@ -46,6 +47,13 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="College" />
+
+            <EditText
+                android:id="@+id/etBiography"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Biography" />
 
             <EditText
                 android:id="@+id/etUsername"
@@ -71,6 +79,15 @@
                 android:background="@color/colorPrimary"
                 android:text="Update profile" />
 
+            <Switch
+                android:id="@+id/switchDriver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Are you a driver?"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
@@ -93,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/colorPrimary"

@@ -25,9 +25,9 @@ public class User extends ParseUser {
     public static final String KEY_COLLEGE_ID = "collegeId";
     public static final String KEY_DRIVERS_LICENSE = "driversLicense";
     public static final String KEY_DRIVER_TYPE = "driverType";
-    public static final String KEY_BIRTHDAY = "birthday";
     public static final String KEY_CAR = "car";
     public static final String KEY_REVIEWS = "reviews";
+    public static final String KEY_IS_DRIVER = "isDriver";
 
     public String getFirstName(){return getString(KEY_FIRST_NAME);}
 
@@ -61,6 +61,15 @@ public class User extends ParseUser {
 
     public void setDriverType(JSONArray driverType){put(KEY_DRIVER_TYPE, driverType);}
 
+    public Boolean getIsDriver(){return getBoolean(KEY_IS_DRIVER);}
 
+    public void setIsDriver(boolean isDriver){put(KEY_IS_DRIVER, isDriver);}
 
+    public Car getCar(){return (Car) getParseObject(KEY_CAR);}
+
+    public void setCar(Car car){put(KEY_CAR, car);}
+
+    public JSONArray getReviews(){return getJSONArray(KEY_REVIEWS);}
+
+    public void setReviews(JSONArray reviews){put(KEY_REVIEWS, reviews);}
 }
