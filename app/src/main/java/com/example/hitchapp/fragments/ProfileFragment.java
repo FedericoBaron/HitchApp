@@ -272,6 +272,7 @@ public class ProfileFragment extends Fragment {
                 }
                 Log.i(TAG, "update save was successful!");
                 Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+                setProfileInfo();
             }
         });
     }
@@ -352,7 +353,6 @@ public class ProfileFragment extends Fragment {
                 profilePicture.setImageBitmap(takenImage);
                 currentUser.setProfilePicture(new ParseFile(photoFile));
                 save();
-                setProfileInfo();
 
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
