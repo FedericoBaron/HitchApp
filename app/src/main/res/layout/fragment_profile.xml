@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:ems="10"
-                android:hint="Licnese plate" />
+                android:hint="License plate" />
 
             <Button
                 android:id="@+id/btnSaveDriverProfile"

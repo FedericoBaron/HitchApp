@@ -43,11 +43,11 @@ public class Post extends ParseObject {
 
     public void setTo(String to){put(KEY_TO, to);}
 
-    public String getDepartureTime(){return getString(KEY_DEPARTURE_TIME);}
+    public Date getDepartureTime(){return getDate(KEY_DEPARTURE_TIME);}
 
-    public void setDepartureTime(String time){put(KEY_DEPARTURE_TIME, time);}
+    public void setDepartureTime(Date time){put(KEY_DEPARTURE_TIME, time);}
 
-    public String getArrivalTime(){return getString(KEY_ARRIVAL_TIME);}
+    public Date getArrivalTime(){return getDate(KEY_ARRIVAL_TIME);}
 
     public void setArrivalTime(String time){put(KEY_ARRIVAL_TIME, time);}
 

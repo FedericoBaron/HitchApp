@@ -100,8 +100,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvLastName.setText(user.getLastName());
             tvFrom.setText(post.getFrom());
             tvTo.setText(post.getTo());
-            tvDepartureTime.setText(post.getDepartureTime());
-            tvArrivalTime.setText(post.getArrivalTime());
+            tvDepartureTime.setText(post.getDepartureTime().toString());
+            tvArrivalTime.setText(post.getArrivalTime().toString());
 
             ParseFile profile = user.getProfilePicture();
             if(profile != null) {
