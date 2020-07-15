@@ -213,8 +213,7 @@ class ComposeFragment : Fragment() {
                 cal.set(Calendar.MINUTE, minute)
 
                 // Sets AM or PM accordingly
-                var amOrPm = ""
-                amOrPm = if(cal.get(hour) >= 12)
+                var amOrPm: String = if(hour >= 12)
                     "PM"
                 else{
                     "AM"
@@ -227,48 +226,6 @@ class ComposeFragment : Fragment() {
             dpd?.getButton(DatePickerDialog.BUTTON_POSITIVE)?.setBackgroundColor(resources.getColor(R.color.colorPositive))
         }
     }
-
-
-//    private fun autofillAddressAPI(){
-//        Log.i(TAG, "hello")
-//        // Initialize the SDK
-//        context?.let { Places.initialize(it, getString(R.string.google_api_key)) }
-//
-//        // Create a new Places client instance.
-//        val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
-//        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-//        // and once again when the user makes a selection (for example when calling fetchPlace()).
-//        val token = AutocompleteSessionToken.newInstance()
-//
-////        // Create a RectangularBounds object.
-////        val bounds = RectangularBounds.newInstance(
-////                LatLng(-33.880490, 151.184363),
-////                LatLng(-33.858754, 151.229596)
-////        )
-//        // Use the builder to create a FindAutocompletePredictionsRequest.
-//        val request =
-//                FindAutocompletePredictionsRequest.builder()
-//                        // Call either setLocationBias() OR setLocationRestriction().
-//                        //.setLocationBias(bounds)
-//                        //.setLocationRestriction(bounds)
-//                        //.setOrigin(LatLng(-33.8749937, 151.2041382))
-//                        //.setCountries("AU", "NZ")
-//                        .setTypeFilter(TypeFilter.ADDRESS)
-//                        .setSessionToken(token)
-//                        .setQuery(etFrom.toString())
-//                        .build()
-//        placesClient?.findAutocompletePredictions(request)
-//                ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
-//                    for (prediction in response.autocompletePredictions) {
-//                        Log.i(TAG, prediction.placeId)
-//                        Log.i(TAG, prediction.getPrimaryText(null).toString())
-//                    }
-//                }?.addOnFailureListener { exception: Exception? ->
-//                    if (exception is ApiException) {
-//                        Log.e(TAG, "Place not found: " + exception.statusCode)
-//                    }
-//                }
-//    }
 
     // Adds post to the database
     private fun savePost(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
