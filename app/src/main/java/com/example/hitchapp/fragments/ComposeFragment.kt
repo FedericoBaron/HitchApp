@@ -1,6 +1,9 @@
 package com.example.hitchapp.fragments
+import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,11 +13,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.hitchapp.R
 import com.example.hitchapp.models.Post
 import com.example.hitchapp.models.User
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.common.api.Status.RESULT_CANCELED
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.parse.ParseUser
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +40,8 @@ class ComposeFragment : Fragment() {
     private var etPrice: EditText? = null
     private var btnPost: Button? = null
     private var switchPricePerParticipant: Switch? = null
+    private val REQUEST_CODE = 20
+    private var toSelected = false
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -51,6 +65,9 @@ class ComposeFragment : Fragment() {
 
         editDepartureDateListener()
         editDepartureTimeListener()
+        editFromListener()
+        editToListener()
+
         btnPostListener()
 
     }
@@ -95,6 +112,73 @@ class ComposeFragment : Fragment() {
             // Save post to the backend
             savePost(from, to, price, departureDate, departureTime, currentUser)
         })
+    }
+
+    private fun editFromListener(){
+        etFrom?.setOnClickListener {
+
+            toSelected = false
+            // Initialize the SDK
+            context?.let { Places.initialize(it, getString(R.string.google_api_key)) }
+
+            // Create a new Places client instance.
+            val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
+            // Set the fields to specify which types of place data to
+            // return after the user has made a selection.
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
+
+            // Start the autocomplete intent.
+            val intent = context?.let { it1 ->
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(it1)
+            }
+            startActivityForResult(intent, REQUEST_CODE)
+        }
+    }
+
+    private fun editToListener(){
+        etTo?.setOnClickListener {
+
+            toSelected = true
+            // Initialize the SDK
+            context?.let { Places.initialize(it, getString(R.string.google_api_key)) }
+
+            // Create a new Places client instance.
+            val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
+            // Set the fields to specify which types of place data to
+            // return after the user has made a selection.
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
+
+            // Start the autocomplete intent.
+            val intent = context?.let { it1 ->
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                        .build(it1)
+            }
+            startActivityForResult(intent, REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                if (place != null) {
+                    Log.i(TAG, "Place: " + place.name + ", " + place.id + ", " + place.address)
+                }
+                val address = place?.address
+                if(toSelected)
+                    etTo?.setText(address)
+                else
+                    etFrom?.setText(address)
+                // do query with address
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                val status: Status? = data?.let { Autocomplete.getStatusFromIntent(it) }
+                Log.i(TAG, status?.getStatusMessage())
+            } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 
     private fun editDepartureDateListener(){
@@ -144,6 +228,47 @@ class ComposeFragment : Fragment() {
         }
     }
 
+
+//    private fun autofillAddressAPI(){
+//        Log.i(TAG, "hello")
+//        // Initialize the SDK
+//        context?.let { Places.initialize(it, getString(R.string.google_api_key)) }
+//
+//        // Create a new Places client instance.
+//        val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
+//        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+//        // and once again when the user makes a selection (for example when calling fetchPlace()).
+//        val token = AutocompleteSessionToken.newInstance()
+//
+////        // Create a RectangularBounds object.
+////        val bounds = RectangularBounds.newInstance(
+////                LatLng(-33.880490, 151.184363),
+////                LatLng(-33.858754, 151.229596)
+////        )
+//        // Use the builder to create a FindAutocompletePredictionsRequest.
+//        val request =
+//                FindAutocompletePredictionsRequest.builder()
+//                        // Call either setLocationBias() OR setLocationRestriction().
+//                        //.setLocationBias(bounds)
+//                        //.setLocationRestriction(bounds)
+//                        //.setOrigin(LatLng(-33.8749937, 151.2041382))
+//                        //.setCountries("AU", "NZ")
+//                        .setTypeFilter(TypeFilter.ADDRESS)
+//                        .setSessionToken(token)
+//                        .setQuery(etFrom.toString())
+//                        .build()
+//        placesClient?.findAutocompletePredictions(request)
+//                ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+//                    for (prediction in response.autocompletePredictions) {
+//                        Log.i(TAG, prediction.placeId)
+//                        Log.i(TAG, prediction.getPrimaryText(null).toString())
+//                    }
+//                }?.addOnFailureListener { exception: Exception? ->
+//                    if (exception is ApiException) {
+//                        Log.e(TAG, "Place not found: " + exception.statusCode)
+//                    }
+//                }
+//    }
 
     // Adds post to the database
     private fun savePost(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {

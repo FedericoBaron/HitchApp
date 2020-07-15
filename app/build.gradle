@@ -46,7 +46,15 @@ dependencies {
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.core:core-ktx:+"
+
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Google Places
+    implementation 'com.google.android.libraries.places:places:2.2.0'
+
+    //HTTP Client
+    implementation 'com.codepath.libraries:asynchttpclient:0.0.9'
 
 }
 repositories {
