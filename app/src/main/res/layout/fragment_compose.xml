@@ -34,6 +34,7 @@
     <EditText
         android:id="@+id/etDepartureTime"
         android:layout_width="wrap_content"
+        android:focusableInTouchMode="false"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etTo"
         android:layout_alignParentStart="true"

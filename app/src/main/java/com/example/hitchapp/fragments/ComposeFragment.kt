@@ -51,6 +51,7 @@ class ComposeFragment : Fragment() {
 
     }
 
+    // Listens for when the post ride button gets clicked
     private fun btnPostListener(){
         btnPost?.setOnClickListener(View.OnClickListener {
 
@@ -82,32 +83,54 @@ class ComposeFragment : Fragment() {
             // Gets the person who's logged in
             val currentUser = ParseUser.getCurrentUser() as User
 
+            // Save post to the backend
             savePost(from, to, price, departureTime, currentUser)
         })
     }
 
     private fun editDepartureTimeListener(){
-        var cal = Calendar.getInstance()
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            cal.set(Calendar.YEAR, year)
-            cal.set(Calendar.MONTH, monthOfYear)
-            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-            val myFormat = "dd.MM.yyyy" // mention the format you need
-            val sdf = SimpleDateFormat(myFormat, Locale.US)
-            etDepartureTime?.setText(sdf.format(cal.time))
-
-        }
-
+        // Edit departure time button clicked
         etDepartureTime?.setOnClickListener(View.OnClickListener {
-            context?.let { it1 ->
-                DatePickerDialog(it1, dateSetListener,
-                        cal.get(Calendar.YEAR),
-                        cal.get(Calendar.MONTH),
-                        cal.get(Calendar.DAY_OF_MONTH)).show()
+            val dpd = context?.let { it1 ->
+                DatePickerDialog(it1, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                    // Set to textView
+                    etDepartureTime?.setText("" + mDay + "/" + mMonth + "/" + mYear)
+                }, year, month, day)
             }
+
+            // show dialog
+            dpd?.show()
+
+            // Set colors of OK and CANCEL for datepicker
+            dpd?.getButton(DatePickerDialog.BUTTON_NEGATIVE)?.setBackgroundColor(resources.getColor(R.color.colorNegative))
+            dpd?.getButton(DatePickerDialog.BUTTON_POSITIVE)?.setBackgroundColor(resources.getColor(R.color.colorPositive))
         })
+//        var cal = Calendar.getInstance()
+
+//        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+//            cal.set(Calendar.YEAR, year)
+//            cal.set(Calendar.MONTH, monthOfYear)
+//            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+//
+//            val myFormat = "dd.MM.yyyy" // mention the format you need
+//            val sdf = SimpleDateFormat(myFormat, Locale.US)
+//            etDepartureTime?.setText(sdf.format(cal.time))
+//
+//        }
+//
+//        etDepartureTime?.setOnClickListener(View.OnClickListener {
+//            context?.let { it1 ->
+//                DatePickerDialog(it1, dateSetListener,
+//                        cal.get(Calendar.YEAR),
+//                        cal.get(Calendar.MONTH),
+//                        cal.get(Calendar.DAY_OF_MONTH)).show()
+//            }
+//        })
     }
 
     private fun savePost(from: String, to: String, price: String, departureTime: String, currentUser: ParseUser) {

@@ -5,5 +5,7 @@
     <color name="colorAccent">#BB86FC</color>
     <color name="colorBlue">#05386B</color>
     <color name="colorWhite">#EDF5E1</color>
+    <color name="colorPositive">#5CDB95</color>
+    <color name="colorNegative">#CF6679</color>
 
 </resources>
