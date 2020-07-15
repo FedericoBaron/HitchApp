@@ -23,6 +23,7 @@ public class Post extends ParseObject {
     public static final String KEY_PRICE = "price";
     public static final String KEY_PRICE_PER_PARTICIPANT = "pricePerParticipant";
     public static final String KEY_SEATS_AVAILABLE = "seatsAvailable";
+    public static final String KEY_DEPARTURE_DATE = "departureDate";
 
 
     public ParseUser getDriver(){ return getParseUser("driver"); }
@@ -47,9 +48,9 @@ public class Post extends ParseObject {
 
     public void setDepartureTime(String time){put(KEY_DEPARTURE_TIME, time);}
 
-    public Date getArrivalTime(){return getDate(KEY_ARRIVAL_TIME);}
+    public String getDepartureDate(){return getString(KEY_DEPARTURE_DATE);}
 
-    public void setArrivalTime(String time){put(KEY_ARRIVAL_TIME, time);}
+    public void setDepartureDate(String time){put(KEY_DEPARTURE_DATE, time);}
 
     public int getPrice(){return (int) getNumber(KEY_PRICE);}
 

@@ -110,7 +110,7 @@
         tools:text="Miami" />
 
     <TextView
-        android:id="@+id/tvDepartureTime"
+        android:id="@+id/tvDepartureDate"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/tvTo"
@@ -120,13 +120,26 @@
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:text="June 16 @5:00pm" />
+        tools:text="5/16/20" />
+
+    <TextView
+        android:id="@+id/tvDepartureTime"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_below="@id/tvTo"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvDepartureDate"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="5:00pm" />
 
     <TextView
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_below="@id/tvDepartureTime"
+        android:layout_below="@id/tvDepartureDate"
         android:layout_marginStart="1dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/tvPriceTitle"

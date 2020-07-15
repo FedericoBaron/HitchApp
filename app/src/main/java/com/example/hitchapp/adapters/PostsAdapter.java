@@ -75,6 +75,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private TextView tvFrom;
         private TextView tvTo;
         private TextView tvDepartureTime;
+        private TextView tvDepartureDate;
         private TextView tvPrice;
 
         public ViewHolder(@NonNull View itemView) {
@@ -84,6 +85,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvLastName = itemView.findViewById(R.id.tvLastName);
             tvFrom = itemView.findViewById(R.id.tvFrom);
             tvTo = itemView.findViewById(R.id.tvTo);
+            tvDepartureDate = itemView.findViewById(R.id.tvDepartureDate);
             tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicure);
@@ -100,7 +102,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvLastName.setText(user.getLastName());
             tvFrom.setText(post.getFrom());
             tvTo.setText(post.getTo());
-            tvDepartureTime.setText(post.getDepartureTime().toString());
+            tvDepartureTime.setText(post.getDepartureTime());
+            tvDepartureDate.setText(post.getDepartureDate());
             tvPrice.setText(String.valueOf(post.getPrice()));
 
             ParseFile profile = user.getProfilePicture();

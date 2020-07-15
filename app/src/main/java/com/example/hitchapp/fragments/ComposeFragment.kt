@@ -1,5 +1,6 @@
 package com.example.hitchapp.fragments
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ class ComposeFragment : Fragment() {
     private var etFrom: EditText? = null
     private var etTo: EditText? = null
     private var etDepartureTime: EditText? = null
+    private var etDepartureDate: EditText? = null
     private var etPrice: EditText? = null
     private var btnPost: Button? = null
     private var switchPricePerParticipant: Switch? = null
@@ -43,9 +45,11 @@ class ComposeFragment : Fragment() {
         etTo = view.findViewById(R.id.etTo);
         etPrice = view.findViewById(R.id.etPrice);
         etDepartureTime = view.findViewById(R.id.etDepartureTime)
+        etDepartureDate = view.findViewById(R.id.etDepartureDate)
         btnPost = view.findViewById(R.id.btnPost)
         switchPricePerParticipant = view.findViewById(R.id.switchPricePerParticipant)
 
+        editDepartureDateListener()
         editDepartureTimeListener()
         btnPostListener()
 
@@ -59,6 +63,7 @@ class ComposeFragment : Fragment() {
             val from = etFrom?.text.toString()
             val to = etTo?.text.toString()
             val price = etPrice?.text.toString()
+            val departureDate = etDepartureDate?.text.toString()
             val departureTime = etDepartureTime?.text.toString()
 
             // check if any of the input fields are still empty
@@ -74,6 +79,10 @@ class ComposeFragment : Fragment() {
                 Toast.makeText(context, "price cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
+            if (departureDate.isEmpty()) {
+                Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
             if (departureTime.isEmpty()) {
                 Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
@@ -84,22 +93,22 @@ class ComposeFragment : Fragment() {
             val currentUser = ParseUser.getCurrentUser() as User
 
             // Save post to the backend
-            savePost(from, to, price, departureTime, currentUser)
+            savePost(from, to, price, departureDate, departureTime, currentUser)
         })
     }
 
-    private fun editDepartureTimeListener(){
+    private fun editDepartureDateListener(){
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         // Edit departure time button clicked
-        etDepartureTime?.setOnClickListener(View.OnClickListener {
+        etDepartureDate?.setOnClickListener(View.OnClickListener {
             val dpd = context?.let { it1 ->
                 DatePickerDialog(it1, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
                     // Set to textView
-                    etDepartureTime?.setText("" + mDay + "/" + mMonth + "/" + mYear)
+                    etDepartureDate?.setText("" + mDay + "/" + mMonth + "/" + mYear)
                 }, year, month, day)
             }
 
@@ -110,45 +119,54 @@ class ComposeFragment : Fragment() {
             dpd?.getButton(DatePickerDialog.BUTTON_NEGATIVE)?.setBackgroundColor(resources.getColor(R.color.colorNegative))
             dpd?.getButton(DatePickerDialog.BUTTON_POSITIVE)?.setBackgroundColor(resources.getColor(R.color.colorPositive))
         })
-//        var cal = Calendar.getInstance()
-
-//        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-//            cal.set(Calendar.YEAR, year)
-//            cal.set(Calendar.MONTH, monthOfYear)
-//            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-//
-//            val myFormat = "dd.MM.yyyy" // mention the format you need
-//            val sdf = SimpleDateFormat(myFormat, Locale.US)
-//            etDepartureTime?.setText(sdf.format(cal.time))
-//
-//        }
-//
-//        etDepartureTime?.setOnClickListener(View.OnClickListener {
-//            context?.let { it1 ->
-//                DatePickerDialog(it1, dateSetListener,
-//                        cal.get(Calendar.YEAR),
-//                        cal.get(Calendar.MONTH),
-//                        cal.get(Calendar.DAY_OF_MONTH)).show()
-//            }
-//        })
     }
 
-    private fun savePost(from: String, to: String, price: String, departureTime: String, currentUser: ParseUser) {
+    private fun editDepartureTimeListener(){
+        etDepartureTime?.setOnClickListener {
+            val cal = Calendar.getInstance()
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+                cal.set(Calendar.HOUR_OF_DAY, hour)
+                cal.set(Calendar.MINUTE, minute)
+
+                // Sets AM or PM accordingly
+                var amOrPm = ""
+                amOrPm = if(cal.get(hour) >= 12)
+                    "PM"
+                else{
+                    "AM"
+                }
+                etDepartureTime?.setText("@" + SimpleDateFormat("HH:mm").format(cal.time) + amOrPm)
+            }
+            val dpd = TimePickerDialog(context, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true)
+            dpd.show()
+            dpd?.getButton(DatePickerDialog.BUTTON_NEGATIVE)?.setBackgroundColor(resources.getColor(R.color.colorNegative))
+            dpd?.getButton(DatePickerDialog.BUTTON_POSITIVE)?.setBackgroundColor(resources.getColor(R.color.colorPositive))
+        }
+    }
+
+
+    // Adds post to the database
+    private fun savePost(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
         val post = Post()
         post.price = price.toInt()
         post.from = from
         post.to = to
         post.driver = currentUser
+        post.departureDate = departureDate
         post.departureTime = departureTime
+
         post.saveInBackground { e ->
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
                 Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show()
             }
             Log.i(TAG, "Post save was successful!")
+
+            // Empties all edit text forms for next time
             etFrom?.setText("")
             etPrice?.setText("")
             etTo?.setText("")
+            etDepartureDate?.setText("")
             etDepartureTime?.setText("")
 
             // Changes to home fragment
