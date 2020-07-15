@@ -43,17 +43,17 @@ public class Post extends ParseObject {
 
     public void setTo(String to){put(KEY_TO, to);}
 
-    public Date getDepartureTime(){return getDate(KEY_DEPARTURE_TIME);}
+    public String getDepartureTime(){return getString(KEY_DEPARTURE_TIME);}
 
-    public void setDepartureTime(Date time){put(KEY_DEPARTURE_TIME, time);}
+    public void setDepartureTime(String time){put(KEY_DEPARTURE_TIME, time);}
 
     public Date getArrivalTime(){return getDate(KEY_ARRIVAL_TIME);}
 
     public void setArrivalTime(String time){put(KEY_ARRIVAL_TIME, time);}
 
-    public double getPrice(){return (double) getNumber(KEY_PRICE);}
+    public int getPrice(){return (int) getNumber(KEY_PRICE);}
 
-    public void setPrice(double price){put(KEY_PRICE, price);}
+    public void setPrice(int price){put(KEY_PRICE, price);}
 
     public boolean getPricePerParticipant(){return getBoolean(KEY_PRICE_PER_PARTICIPANT);}
 

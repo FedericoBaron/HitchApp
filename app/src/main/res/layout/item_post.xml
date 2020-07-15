@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:background="@color/colorPrimaryDark"
     android:gravity="left">
 
     <TextView
@@ -71,14 +72,14 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tvArrivalTitle"
+        android:id="@+id/tvPriceTitle"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/tvDepartureTitle"
         android:layout_marginStart="0dp"
         android:layout_marginTop="5dp"
         android:gravity="center_vertical"
-        android:text="Arrives:"
+        android:text="Price: $"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -87,9 +88,9 @@
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/ivProfilePicure"
-        android:layout_toRightOf="@id/tvFromTitle"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvFromTitle"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -100,9 +101,9 @@
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/tvFromTitle"
-        android:layout_toRightOf="@id/tvToTitle"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvToTitle"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -113,26 +114,26 @@
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/tvTo"
-        android:layout_toRightOf="@id/tvDepartureTitle"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/tvDepartureTitle"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
         tools:text="June 16 @5:00pm" />
 
     <TextView
-        android:id="@+id/tvArrivalTime"
+        android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:layout_below="@id/tvDepartureTime"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/tvArrivalTitle"
+        android:layout_toRightOf="@id/tvPriceTitle"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:text="June 16 @8:30pm" />
+        tools:text="3" />
 
     <ImageView
         android:id="@+id/ivProfilePicure"

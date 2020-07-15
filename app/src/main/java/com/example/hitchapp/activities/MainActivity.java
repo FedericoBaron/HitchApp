@@ -10,8 +10,8 @@ import android.view.MenuItem;
 
 import com.example.hitchapp.R;
 import com.example.hitchapp.fragments.ChatFragment;
+import com.example.hitchapp.fragments.ComposeFragment;
 import com.example.hitchapp.fragments.HomeFragment;
-import com.example.hitchapp.fragments.PostFragment;
 import com.example.hitchapp.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new ChatFragment();
                         break;
                     case R.id.action_post:
-                        fragment = new PostFragment();
+                        fragment = new ComposeFragment();
                         break;
                     case R.id.action_profile:
                     default:
