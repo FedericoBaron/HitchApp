@@ -1,6 +1,5 @@
 package com.example.hitchapp.fragments
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.example.hitchapp.R
 import com.example.hitchapp.models.Post
 import com.example.hitchapp.models.User
@@ -123,7 +123,16 @@ class ComposeFragment : Fragment() {
                 Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show()
             }
             Log.i(TAG, "Post save was successful!")
-            // TODO switch to home screen
+            etFrom?.setText("")
+            etPrice?.setText("")
+            etTo?.setText("")
+            etDepartureTime?.setText("")
+
+            // Changes to home fragment
+            val fragment: Fragment = HomeFragment()
+            (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                    .replace(R.id.flContainer, fragment)
+                    .commit()
 
         }
     }
