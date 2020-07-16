@@ -26,7 +26,7 @@ public class Post extends ParseObject {
     public static final String KEY_DEPARTURE_DATE = "departureDate";
 
 
-    public ParseUser getDriver(){ return getParseUser("driver"); }
+    public ParseUser getDriver(){ return getParseUser(KEY_DRIVER); }
 
     public void setDriver(ParseUser user){
         put(KEY_DRIVER, user);

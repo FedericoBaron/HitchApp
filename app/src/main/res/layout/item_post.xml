@@ -38,7 +38,7 @@
     <TextView
         android:id="@+id/tvFromTitle"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfilePicure"
         android:layout_marginStart="0dp"
         android:layout_marginTop="5dp"
@@ -50,8 +50,8 @@
     <TextView
         android:id="@+id/tvToTitle"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_below="@id/tvFromTitle"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFrom"
         android:layout_marginStart="0dp"
         android:layout_marginTop="5dp"
         android:gravity="center_vertical"
@@ -63,7 +63,7 @@
         android:id="@+id/tvDepartureTitle"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:layout_below="@id/tvToTitle"
+        android:layout_below="@id/tvTo"
         android:layout_marginStart="0dp"
         android:layout_marginTop="5dp"
         android:gravity="center_vertical"
@@ -86,7 +86,7 @@
     <TextView
         android:id="@+id/tvFrom"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/ivProfilePicure"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
@@ -99,8 +99,8 @@
     <TextView
         android:id="@+id/tvTo"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_below="@id/tvFromTitle"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFrom"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/tvToTitle"
@@ -133,7 +133,7 @@
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:textStyle="bold"
-        tools:text="5:00pm" />
+        tools:text="5/16/20" />
 
     <TextView
         android:id="@+id/tvPrice"
