@@ -3,6 +3,8 @@ package com.example.hitchapp;
 import android.app.Application;
 
 import com.example.hitchapp.models.Car;
+import com.example.hitchapp.models.Conversation;
+import com.example.hitchapp.models.Message;
 import com.example.hitchapp.models.Post;
 //import com.example.hitchapp.models.User;
 import com.example.hitchapp.models.User;
@@ -20,6 +22,8 @@ public class ParseApplication extends Application{
         ParseObject.registerSubclass(Post.class);
         ParseUser.registerSubclass(User.class);
         ParseObject.registerSubclass(Car.class);
+        ParseObject.registerSubclass(Conversation.class);
+        ParseObject.registerSubclass(Message.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured

@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.hitchapp.R;
-import com.example.hitchapp.fragments.ChatFragment;
+import com.example.hitchapp.fragments.ConversationsFragment;
 import com.example.hitchapp.fragments.ComposeFragment;
 import com.example.hitchapp.fragments.HomeFragment;
 import com.example.hitchapp.fragments.ProfileFragment;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new HomeFragment();
                         break;
                     case R.id.action_chat:
-                        fragment = new ChatFragment();
+                        fragment = new ConversationsFragment();
                         break;
                     case R.id.action_post:
                         fragment = new ComposeFragment();
