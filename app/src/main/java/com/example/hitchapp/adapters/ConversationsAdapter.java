@@ -18,6 +18,7 @@ import com.example.hitchapp.fragments.MessagesFragment;
 import com.example.hitchapp.models.Conversation;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.List;
@@ -31,7 +32,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
     public ConversationsAdapter(Context context, List<Conversation> conversations){
         this.context = context;
         this.conversations = conversations;
-        Log.i(TAG, "Constructor entered");
     }
 
 
@@ -46,7 +46,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Conversation conversation = conversations.get(position);
         holder.bind(conversation);
-        Log.i(TAG, "Bind entered");
 
     }
 
@@ -82,7 +81,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
             super(itemView);
 
             tvGroupName = itemView.findViewById(R.id.tvGroupName);
-            Log.i(TAG, "I'm in here");
 
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
@@ -90,7 +88,6 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
         }
 
         public void bind(Conversation conversation) {
-            Log.i(TAG, "im in here");
             tvGroupName.setText(conversation.getGroupName());
         }
 
@@ -107,7 +104,8 @@ public class ConversationsAdapter extends RecyclerView.Adapter<ConversationsAdap
 
                 Bundle bundle = new Bundle();
                 JSONArray messages = conversation.getMessages();
-                bundle.putParcelable("messages", Parcels.wrap(messages));
+                Log.i(TAG, String.valueOf(messages));
+                bundle.putParcelable("conversation", Parcels.wrap(conversation));
                 Fragment fragment = new MessagesFragment();
                 fragment.setArguments(bundle);
                 ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()

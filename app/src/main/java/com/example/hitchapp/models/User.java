@@ -5,6 +5,8 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.Date;
@@ -28,6 +30,26 @@ public class User extends ParseUser {
     public static final String KEY_CAR = "car";
     public static final String KEY_REVIEWS = "reviews";
     public static final String KEY_IS_DRIVER = "isDriver";
+
+    // Fields must be public for parceler
+//    String objectId;
+//    String
+//
+//    public static User fromJson(JSONObject jsonObject) {
+//        User user = new User();
+//        // Deserialize json into object fields
+//        try {
+//            user.objectId = jsonObject.getString("id");
+//            b.name = jsonObject.getString("name");
+//            b.phone = jsonObject.getString("display_phone");
+//            b.imageUrl = jsonObject.getString("image_url");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//        // Return new object
+//        return b;
+//    }
 
     public String getFirstName(){return getString(KEY_FIRST_NAME);}
 
