@@ -66,12 +66,12 @@ class ComposeFragment : Fragment() {
         editFromListener()
         editToListener()
 
-        btnPostListener()
+        btnPostRideListener()
 
     }
 
     // Listens for when the post ride button gets clicked
-    private fun btnPostListener(){
+    private fun btnPostRideListener(){
         btnPost?.setOnClickListener(View.OnClickListener {
 
             // Define variables to check if empty
@@ -107,8 +107,8 @@ class ComposeFragment : Fragment() {
             // Gets the person who's logged in
             val currentUser = ParseUser.getCurrentUser() as User
 
-            // Save post to the backend
-            savePost(from, to, price, departureDate, departureTime, currentUser)
+            // Save ride to the backend
+            saveRide(from, to, price, departureDate, departureTime, currentUser)
         })
     }
 
@@ -225,22 +225,22 @@ class ComposeFragment : Fragment() {
         }
     }
 
-    // Adds post to the database
-    private fun savePost(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
-        val post = Ride()
-        post.price = price.toInt()
-        post.from = from
-        post.to = to
-        post.driver = currentUser
-        post.departureDate = departureDate
-        post.departureTime = departureTime
+    // Adds ride to the database
+    private fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
+        val ride = Ride()
+        ride.price = price.toInt()
+        ride.from = from
+        ride.to = to
+        ride.driver = currentUser
+        ride.departureDate = departureDate
+        ride.departureTime = departureTime
 
-        post.saveInBackground { e ->
+        ride.saveInBackground { e ->
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
                 Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show()
             }
-            Log.i(TAG, "Post save was successful!")
+            Log.i(TAG, "Ride save was successful!")
 
             // Empties all edit text forms for next time
             etFrom?.setText("")
