@@ -1,6 +1,7 @@
 package com.example.hitchapp.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,9 +54,10 @@ public class MessagesFragment extends Fragment {
     private Conversation conversation;
     private LinearLayoutManager layoutManager;
     private JSONArray participants;
-    private int totalMessages = 20;
-    private final int REQUEST_CODE = 20;
+    private int num_messages = 20;
     private View view;
+    // Keep track of initial load to scroll to the bottom of the ListView
+    boolean mFirstLoad;
 
     // Views
     private EditText etMessage;
@@ -81,6 +83,8 @@ public class MessagesFragment extends Fragment {
 
         Log.i(TAG, "You are in here now");
 
+        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
+
         rvMessages = view.findViewById(R.id.rvMessages);
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -98,6 +102,7 @@ public class MessagesFragment extends Fragment {
         // Set the layout manager on the recycler view
         rvMessages.setLayoutManager(new LinearLayoutManager(getContext()));
         layoutManager = (LinearLayoutManager) rvMessages.getLayoutManager();
+        layoutManager.setReverseLayout(true);
 
         // Unwrap the user passed in via bundle, using its simple name as a key
         conversation = Parcels.unwrap(getArguments().getParcelable("conversation"));
@@ -119,6 +124,17 @@ public class MessagesFragment extends Fragment {
 
     }
 
+    // Create a handler which can run code periodically
+    static final int POLL_INTERVAL = 1000; // milliseconds
+    Handler myHandler = new android.os.Handler();
+    Runnable mRefreshMessagesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            queryMessages();
+            myHandler.postDelayed(this, POLL_INTERVAL);
+        }
+    };
+
     // Setup button event handler which posts the entered message to Parse
     void setupMessagePosting() {
         // Find the text field and button
@@ -132,6 +148,7 @@ public class MessagesFragment extends Fragment {
                 Message message = new Message();
                 message.setAuthor(currentUser);
                 message.setContent(content);
+                message.setAuthorId(currentUser.getObjectId());
                 messages.put(message);
                 message.saveInBackground(new SaveCallback() {
                     @Override
@@ -144,25 +161,10 @@ public class MessagesFragment extends Fragment {
                     }
                 });
                 etMessage.setText(null);
+                queryMessages();
             }
         });
     }
-
-    private void save(){
-        conversation.saveInBackground(new SaveCallback() {
-
-            @Override
-            public void done(ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Error while saving", e);
-                    //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
-                }
-                Log.i(TAG, "update save was successful!");
-
-            }
-        });
-    }
-
 
     // Gets posts and notifies adapter
     protected void queryMessages(){
@@ -200,9 +202,30 @@ public class MessagesFragment extends Fragment {
                 // Add posts to adapter
                 adapter.setAll(messages);
                 adapter.notifyDataSetChanged();
+                if (mFirstLoad) {
+                    rvMessages.scrollToPosition(0);
+                    mFirstLoad = false;
+                }
+
             }
         });
     }
+
+    private void save(){
+        conversation.saveInBackground(new SaveCallback() {
+
+            @Override
+            public void done(ParseException e) {
+                if(e != null){
+                    Log.e(TAG, "Error while saving", e);
+                    //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
+                }
+                Log.i(TAG, "update save was successful!");
+
+            }
+        });
+    }
+
 
     //        try {
 //            User user = participants.getJSONObject(0);

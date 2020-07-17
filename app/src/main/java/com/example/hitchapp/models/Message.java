@@ -12,6 +12,7 @@ public class Message extends ParseObject {
 
     public static final String KEY_CONTENT = "content";
     public static final String KEY_AUTHOR = "author";
+    public static final String KEY_AUTHOR_ID = "authorId";
 
     public String getContent(){return getString(KEY_CONTENT);}
 
@@ -22,4 +23,9 @@ public class Message extends ParseObject {
     public void setAuthor(ParseUser user){
         put(KEY_AUTHOR, user);
     }
+
+    public String getAuthorId(){return getString(KEY_AUTHOR_ID);}
+
+    public void setAuthorId(String authorId){put(KEY_AUTHOR_ID, authorId);}
+
 }
