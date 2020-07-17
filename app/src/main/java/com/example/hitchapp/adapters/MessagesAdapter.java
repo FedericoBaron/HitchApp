@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
 import com.example.hitchapp.models.Message;
+import com.example.hitchapp.models.Post;
 import com.example.hitchapp.models.User;
 import com.parse.ParseUser;
 
@@ -80,6 +81,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     @Override
     public int getItemCount() {
         return mMessages.size();
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        mMessages.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Message> list) {
+        mMessages.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void setAll(List<Message> list){
+        clear();
+        addAll(list);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

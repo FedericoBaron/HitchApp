@@ -1,6 +1,7 @@
 package com.example.hitchapp.models;
 
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -11,7 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Parcel(analyze={User.class})
 @ParseClassName("_User")
@@ -33,25 +36,32 @@ public class User extends ParseUser {
     public static final String KEY_REVIEWS = "reviews";
     public static final String KEY_IS_DRIVER = "isDriver";
 
-    // Fields must be public for parceler
-//    String objectId;
-//    String
-//
-//    public static User fromJson(JSONObject jsonObject) {
-//        User user = new User();
-//        // Deserialize json into object fields
-//        try {
-//            user.objectId = jsonObject.getString("id");
-//            b.name = jsonObject.getString("name");
-//            b.phone = jsonObject.getString("display_phone");
-//            b.imageUrl = jsonObject.getString("image_url");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//        // Return new object
-//        return b;
-//    }
+    //Fields must be public for parceler
+    String objectId;
+    String firstName;
+    String lastName;
+    String username;
+    ParseFile profilePicture;
+
+    // no-arg, empty constructor required for parceler
+    public User(){}
+
+    public User (JSONObject jsonObject) throws JSONException {
+        objectId = jsonObject.getString("objectId");
+        Log.i("MODEL", jsonObject.toString());
+        firstName = jsonObject.getString("firstName");
+        lastName = jsonObject.getString("lastName");
+        username = jsonObject.getString("username");
+        profilePicture = (ParseFile) jsonObject.get("profilePicture");
+    }
+
+    public static List<User> fromJsonArray(JSONArray userJsonArray) throws JSONException {
+        List<User> users = new ArrayList<>();
+        for(int i = 0; i < userJsonArray.length(); i++) {
+            users.add(new User(userJsonArray.getJSONObject(i)));
+        }
+        return users;
+    }
 
     public String getFirstName(){return getString(KEY_FIRST_NAME);}
 

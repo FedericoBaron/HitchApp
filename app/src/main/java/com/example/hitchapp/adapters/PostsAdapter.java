@@ -150,6 +150,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         fragment.setArguments(bundle);
                         ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.flContainer, fragment)
+                                .addToBackStack(TAG)
                                 .commit();
                     }
                 }
