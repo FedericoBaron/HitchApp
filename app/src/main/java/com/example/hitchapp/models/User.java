@@ -1,5 +1,7 @@
 package com.example.hitchapp.models;
 
+import android.os.Parcelable;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseUser;

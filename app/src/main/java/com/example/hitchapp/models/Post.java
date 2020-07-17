@@ -12,13 +12,12 @@ import com.parse.ParseUser;
 
 @Parcel(analyze={Post.class})
 @ParseClassName("Post")
-public class Post extends ParseObject {
+public class Post extends ParseObject{
 
     public static final String KEY_DRIVER = "driver";
     public static final String KEY_FROM = "from";
     public static final String KEY_TO = "to";
     public static final String KEY_DEPARTURE_TIME = "departureTime";
-    public static final String KEY_ARRIVAL_TIME = "arrivalTime";
     public static final String KEY_PARTICIPANTS = "participants";
     public static final String KEY_PRICE = "price";
     public static final String KEY_PRICE_PER_PARTICIPANT = "pricePerParticipant";

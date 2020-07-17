@@ -1,6 +1,8 @@
 package com.example.hitchapp.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
+import com.example.hitchapp.fragments.DriverProfileFragment;
 import com.example.hitchapp.models.Post;
 import com.example.hitchapp.models.User;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -93,6 +101,8 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
 
+            // Listens for driver profile pic clicked
+            profilePicListener();
         }
 
         public void bind(Post post) {
@@ -120,6 +130,31 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void onClick(View v) {
 
         }
+
+        // When someone's profile pic gets clicked you get taken to their profile
+        private void profilePicListener(){
+            ivProfilePicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG,"clicked on profile pic");
+                    int position = getAdapterPosition();
+                    // Make sure the position is valid i.e actually exists in the view
+                    if(position != RecyclerView.NO_POSITION) {
+                        // Get the post at the position, this won't work if the class is static
+                        Post post = posts.get(position);
+                        Bundle bundle = new Bundle();
+                        User user = (User) post.getDriver();
+                        bundle.putParcelable("user", user);
+                        Fragment fragment = new DriverProfileFragment();
+                        fragment.setArguments(bundle);
+                        ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.flContainer, fragment)
+                                .commit();
+                    }
+                }
+            });
+        }
+
     }
 
 }
