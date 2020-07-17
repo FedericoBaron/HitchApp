@@ -8,11 +8,10 @@
     android:textSize="22sp">
 
 
-
     <ImageView
         android:id="@+id/ivProfilePicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -23,7 +22,7 @@
         android:layout_below="@+id/ivProfilePicture"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:textSize="22sp"
         tools:text="Federico" />
 
@@ -33,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfilePicture"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/tvFirstName"
         android:textSize="22sp"
         tools:text="Baron" />
@@ -44,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfilePicture"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/tvLastName"
         android:textSize="22sp"
         tools:text="UCF" />

@@ -59,7 +59,7 @@ public class DriverProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_driver_profile, container, false);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class DriverProfileFragment extends Fragment {
 
     private void setProfileInfo(){
         // Sets info to match that user
-        Log.i(TAG, String.valueOf(driver));
+        Log.i(TAG, driver.getCollege());
         tvCollege.setText(driver.getCollege());
         tvFirstName.setText(driver.getFirstName());
         tvLastName.setText(driver.getLastName());
@@ -112,6 +112,13 @@ public class DriverProfileFragment extends Fragment {
         }
 
         car = driver.getCar();
+
+        // fetch car data
+        try {
+            car.fetch();
+        } catch(Exception e){
+            Log.e(TAG, "Couldn't fetch car", e);
+        }
 
         tvCarModel.setText(car.getCarModel());
         tvCarMaker.setText(car.getCarMaker());

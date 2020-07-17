@@ -144,6 +144,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         Post post = posts.get(position);
                         Bundle bundle = new Bundle();
                         User user = (User) post.getDriver();
+                        Log.i(TAG, String.valueOf(user));
                         bundle.putParcelable("user", user);
                         Fragment fragment = new DriverProfileFragment();
                         fragment.setArguments(bundle);
