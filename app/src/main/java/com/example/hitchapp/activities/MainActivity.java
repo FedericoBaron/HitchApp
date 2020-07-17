@@ -7,13 +7,16 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.hitchapp.R;
-import com.example.hitchapp.fragments.ConversationsFragment;
 import com.example.hitchapp.fragments.ComposeFragment;
 import com.example.hitchapp.fragments.HomeFragment;
+import com.example.hitchapp.fragments.MyRidesFragment;
 import com.example.hitchapp.fragments.ProfileFragment;
+import com.example.hitchapp.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,11 +41,17 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_home:
                         fragment = new HomeFragment();
                         break;
-                    case R.id.action_chat:
-                        fragment = new ConversationsFragment();
+                    case R.id.action_my_rides:
+                        fragment = new MyRidesFragment();
                         break;
                     case R.id.action_post:
-                        fragment = new ComposeFragment();
+                        User user = (User) ParseUser.getCurrentUser();
+                        if(user.getIsDriver())
+                            fragment = new ComposeFragment();
+                        else{
+                            Toast.makeText(MainActivity.this, "You need to setup a driver profile to post a ride", Toast.LENGTH_SHORT).show();
+                            fragment = new ProfileFragment();
+                        }
                         break;
                     case R.id.action_profile:
                     default:

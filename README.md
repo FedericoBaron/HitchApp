@@ -48,7 +48,7 @@ Your app incorporates an external library to add visual polish
 * Driver can submit where they're going and riders can request to join
 * User can edit profile
 * User can view somebody else's profile
-* Driver can see posts at the top of the RecyclerView
+* Driver can see rides at the top of the RecyclerView
 
 **Optional Nice-to-have Stories**
 
@@ -123,12 +123,12 @@ Post
 
 | Property            | Type            | Description                                       |
 |---------------------|-----------------|---------------------------------------------------|
-| objectId            | String          | the id of the post                                |
+| objectId            | String          | the id of the ride                                |
 | author              | Pointer to User | the user that posted it                           |
 | from                | String          | departure location                                |
 | to                  | String          | arrival location                                  |
-| createdAt           | DateTime        | date when the post was created                    |
-| updatedAt           | DateTime        | date when the post was updated                    |
+| createdAt           | DateTime        | date when the ride was created                    |
+| updatedAt           | DateTime        | date when the ride was updated                    |
 | departureTime       | DateTime        | date that the driver will depart                  |
 | arrivalTime         | DateTime        | date the the driver will arrive                   |
 | participants        | Array           | array of Users that will be on this ride          |

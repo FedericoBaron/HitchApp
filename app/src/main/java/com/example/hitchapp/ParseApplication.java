@@ -3,9 +3,8 @@ package com.example.hitchapp;
 import android.app.Application;
 
 import com.example.hitchapp.models.Car;
-import com.example.hitchapp.models.Conversation;
 import com.example.hitchapp.models.Message;
-import com.example.hitchapp.models.Post;
+import com.example.hitchapp.models.Ride;
 //import com.example.hitchapp.models.User;
 import com.example.hitchapp.models.User;
 import com.parse.Parse;
@@ -19,10 +18,10 @@ public class ParseApplication extends Application{
         super.onCreate();
 
         // Register your parse models
-        ParseObject.registerSubclass(Post.class);
+        ParseObject.registerSubclass(Ride.class);
         ParseUser.registerSubclass(User.class);
         ParseObject.registerSubclass(Car.class);
-        ParseObject.registerSubclass(Conversation.class);
+        ParseObject.registerSubclass(Ride.class);
         ParseObject.registerSubclass(Message.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.

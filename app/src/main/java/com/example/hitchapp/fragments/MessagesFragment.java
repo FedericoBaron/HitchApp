@@ -1,15 +1,12 @@
 package com.example.hitchapp.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,29 +14,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
-import com.example.hitchapp.adapters.ConversationsAdapter;
 import com.example.hitchapp.adapters.MessagesAdapter;
-import com.example.hitchapp.models.Conversation;
 import com.example.hitchapp.models.Message;
+import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
-import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class MessagesFragment extends Fragment {
@@ -51,11 +41,11 @@ public class MessagesFragment extends Fragment {
     public static List<Message> allMessages;
     public JSONArray messages;
     private User currentUser;
-    private Conversation conversation;
     private LinearLayoutManager layoutManager;
     private JSONArray participants;
     private int num_messages = 20;
     private View view;
+    private Ride ride;
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
@@ -83,7 +73,7 @@ public class MessagesFragment extends Fragment {
 
         Log.i(TAG, "You are in here now");
 
-        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
+        //myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
 
         rvMessages = view.findViewById(R.id.rvMessages);
 
@@ -104,36 +94,24 @@ public class MessagesFragment extends Fragment {
         layoutManager = (LinearLayoutManager) rvMessages.getLayoutManager();
         layoutManager.setReverseLayout(true);
 
-        // Unwrap the user passed in via bundle, using its simple name as a key
-        conversation = Parcels.unwrap(getArguments().getParcelable("conversation"));
-
-        // Gets the array of participants
-        participants = conversation.getParticipants();
-
-        messages = conversation.getMessages();
+        messages = ride.getMessages();
 
         queryMessages();
 
         setupMessagePosting();
 
-
-
-        //participants.put(currentUser.getObjectId());
-        //conversation.setParticipants(participants);
-        //save();
-
     }
 
     // Create a handler which can run code periodically
-    static final int POLL_INTERVAL = 1000; // milliseconds
-    Handler myHandler = new android.os.Handler();
-    Runnable mRefreshMessagesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            queryMessages();
-            myHandler.postDelayed(this, POLL_INTERVAL);
-        }
-    };
+//    static final int POLL_INTERVAL = 1000; // milliseconds
+//    Handler myHandler = new android.os.Handler();
+//    Runnable mRefreshMessagesRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            queryMessages();
+//            myHandler.postDelayed(this, POLL_INTERVAL);
+//        }
+//    };
 
     // Setup button event handler which posts the entered message to Parse
     void setupMessagePosting() {
@@ -153,7 +131,7 @@ public class MessagesFragment extends Fragment {
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        if(e == null) {
+                        if (e == null) {
                             Log.i(TAG, "sucess!!!!!!");
                         } else {
                             Log.e(TAG, "Failed to save message", e);
@@ -167,7 +145,7 @@ public class MessagesFragment extends Fragment {
     }
 
     // Gets posts and notifies adapter
-    protected void queryMessages(){
+    protected void queryMessages() {
 
         //pbLoading.setVisibility(ProgressBar.VISIBLE);
 
@@ -183,17 +161,17 @@ public class MessagesFragment extends Fragment {
         query.findInBackground(new FindCallback<Message>() {
             @Override
             public void done(List<Message> messages, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
 
 
-                for(Message message: messages){
+                for (Message message : messages) {
                     // fetch author data
                     try {
                         message.getAuthor().fetch();
-                    } catch(Exception ex){
+                    } catch (Exception ex) {
                         Log.e(TAG, "Couldn't fetch author", ex);
                     }
                     Log.i(TAG, "Content: " + message.getContent() + ", username: " + message.getAuthor().getUsername());
@@ -211,12 +189,12 @@ public class MessagesFragment extends Fragment {
         });
     }
 
-    private void save(){
-        conversation.saveInBackground(new SaveCallback() {
+    private void save() {
+        ride.saveInBackground(new SaveCallback() {
 
             @Override
             public void done(ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error while saving", e);
                     //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
                 }
@@ -225,40 +203,4 @@ public class MessagesFragment extends Fragment {
             }
         });
     }
-
-
-    //        try {
-//            User user = participants.getJSONObject(0);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        List<User> users = new ArrayList<>();
-//        try {
-//            users = User.fromJsonArray(participants);
-//        } catch (JSONException ex) {
-//            ex.printStackTrace();
-//        }
-//
-//        for(int i = 0; i < users.size(); i++){
-//            Log.i(TAG, users.get(i).getCollege());
-//        }
-    // Go through each participant
-//                for(int i = 0; i < participants.length(); i++){
-//                    Log.i(TAG, "looping through the participants");
-//                    try {
-//                        // gets the user at array position i
-//                        //Gson gson = new Gson();
-//                        //Log.i(TAG, participants.getJSONObject(i).toString());
-//                        //User participant = (User) gson.fromJson(participants.getJSONObject(i).toString(), User.class);
-//                        //User participant = (User) participants.getJSONObject(i);
-//                        User participant = new User(fromj.getJSONObject(i);
-//                        Log.i(TAG, participant.getObjectId());
-//
-//                    } catch (JSONException ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-
-    //Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-
 }

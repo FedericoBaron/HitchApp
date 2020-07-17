@@ -125,9 +125,4 @@ public class DriverProfileFragment extends Fragment {
         tvCarYear.setText(String.valueOf(car.getCarYear()));
         }
 
-//    @Override
-//    public void onBackPressed() {
-//        getFragmentManager().popBackStack();
-//    }
-
 }

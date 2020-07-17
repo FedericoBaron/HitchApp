@@ -3,7 +3,6 @@ import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,10 +16,9 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.example.hitchapp.R
-import com.example.hitchapp.models.Post
+import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.google.android.gms.common.api.Status
-import com.google.android.gms.common.api.Status.RESULT_CANCELED
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -229,7 +227,7 @@ class ComposeFragment : Fragment() {
 
     // Adds post to the database
     private fun savePost(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
-        val post = Post()
+        val post = Ride()
         post.price = price.toInt()
         post.from = from
         post.to = to

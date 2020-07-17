@@ -17,8 +17,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
-import com.example.hitchapp.adapters.PostsAdapter;
-import com.example.hitchapp.models.Post;
+import com.example.hitchapp.adapters.RidesAdapter;
+import com.example.hitchapp.models.Ride;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -30,15 +30,15 @@ public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
 
-    private RecyclerView rvPosts;
-    public static PostsAdapter adapter;
-    public static List<Post> allPosts;
+    private RecyclerView rvRides;
+    public static RidesAdapter adapter;
+    public static List<Ride> allRides;
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
     private LinearLayoutManager layoutManager;
-    private int totalPosts = 20;
+    private int totalRides = 20;
     private ProgressBar pbLoading;
-    protected static final int NEW_POSTS = 5;
+    protected static final int NEW_RIDES = 5;
     private final int REQUEST_CODE = 20;
 
     public HomeFragment() {
@@ -56,23 +56,23 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rvPosts = view.findViewById(R.id.rvPosts);
+        rvRides = view.findViewById(R.id.rvRides);
         pbLoading = view.findViewById(R.id.pbLoading);
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        rvPosts.addItemDecoration(itemDecoration);
+        rvRides.addItemDecoration(itemDecoration);
 
         // Create layout for one row in the list
         // Create the adapter
-        allPosts = new ArrayList<>();
-        adapter = new PostsAdapter(getContext(), allPosts);
+        allRides = new ArrayList<>();
+        adapter = new RidesAdapter(getContext(), allRides);
 
         // Set the adapter on the recycler view
-        rvPosts.setAdapter(adapter);
+        rvRides.setAdapter(adapter);
 
         // Set the layout manager on the recycler view
-        rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
-        layoutManager = (LinearLayoutManager) rvPosts.getLayoutManager();
+        rvRides.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutManager = (LinearLayoutManager) rvRides.getLayoutManager();
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
@@ -82,8 +82,8 @@ public class HomeFragment extends Fragment {
 
         createScrollListener();
 
-        // Gets all the posts for the timeline
-        queryPosts();
+        // Gets all the rides for the timeline
+        queryRides();
     }
 
     private void createScrollListener() {
@@ -96,38 +96,38 @@ public class HomeFragment extends Fragment {
         };
 
         // Adds the scroll listener to the RV
-        rvPosts.addOnScrollListener(scrollListener);
+        rvRides.addOnScrollListener(scrollListener);
     }
 
-    // Loads more posts when we reach the bottom of TL
+    // Loads more rides when we reach the bottom of TL
     protected void loadMoreData() {
         Log.i(TAG, "Loading more data");
-        totalPosts = totalPosts + NEW_POSTS;
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_DRIVER);
+        totalRides = totalRides + NEW_RIDES;
+        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
+        query.include(Ride.KEY_DRIVER);
 
         // Set a limit
-        query.setLimit(totalPosts);
+        query.setLimit(totalRides);
 
         // Sort by created at
-        query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
+        query.addDescendingOrder(Ride.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Ride>() {
             @Override
-            public void done(List<Post> posts, ParseException e) {
+            public void done(List<Ride> rides, ParseException e) {
                 if(e != null){
-                    Log.e(TAG, "Issue with getting posts", e);
+                    Log.e(TAG, "Issue with getting rides", e);
                     return;
                 }
-                for(Post post: posts){
-                    //Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                for(Ride ride : rides){
+                    //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
                 }
 
                 //Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
 
-                // Add posts to adapter
-                adapter.setAll(posts);
-                adapter.notifyItemRangeInserted(posts.size()-5, posts.size());
+                // Add rides to adapter
+                adapter.setAll(rides);
+                adapter.notifyItemRangeInserted(rides.size()-5, rides.size());
             }
         });
     }
@@ -141,7 +141,7 @@ public class HomeFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                queryPosts();
+                queryRides();
             }
         });
         // Configure the refreshing colors
@@ -153,28 +153,28 @@ public class HomeFragment extends Fragment {
     }
 
 
-    // Gets posts and notifies adapter
-    protected void queryPosts(){
+    // Gets rides and notifies adapter
+    protected void queryRides(){
 
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        query.include(Post.KEY_DRIVER);
+        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
+        query.include(Ride.KEY_DRIVER);
 
         // Set a limit
-        query.setLimit(totalPosts);
+        query.setLimit(totalRides);
 
         // Sort by created at
-        query.addDescendingOrder(Post.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Post>() {
+        query.addDescendingOrder(Ride.KEY_CREATED_AT);
+        query.findInBackground(new FindCallback<Ride>() {
             @Override
-            public void done(List<Post> posts, ParseException e) {
+            public void done(List<Ride> rides, ParseException e) {
                 if(e != null){
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
-                for(Post post: posts){
-                    //Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                for(Ride ride : rides){
+                    //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
                 }
                 // run a background job and once complete
                 pbLoading.setVisibility(ProgressBar.INVISIBLE);
@@ -182,8 +182,8 @@ public class HomeFragment extends Fragment {
                 //Now we call setRefreshing(false) to signal refresh has finished
                 swipeContainer.setRefreshing(false);
 
-                // Add posts to adapter
-                adapter.setAll(posts);
+                // Add rides to adapter
+                adapter.setAll(rides);
                 adapter.notifyDataSetChanged();
             }
         });

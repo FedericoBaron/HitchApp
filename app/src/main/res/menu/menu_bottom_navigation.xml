@@ -9,9 +9,9 @@
         app:showAsAction="always"
         />
     <item
-        android:id="@+id/action_chat"
-        android:icon="@drawable/ufi_comment"
-        android:title="Chat"
+        android:id="@+id/action_my_rides"
+        android:icon="@drawable/instagram_user_filled_24"
+        android:title="My Rides"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_post"

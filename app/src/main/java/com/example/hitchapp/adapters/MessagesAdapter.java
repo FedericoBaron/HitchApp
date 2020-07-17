@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
 import com.example.hitchapp.models.Message;
-import com.example.hitchapp.models.Post;
 import com.example.hitchapp.models.User;
 import com.parse.ParseUser;
 
