@@ -46,23 +46,6 @@ public class User extends ParseUser {
     // no-arg, empty constructor required for parceler
     public User(){}
 
-    public User (JSONObject jsonObject) throws JSONException {
-        objectId = jsonObject.getString("objectId");
-        Log.i("MODEL", jsonObject.toString());
-        firstName = jsonObject.getString("firstName");
-        lastName = jsonObject.getString("lastName");
-        username = jsonObject.getString("username");
-        profilePicture = (ParseFile) jsonObject.get("profilePicture");
-    }
-
-    public static List<User> fromJsonArray(JSONArray userJsonArray) throws JSONException {
-        List<User> users = new ArrayList<>();
-        for(int i = 0; i < userJsonArray.length(); i++) {
-            users.add(new User(userJsonArray.getJSONObject(i)));
-        }
-        return users;
-    }
-
     public String getFirstName(){return getString(KEY_FIRST_NAME);}
 
     public void setFirstName(String firstName){put(KEY_FIRST_NAME, firstName);}

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.hitchapp.R;
 import com.example.hitchapp.fragments.DriverProfileFragment;
 import com.example.hitchapp.models.Ride;
@@ -29,6 +31,7 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -182,32 +185,48 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                     // Make sure the position is valid i.e actually exists in the view
                     if (position != RecyclerView.NO_POSITION) {
                         // Get the ride at the position, this won't work if the class is static
-                        final Ride ride = rides.get(position);
-                        User user = null;
+                        Ride ride = rides.get(position);
+                        User currentUser = (User) ParseUser.getCurrentUser();
 
-                        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-                        query.whereEqualTo("driver", ParseUser.getCurrentUser());
-                        query.include("participants");
-
-                        query.findInBackground(new FindCallback<Ride>() {
-                            public void done(final List<Ride> rideList, ParseException e) {
-
-                                if (e == null) {
-                                    if (rideList != null && rideList.size() > 0) {
-                                        List<User> participantList = ride.getList("participants");
-                                        try {
-                                            participantList.get(0).fetch();
-                                        } catch (ParseException ex) {
-                                            ex.printStackTrace();
-                                        }
-                                        Log.i(TAG, participantList.get(0).getFirstName());
-                                    }
-                                } else {
-
+                        List<User> participantList = ride.getList("participants");
+                        Log.i(TAG, String.valueOf(participantList.size()));
+                        for(int i = 0; i < participantList.size(); i++) {
+                            Log.i(TAG, "welcome part");
+                            try {
+                                participantList.get(i).fetch();
+                                Log.i(TAG, participantList.get(i).getObjectId());
+                                if(currentUser.getObjectId().equals(participantList.get(i).getObjectId())){
+                                    Toast.makeText(context, "You are already a participant", Toast.LENGTH_SHORT).show();
+                                    Log.i(TAG, "WELCOME HOME");
+                                    return;
                                 }
+                            } catch (ParseException e) {
+                                Log.e(TAG, "exception fetching participant", e);
                             }
-                        });
+                        }
+
+                        // Saves the current user to the request list
+                        JSONArray requests = ride.getRequests();
+                        if(requests == null){
+                        }
+                        requests.put(currentUser);
+                        save(ride);
                     }
+                }
+            });
+        }
+
+        private void save(Ride ride) {
+            ride.saveInBackground(new SaveCallback() {
+
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving", e);
+                        //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.i(TAG, "update save was successful!");
+                    Toast.makeText(context, "You have requested to join this ride", Toast.LENGTH_SHORT).show();
                 }
             });
         }

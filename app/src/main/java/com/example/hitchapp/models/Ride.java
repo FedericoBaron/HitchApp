@@ -21,6 +21,7 @@ public class Ride extends ParseObject{
     public static final String KEY_SEATS_AVAILABLE = "seatsAvailable";
     public static final String KEY_DEPARTURE_DATE = "departureDate";
     public static final String KEY_MESSAGES = "messages";
+    public static final String KEY_REQUESTS = "requests";
 
 
     public ParseUser getDriver(){ return getParseUser(KEY_DRIVER); }
@@ -32,6 +33,10 @@ public class Ride extends ParseObject{
     public JSONArray getParticipants(){return getJSONArray(KEY_PARTICIPANTS);}
 
     public void setParticipants(JSONArray array){put(KEY_PARTICIPANTS,array);}
+
+    public JSONArray getRequests(){return getJSONArray(KEY_PARTICIPANTS);}
+
+    public void setRequests(JSONArray array){put(KEY_PARTICIPANTS,array);}
 
     public String getFrom(){return getString(KEY_FROM);}
 
