@@ -248,14 +248,14 @@ class ProfileFragment : Fragment() {
             // fetch car data
             try {
                 car?.fetch<ParseObject>()
+                etCarCapacity?.setText(car?.carCapacity.toString())
+                etCarModel?.setText(car?.carModel)
+                etCarMaker?.setText(car?.carMaker)
+                etCarYear?.setText(car?.carYear.toString())
+                etLicensePlate?.setText(car?.licensePlate)
             } catch (e: Exception) {
                 Log.e(TAG, "Couldn't fetch car", e)
             }
-            etCarCapacity?.setText(car?.carCapacity.toString())
-            etCarModel?.setText(car?.carModel)
-            etCarMaker?.setText(car?.carMaker)
-            etCarYear?.setText(car?.carYear.toString())
-            etLicensePlate?.setText(car?.licensePlate)
         } else {
             setGoneDriverProfile()
             switchDriver?.isChecked = false

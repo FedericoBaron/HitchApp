@@ -26,6 +26,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.parse.ParseUser
+import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -234,6 +235,12 @@ class ComposeFragment : Fragment() {
         ride.driver = currentUser
         ride.departureDate = departureDate
         ride.departureTime = departureTime
+        if(ride.participants == null){
+            ride.participants = JSONArray()
+        }
+        var participants = ride.participants
+        participants.put(currentUser);
+        ride.participants = participants
 
         ride.saveInBackground { e ->
             if (e != null) {

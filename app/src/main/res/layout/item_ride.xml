@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/postCard"
+    android:id="@+id/rideCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -148,9 +148,19 @@
         android:textStyle="bold"
         tools:text="3" />
 
+
     <ImageView
         android:id="@+id/ivProfilePicure"
         android:layout_width="35dp"
         android:layout_height="35dp"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/btnRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPrice"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="Request to join" />
 </RelativeLayout>
