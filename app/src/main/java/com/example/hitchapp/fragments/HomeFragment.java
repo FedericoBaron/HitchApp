@@ -35,9 +35,9 @@ public class HomeFragment extends Fragment {
     public static List<Ride> allRides;
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
-    private LinearLayoutManager layoutManager;
+    protected LinearLayoutManager layoutManager;
     private int totalRides = 20;
-    private ProgressBar pbLoading;
+    protected ProgressBar pbLoading;
     protected static final int NEW_RIDES = 5;
     private final int REQUEST_CODE = 20;
 
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         queryRides();
     }
 
-    private void createScrollListener() {
+    protected void createScrollListener() {
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void refreshListener(){
+    protected void refreshListener(){
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -94,7 +95,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
         private TextView tvDepartureTime;
         private TextView tvDepartureDate;
         private TextView tvPrice;
-        private Button btnRequest;
+        protected Button btnRequest;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -184,18 +185,6 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                         final Ride ride = rides.get(position);
                         User user = null;
 
-//                        // Go through all participants and see if currentUser is already inside participants
-//                        for(int i = 0; i < ride.getParticipants().length(); i++){
-//                            ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-//                            query.include("participants");
-//                            query.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
-//                            try {
-//                                user = query.getFirst();
-//                            } catch (ParseException e) {
-//                                // TODO Auto-generated catch block
-//                                e.printStackTrace();
-//                            }
-//                        }
                         ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
                         query.whereEqualTo("driver", ParseUser.getCurrentUser());
                         query.include("participants");
