@@ -17,10 +17,12 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.hitchapp.R;
 import com.example.hitchapp.fragments.DriverProfileFragment;
+import com.example.hitchapp.models.Request;
 import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
 import com.google.gson.Gson;
@@ -189,8 +191,8 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                     // Make sure the position is valid i.e actually exists in the view
                     if (position != RecyclerView.NO_POSITION) {
                         // Get the ride at the position, this won't work if the class is static
-                        Ride ride = rides.get(position);
-                        User currentUser = (User) ParseUser.getCurrentUser();
+                        final Ride ride = rides.get(position);
+                        final User currentUser = (User) ParseUser.getCurrentUser();
 
                         List<User> participantList = ride.getList("participants");
                         Log.i(TAG, String.valueOf(participantList.size()));
@@ -209,37 +211,34 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                             }
                         }
 
-                        // Saves the current user to the request list
-                        List<User> requestList = ride.getList("requests");
-                        JSONArray requests = (JSONArray) requestList;
-                        if(requestList == null){
-                            requests = new JSONArray();
-                        }
-                        else{
+                        ParseQuery<Request> query = ParseQuery.getQuery(Request.class);
+                        query.whereEqualTo("ride", ride);
+                        query.whereEqualTo("requester", currentUser);
+                        query.include("ride");
+                        query.include("ride.driver");
 
-                            Log.i(TAG, String.valueOf(requestList.size()));
-                            for(int i = 0; i < requestList.size(); i++){
-                                try{
-                                    requestList.get(i).fetch();
-                                    if(currentUser.getObjectId().equals(participantList.get(i).getObjectId())){
-                                        Toast.makeText(context, "You already requested to join this ride", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                } catch (ParseException e){
-                                    Log.e(TAG, "exception fetching requests");
-                                }
+                        // Finds the posts asynchronously
+                        query.getFirstInBackground(new GetCallback<Request>() {
+                            @Override
+                            public void done(Request object, ParseException e) {
+                                  if(object == null){
+                                      Request request = new Request();
+                                      request.setRequester(currentUser);
+                                      request.setRide(ride);
+                                      save(request);
+                                  }
+                                  else{
+                                      Toast.makeText(context, "You already requested to join this ride", Toast.LENGTH_SHORT).show();
+                                  }
                             }
-                        }
-                        requests.put(currentUser);
-                        ride.setRequests(requests);
-                        save(ride);
+                        });
                     }
                 }
             });
         }
 
-        private void save(Ride ride) {
-            ride.saveInBackground(new SaveCallback() {
+        private void save(Request request) {
+            request.saveInBackground(new SaveCallback() {
 
                 @Override
                 public void done(ParseException e) {
