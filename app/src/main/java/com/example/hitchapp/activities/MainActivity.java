@@ -15,7 +15,7 @@ import com.example.hitchapp.R;
 import com.example.hitchapp.fragments.ComposeFragment;
 import com.example.hitchapp.fragments.HomeFragment;
 import com.example.hitchapp.fragments.MyRidesFragment;
-import com.example.hitchapp.fragments.ProfileFragment;
+import com.example.hitchapp.fragments.MyProfileFragment;
 import com.example.hitchapp.fragments.RequestsFragment;
 import com.example.hitchapp.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
                             fragment = new ComposeFragment();
                         else{
                             Toast.makeText(MainActivity.this, "You need to setup a driver profile to post a ride", Toast.LENGTH_SHORT).show();
-                            fragment = new ProfileFragment();
+                            fragment = new MyProfileFragment();
                         }
                         break;
                     case R.id.action_profile:
                     default:
-                        fragment = new ProfileFragment();
+                        fragment = new MyProfileFragment();
                         break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new RequestsFragment();
                 break;
             default:
-                fragment = new HomeFragment();
+                fragment = new RequestsFragment();
                 break;
         }
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();

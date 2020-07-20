@@ -14,31 +14,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
-import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.example.hitchapp.R;
-import com.example.hitchapp.fragments.DriverProfileFragment;
+import com.example.hitchapp.fragments.ProfileFragment;
 import com.example.hitchapp.models.Request;
 import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
-import com.google.gson.Gson;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> {
@@ -171,7 +161,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                         User user = (User) ride.getDriver();
                         Log.i(TAG, String.valueOf(user));
                         bundle.putParcelable("user", user);
-                        Fragment fragment = new DriverProfileFragment();
+                        Fragment fragment = new ProfileFragment();
                         fragment.setArguments(bundle);
                         ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.flContainer, fragment)
@@ -215,7 +205,6 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                         query.whereEqualTo("ride", ride);
                         query.whereEqualTo("requester", currentUser);
                         query.include("ride");
-                        query.include("ride.driver");
 
                         // Finds the posts asynchronously
                         query.getFirstInBackground(new GetCallback<Request>() {

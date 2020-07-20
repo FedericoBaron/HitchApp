@@ -18,10 +18,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
 import com.example.hitchapp.adapters.RequestsAdapter;
-import com.example.hitchapp.models.Ride;
+import com.example.hitchapp.models.Request;
+import com.example.hitchapp.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +34,12 @@ public class RequestsFragment extends Fragment {
 
     private RecyclerView rvRequests;
     public static RequestsAdapter adapter;
-    public static List<Ride> allRides;
+    public static List<Request> allRequests;
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
     protected LinearLayoutManager layoutManager;
     private int totalRequests = 20;
+    private User currentUser;
     protected ProgressBar pbLoading;
     protected static final int NEW_REQUESTS = 5;
     private final int REQUEST_CODE = 20;
@@ -64,8 +67,11 @@ public class RequestsFragment extends Fragment {
 
         // Create layout for one row in the list
         // Create the adapter
-        allRides = new ArrayList<>();
-        adapter = new RequestsAdapter(getContext(), allRides);
+        allRequests = new ArrayList<>();
+        adapter = new RequestsAdapter(getContext(), allRequests);
+
+        // Current user
+        User currentUser = (User) ParseUser.getCurrentUser();
 
         // Set the adapter on the recycler view
         rvRequests.setAdapter(adapter);
@@ -83,7 +89,7 @@ public class RequestsFragment extends Fragment {
         createScrollListener();
 
         // Gets all the rides for the timeline
-        queryRides();
+        queryRequests();
     }
 
     protected void createScrollListener() {
@@ -103,22 +109,24 @@ public class RequestsFragment extends Fragment {
     protected void loadMoreData() {
         Log.i(TAG, "Loading more data");
         totalRequests = totalRequests + NEW_REQUESTS;
-        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-        query.include(Ride.KEY_DRIVER);
+        ParseQuery<Request> query = ParseQuery.getQuery(Request.class);
+        query.include("ride");
+        query.include("ride.driver");
 
         // Set a limit
         query.setLimit(totalRequests);
 
         // Sort by created at
-        query.addDescendingOrder(Ride.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Ride>() {
+        query.addDescendingOrder(Request.KEY_CREATED_AT);
+
+        query.findInBackground(new FindCallback<Request>() {
             @Override
-            public void done(List<Ride> rides, ParseException e) {
+            public void done(List<Request> requests, ParseException e) {
                 if(e != null){
                     Log.e(TAG, "Issue with getting rides", e);
                     return;
                 }
-                for(Ride ride : rides){
+                for(Request request : requests){
                     //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
                 }
 
@@ -126,8 +134,8 @@ public class RequestsFragment extends Fragment {
                 swipeContainer.setRefreshing(false);
 
                 // Add rides to adapter
-                adapter.setAll(rides);
-                adapter.notifyItemRangeInserted(rides.size()-5, rides.size());
+                adapter.setAll(requests);
+                adapter.notifyItemRangeInserted(requests.size()-5, requests.size());
             }
         });
     }
@@ -141,7 +149,7 @@ public class RequestsFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                queryRides();
+                queryRequests();
             }
         });
         // Configure the refreshing colors
@@ -154,26 +162,29 @@ public class RequestsFragment extends Fragment {
 
 
     // Gets rides and notifies adapter
-    protected void queryRides(){
+    protected void queryRequests(){
 
         pbLoading.setVisibility(ProgressBar.VISIBLE);
 
-        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-        query.include(Ride.KEY_DRIVER);
+        ParseQuery<Request> query = ParseQuery.getQuery(Request.class);
+        query.include("ride");
+        query.include("ride.driver");
+        query.whereEqualTo("ride.driver", currentUser);
 
         // Set a limit
         query.setLimit(totalRequests);
 
         // Sort by created at
-        query.addDescendingOrder(Ride.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Ride>() {
+        query.addDescendingOrder(Request.KEY_CREATED_AT);
+
+        query.findInBackground(new FindCallback<Request>() {
             @Override
-            public void done(List<Ride> rides, ParseException e) {
+            public void done(List<Request> requests, ParseException e) {
                 if(e != null){
-                    Log.e(TAG, "Issue with getting posts", e);
+                    Log.e(TAG, "Issue with getting requests", e);
                     return;
                 }
-                for(Ride ride : rides){
+                for(Request request : requests){
                     //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
                 }
                 // run a background job and once complete
@@ -183,7 +194,7 @@ public class RequestsFragment extends Fragment {
                 swipeContainer.setRefreshing(false);
 
                 // Add rides to adapter
-                adapter.setAll(rides);
+                adapter.setAll(requests);
                 adapter.notifyDataSetChanged();
             }
         });
