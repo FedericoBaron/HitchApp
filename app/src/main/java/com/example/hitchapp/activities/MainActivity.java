@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new RequestsFragment();
                 break;
             default:
-                fragment = new RequestsFragment();
+                fragment = new HomeFragment();
                 break;
         }
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
