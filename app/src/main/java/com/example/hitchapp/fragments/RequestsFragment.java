@@ -19,6 +19,7 @@ import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
 import com.example.hitchapp.adapters.RequestsAdapter;
 import com.example.hitchapp.models.Request;
+import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class RequestsFragment extends Fragment {
 
-    private static final String TAG = "HomeFragment";
+    private static final String TAG = "RequestsFragment";
 
     private RecyclerView rvRequests;
     public static RequestsAdapter adapter;
@@ -71,7 +72,7 @@ public class RequestsFragment extends Fragment {
         adapter = new RequestsAdapter(getContext(), allRequests);
 
         // Current user
-        User currentUser = (User) ParseUser.getCurrentUser();
+        currentUser = (User) ParseUser.getCurrentUser();
 
         // Set the adapter on the recycler view
         rvRequests.setAdapter(adapter);
@@ -110,8 +111,9 @@ public class RequestsFragment extends Fragment {
         Log.i(TAG, "Loading more data");
         totalRequests = totalRequests + NEW_REQUESTS;
         ParseQuery<Request> query = ParseQuery.getQuery(Request.class);
-        query.include("ride");
-        query.include("ride.driver");
+        query.include("driver");
+        query.whereEqualTo("driver", currentUser);
+        Log.i(TAG, "Here are the requests");
 
         // Set a limit
         query.setLimit(totalRequests);
@@ -127,6 +129,7 @@ public class RequestsFragment extends Fragment {
                     return;
                 }
                 for(Request request : requests){
+                    //Log.i(TAG, "OBJECT ID " + request.getRide().getDriver().getObjectId());
                     //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
                 }
 
@@ -165,11 +168,13 @@ public class RequestsFragment extends Fragment {
     protected void queryRequests(){
 
         pbLoading.setVisibility(ProgressBar.VISIBLE);
-
+        Log.i(TAG, "Here are the requests");
         ParseQuery<Request> query = ParseQuery.getQuery(Request.class);
-        query.include("ride");
-        query.include("ride.driver");
-        query.whereEqualTo("ride.driver", currentUser);
+        query.include("driver");
+        query.whereEqualTo("driver", currentUser);
+        //query.whereEqualTo("ride.driver.objectId",  User.createWithoutData(User.class, currentUser.getObjectId()));
+        Log.i(TAG,currentUser.getObjectId());
+
 
         // Set a limit
         query.setLimit(totalRequests);
@@ -186,6 +191,7 @@ public class RequestsFragment extends Fragment {
                 }
                 for(Request request : requests){
                     //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
+                    Log.i(TAG, "request" + request.getRequester());
                 }
                 // run a background job and once complete
                 pbLoading.setVisibility(ProgressBar.INVISIBLE);

@@ -214,6 +214,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                                       Request request = new Request();
                                       request.setRequester(currentUser);
                                       request.setRide(ride);
+                                      request.setDriver(ride.getDriver());
                                       save(request);
                                   }
                                   else{
