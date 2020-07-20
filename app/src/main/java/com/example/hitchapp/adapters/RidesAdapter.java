@@ -134,6 +134,11 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             tvDepartureTime.setText(ride.getDepartureTime());
             tvDepartureDate.setText(ride.getDepartureDate());
             tvPrice.setText(String.valueOf(ride.getPrice()));
+            if(ParseUser.getCurrentUser().getObjectId().equals(ride.getDriver().getObjectId()))
+                btnRequest.setVisibility(View.GONE);
+            else{
+                btnRequest.setVisibility(View.VISIBLE);
+            }
 
             ParseFile profile = user.getProfilePicture();
             if (profile != null) {
@@ -155,7 +160,6 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "clicked on profile pic");
                     int position = getAdapterPosition();
                     // Make sure the position is valid i.e actually exists in the view
                     if (position != RecyclerView.NO_POSITION) {
