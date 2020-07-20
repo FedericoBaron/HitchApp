@@ -23,6 +23,9 @@ import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.SaveCallback;
+
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -108,6 +111,12 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             // Listens for driver profile pic clicked
             profilePicListener();
 
+            // Listens when accept is clicked
+            btnAcceptListener();
+
+            // Listens when decline is clicked
+            btnDeclineListener();
+
         }
 
         public void bind(Request request) {
@@ -142,6 +151,73 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         @Override
         public void onClick(View v) {
 
+        }
+
+        private void btnAcceptListener(){
+            btnAccept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    // Make sure the position is valid i.e actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+                        Request request = requests.get(position);
+                        Ride ride = request.getRide();
+                        JSONArray participants = ride.getParticipants();
+                        participants.put(request.getRequester());
+                        ride.setParticipants(participants);
+                        requests.remove(request);
+                        request.deleteInBackground();
+                        save(ride);
+                        notifyItemRemoved(position);
+                    }
+                }
+            });
+        }
+
+        private void btnDeclineListener(){
+            btnDecline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    // Make sure the position is valid i.e actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+                        Request request = requests.get(position);
+                        requests.remove(request);
+                        request.deleteInBackground();
+                        notifyItemRemoved(position);
+                    }
+                }
+            });
+        }
+
+        private void save(Ride ride) {
+            ride.saveInBackground(new SaveCallback() {
+
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving", e);
+                        //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.i(TAG, "update save was successful!");
+
+                }
+            });
+        }
+
+        private void save(Request request) {
+            request.saveInBackground(new SaveCallback() {
+
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving", e);
+                        //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.i(TAG, "update save was successful!");
+
+                }
+            });
         }
 
         // When someone's profile pic gets clicked you get taken to their profile
