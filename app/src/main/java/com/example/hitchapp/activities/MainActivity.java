@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import com.example.hitchapp.fragments.ComposeFragment;
 import com.example.hitchapp.fragments.HomeFragment;
 import com.example.hitchapp.fragments.MyRidesFragment;
 import com.example.hitchapp.fragments.ProfileFragment;
+import com.example.hitchapp.fragments.RequestsFragment;
 import com.example.hitchapp.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
+        getSupportActionBar().setElevation(0);
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -71,5 +74,29 @@ public class MainActivity extends AppCompatActivity {
         // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_home);
 
+    }
+
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        Fragment fragment;
+        switch (item.getItemId()) {
+            case R.id.miRequests:
+                fragment = new RequestsFragment();
+                break;
+            default:
+                fragment = new HomeFragment();
+                break;
+        }
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
+        return true;
     }
 }
