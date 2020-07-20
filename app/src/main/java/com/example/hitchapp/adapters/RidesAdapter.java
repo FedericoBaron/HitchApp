@@ -201,15 +201,33 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                                     return;
                                 }
                             } catch (ParseException e) {
-                                Log.e(TAG, "exception fetching participant", e);
+                                Log.e(TAG, "exception fetching participants", e);
                             }
                         }
 
                         // Saves the current user to the request list
-                        JSONArray requests = ride.getRequests();
-                        if(requests == null){
+                        List<User> requestList = ride.getList("requests");
+                        JSONArray requests = (JSONArray) requestList;
+                        if(requestList == null){
+                            requests = new JSONArray();
+                        }
+                        else{
+
+                            Log.i(TAG, String.valueOf(requestList.size()));
+                            for(int i = 0; i < requestList.size(); i++){
+                                try{
+                                    requestList.get(i).fetch();
+                                    if(currentUser.getObjectId().equals(participantList.get(i).getObjectId())){
+                                        Toast.makeText(context, "You already requested to join this ride", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                } catch (ParseException e){
+                                    Log.e(TAG, "exception fetching requests");
+                                }
+                            }
                         }
                         requests.put(currentUser);
+                        ride.setRequests(requests);
                         save(ride);
                     }
                 }

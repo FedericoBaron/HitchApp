@@ -34,9 +34,9 @@ public class Ride extends ParseObject{
 
     public void setParticipants(JSONArray array){put(KEY_PARTICIPANTS,array);}
 
-    public JSONArray getRequests(){return getJSONArray(KEY_PARTICIPANTS);}
+    public JSONArray getRequests(){return getJSONArray(KEY_REQUESTS);}
 
-    public void setRequests(JSONArray array){put(KEY_PARTICIPANTS,array);}
+    public void setRequests(JSONArray array){put(KEY_REQUESTS,array);}
 
     public String getFrom(){return getString(KEY_FROM);}
 
