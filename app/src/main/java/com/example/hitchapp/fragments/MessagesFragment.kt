@@ -107,7 +107,7 @@ class MessagesFragment : Fragment() {
             message.author = currentUser
             message.content = content
             message.authorId = currentUser?.objectId
-            messages?.put(message)
+            messages?.put(0, message)
             ride?.messages = messages
             message.saveInBackground();
             save()

@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
 import com.example.hitchapp.models.Message;
 import com.example.hitchapp.models.User;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.math.BigInteger;
@@ -59,7 +61,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
 
         final ImageView profileView = isMe ? holder.imageMe : holder.imageOther;
-        Glide.with(mContext).load(getProfileUrl(message.getAuthor().getObjectId())).into(profileView);
+        ParseFile profile = null;
+        try {
+            User userPic = (User) message.getAuthor().fetch();
+            profile = userPic.getProfilePicture();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (profile != null) {
+            Glide.with(mContext)
+                    .load(profile.getUrl())
+                    .fitCenter()
+                    .circleCrop()
+                    .into(profileView);
+        }
+        //Glide.with(mContext).load(getProfileUrl(message.getAuthor().getObjectId())).into(profileView);
         holder.body.setText(message.getContent());
     }
 
