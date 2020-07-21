@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
         //User user = new User();
 
         // Set core properties
-        user.setUsername(username);
+        user.setUsername(username.toLowerCase());
         user.setPassword(password);
         user.setEmail(email);
         user.setFirstName(firstName);
