@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,12 +20,13 @@ import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
-import com.parse.FindCallback
 import com.parse.ParseException
-import com.parse.ParseQuery
 import com.parse.ParseUser
 import org.json.JSONArray
+import java.lang.reflect.GenericArrayType
+import java.lang.reflect.Type
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MessagesFragment : Fragment() {
     private var rvMessages: RecyclerView? = null
@@ -107,7 +107,7 @@ class MessagesFragment : Fragment() {
             message.author = currentUser
             message.content = content
             message.authorId = currentUser?.objectId
-            messages?.put(0, message)
+            messages?.put(message)
             ride?.messages = messages
             message.saveInBackground();
             save()
@@ -118,10 +118,11 @@ class MessagesFragment : Fragment() {
 
     // Gets posts and notifies adapter
     protected fun queryMessages() {
+
         val messagesList = ride?.getList<Message>("messages")
         for (i in messagesList?.indices!!) {
             try {
-                messagesList[i]?.fetch<Message>()
+                messagesList[i]?.fetchIfNeeded<Message>()
             } catch (e: ParseException) {
                 Log.e(TAG, "exception fetching messages", e)
             }
