@@ -13,10 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hitchapp.R;
+import com.example.hitchapp.fragments.MessagesFragment;
 import com.example.hitchapp.fragments.ProfileFragment;
 import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
@@ -83,7 +85,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.ViewHold
         private TextView tvDepartureTime;
         private TextView tvDepartureDate;
         private TextView tvPrice;
-        protected Button btnRequest;
+        private Button btnChat;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +98,7 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.ViewHold
             tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicure);
+            btnChat = itemView.findViewById(R.id.btnChat);
 
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
@@ -103,6 +106,8 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.ViewHold
             // Listens for driver profile pic clicked
             profilePicListener();
 
+            // Chat button listener
+            btnChatClickListener();
         }
 
         public void bind(Ride ride) {
@@ -129,6 +134,29 @@ public class MyRidesAdapter extends RecyclerView.Adapter<MyRidesAdapter.ViewHold
         @Override
         public void onClick(View v) {
 
+        }
+
+        private void btnChatClickListener() {
+            btnChat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    // Make sure the position is valid i.e actually exists in the view
+                    if (position != RecyclerView.NO_POSITION) {
+                        // Get the ride at the position, this won't work if the class is static
+                        Ride ride = rides.get(position);
+                        Bundle bundle = new Bundle();
+                        Log.i(TAG, String.valueOf(ride));
+                        bundle.putParcelable("ride", ride);
+                        Fragment fragment = new MessagesFragment();
+                        fragment.setArguments(bundle);
+                        ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.flContainer, fragment)
+                                .addToBackStack(TAG)
+                                .commit();
+                    }
+                }
+            });
         }
 
         // When someone's profile pic gets clicked you get taken to their profile

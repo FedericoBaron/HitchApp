@@ -205,21 +205,6 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             });
         }
 
-        private void save(Request request) {
-            request.saveInBackground(new SaveCallback() {
-
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "Error while saving", e);
-                        //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
-                    }
-                    Log.i(TAG, "update save was successful!");
-
-                }
-            });
-        }
-
         // When someone's profile pic gets clicked you get taken to their profile
         private void profilePicListener() {
             ivProfilePicture.setOnClickListener(new View.OnClickListener() {
