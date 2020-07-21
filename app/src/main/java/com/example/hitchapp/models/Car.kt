@@ -22,19 +22,19 @@ class Car : ParseObject() {
     var carModel: String?
         get() = getString(KEY_CAR_MODEL)
         set(carModel) {
-            put(KEY_CAR_MODEL, carModel!!)
+            carModel?.let { put(KEY_CAR_MODEL, it) }
         }
 
     var licensePlate: String?
         get() = getString(KEY_LICENSE_PLATE)
         set(licensePlate) {
-            put(KEY_LICENSE_PLATE, licensePlate!!)
+            licensePlate?.let { put(KEY_LICENSE_PLATE, it) }
         }
 
     var carMaker: String?
         get() = getString(KEY_CAR_MAKER)
         set(carMaker) {
-            put(KEY_CAR_MAKER, carMaker!!)
+            carMaker?.let { put(KEY_CAR_MAKER, it) }
         }
 
     companion object {

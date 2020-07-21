@@ -125,7 +125,7 @@ class MyProfileFragment : Fragment() {
             currentUser?.firstName = etFirstName?.text.toString()
             currentUser?.lastName = etLastName?.text.toString()
             currentUser?.biography = etBiography?.text.toString()
-            currentUser?.isDriver = switchDriver?.isChecked
+            currentUser?.isDriver = switchDriver?.isChecked!!
             save()
         }
     }

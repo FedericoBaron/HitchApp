@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_post:
                         User user = (User) ParseUser.getCurrentUser();
-                        if(user.getIsDriver())
+                        if(user.isDriver())
                             fragment = new ComposeFragment();
                         else{
                             Toast.makeText(MainActivity.this, "You need to setup a driver profile to post a ride", Toast.LENGTH_SHORT).show();
