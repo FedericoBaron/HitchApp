@@ -218,7 +218,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                         Bundle bundle = new Bundle();
                         User requester = (User) request.getRequester();
                         Log.i(TAG, String.valueOf(requester));
-                        bundle.putParcelable("requester", requester);
+                        bundle.putParcelable("user", requester);
                         Fragment fragment = new ProfileFragment();
                         fragment.setArguments(bundle);
                         ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction()

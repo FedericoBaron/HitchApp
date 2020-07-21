@@ -107,13 +107,13 @@ class ProfileFragment : Fragment() {
             } catch (e: Exception) {
                 Log.e(TAG, "Couldn't fetch car", e)
             }
-            tvCarModel?.text = car?.getCarModel()
-            tvCarMaker?.text = car?.getCarMaker()
-            tvCarYear?.text = car?.getCarYear().toString()
+            tvCarModel?.text = car?.carModel
+            tvCarMaker?.text = car?.carMaker
+            tvCarYear?.text = car?.carYear.toString()
         }
     }
 
     companion object {
-        private const val TAG = "DriverProfileFragment"
+        private const val TAG = "ProfileFragment"
     }
 }
