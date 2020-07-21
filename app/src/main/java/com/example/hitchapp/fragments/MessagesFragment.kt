@@ -70,7 +70,7 @@ class MessagesFragment : Fragment() {
         // Set the layout manager on the recycler view
         rvMessages?.setLayoutManager(LinearLayoutManager(context))
         layoutManager = rvMessages?.getLayoutManager() as LinearLayoutManager?
-        layoutManager?.reverseLayout = true
+        layoutManager?.reverseLayout = false
 
         // Unwrap the user passed in via bundle, using its simple name as a key
         //driver = Parcels.unwrap(getArguments().getParcelable("user"));
