@@ -192,7 +192,6 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         private void save(Ride ride) {
             ride.saveInBackground(new SaveCallback() {
-
                 @Override
                 public void done(ParseException e) {
                     if (e != null) {

@@ -18,6 +18,7 @@ import com.example.hitchapp.fragments.MessagesFragment
 import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
+import org.parceler.Parcels
 
 class MyRidesAdapter(private val context: Context, private val rides: MutableList<Ride>) : RecyclerView.Adapter<MyRidesAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

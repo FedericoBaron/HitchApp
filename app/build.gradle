@@ -56,6 +56,9 @@ dependencies {
     //HTTP Client
     implementation 'com.codepath.libraries:asynchttpclient:0.0.9'
 
+    // add Parse dependencies too
+    implementation 'com.github.parse-community:ParseLiveQuery-Android:1.2.1'
+
 }
 repositories {
     mavenCentral()

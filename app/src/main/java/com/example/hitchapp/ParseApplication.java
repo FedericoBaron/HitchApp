@@ -11,6 +11,7 @@ import com.example.hitchapp.models.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
 
 public class ParseApplication extends Application{
 
@@ -31,6 +32,8 @@ public class ParseApplication extends Application{
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("federico-hitchapp") // should correspond to APP_ID env variable
                 .clientKey("CodepathMoveFastParse")  // set explicitly unless clientKey is explicitly configured on Parse server
-                .server("https://federico-hitchapp.herokuapp.com/parse").build());
+                //.server("http://0.0.0.0:4040/parse").build());
+                .server("http://federico-hitchapp.herokuapp.com/parse").build());
+
     }
 }

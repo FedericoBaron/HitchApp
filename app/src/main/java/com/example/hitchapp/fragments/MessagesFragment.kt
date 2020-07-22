@@ -1,6 +1,8 @@
 package com.example.hitchapp.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,17 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.MessagesAdapter
-import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.parse.ParseException
+import com.parse.ParseQuery
 import com.parse.ParseUser
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
 import org.json.JSONArray
-import java.lang.reflect.GenericArrayType
-import java.lang.reflect.Type
-import java.util.*
-import kotlin.collections.ArrayList
 
 class MessagesFragment : Fragment() {
     private var rvMessages: RecyclerView? = null
@@ -83,6 +82,76 @@ class MessagesFragment : Fragment() {
         messages = ride?.messages
         queryMessages()
         setupMessagePosting()
+
+        // Make sure the Parse server is setup to configured for live queries
+        val parseLiveQueryClient: ParseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+
+        val parseQuery: ParseQuery<Message> = ParseQuery.getQuery(Message::class.java)
+
+        // Connect to Parse server
+        val subscriptionHandling: SubscriptionHandling<Message> = parseLiveQueryClient.subscribe(parseQuery)
+        subscriptionHandling.handleSubscribe {
+            Log.i(TAG, "Subscribed")
+        }
+        subscriptionHandling.handleEvents { query, event, `object` ->
+            Log.i(TAG, "handle")
+        }
+        subscriptionHandling.handleError { query, exception ->
+            Log.i(TAG, "ERROR")
+        }
+
+        // Listen for CREATE events
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
+            val handler = Handler(Looper.getMainLooper())
+            Log.i(TAG, "trying to test")
+            handler.post(Runnable {
+                Log.i(TAG, "runOnUiThread")
+                adapter?.notifyDataSetChanged()
+                rvMessages?.scrollToPosition(0)
+            })
+        }
+        Log.i(TAG, "Random test")
+
+        // Listen for CREATE events
+        // Listen for CREATE events
+//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
+//            mMessages.add(0, `object`)
+//
+//            // RecyclerView updates need to be run on the UI thread
+//            runOnUiThread(Runnable {
+//                mAdapter.notifyDataSetChanged()
+//                rvChat.scrollToPosition(0)
+//            })
+//        }
+
+
+        // Listen for CREATE events
+//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
+//            messages?.put(`object`)
+//
+//            Log.i(TAG ,"You are here now")
+//            // RecyclerView updates need to be run on the UI thread
+//            activity?.runOnUiThread(
+//                    object : Runnable {
+//                        override fun run() {
+//                            Log.i(TAG, "runOnUiThread")
+//                            adapter?.notifyDataSetChanged()
+//                            rvMessages?.scrollToPosition(0)
+//                        }
+//                    }
+//            )
+//        }
+        // Listen for CREATE events
+//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, object : SubscriptionHandling.HandleEventCallback<Message?> {
+//            override fun onEvent(query: ParseQuery<Message?>?, `object`: Message?) {
+//                Log.i(TAG, "MESSAGE RECEIVED")
+//
+//
+//                // RecyclerView updates need to be run on the UI thread
+//                // RecyclerView updates need to be run on the UI thread
+//
+//            }
+//        })
     }
 
     // Create a handler which can run code periodically
