@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +23,7 @@ import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
 import com.example.hitchapp.adapters.RidesAdapter;
 import com.example.hitchapp.models.Ride;
+import com.example.hitchapp.viewmodels.HomeFragmentViewModel;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -37,10 +41,8 @@ public class HomeFragment extends Fragment {
     protected SwipeRefreshLayout swipeContainer;
     private EndlessRecyclerViewScrollListener scrollListener;
     protected LinearLayoutManager layoutManager;
-    private int totalRides = 20;
     protected ProgressBar pbLoading;
-    protected static final int NEW_RIDES = 5;
-    private final int REQUEST_CODE = 20;
+    private HomeFragmentViewModel mHomeFragmentViewModel;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,8 +65,46 @@ public class HomeFragment extends Fragment {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         rvRides.addItemDecoration(itemDecoration);
 
-        // Create layout for one row in the list
-        // Create the adapter
+        mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel.class);
+
+        mHomeFragmentViewModel.init();
+
+        // Show progress bar loading
+        pbLoading.setVisibility(View.VISIBLE);
+
+        // Create the observer which updates the UI.
+        final Observer<List<Ride>> ridesObserver = new Observer<List<Ride>>() {
+            @Override
+            public void onChanged(@Nullable final List<Ride> rides) {
+                // Update the UI
+                for(Ride ride: rides){
+                    Log.i(TAG, "Ride: " + ride.getDriver() + ", username: " + ride.getMessages());
+                }
+                adapter.setAll(rides);
+                adapter.notifyDataSetChanged();
+                pbLoading.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
+            }
+        };
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        mHomeFragmentViewModel.getRides().observe(getViewLifecycleOwner(), ridesObserver);
+
+        initRecyclerView();
+
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
+        // Listener for refreshing timeline
+        refreshListener();
+
+        // Listens for when you need to load more data
+        createScrollListener();
+    }
+
+    private void initRecyclerView(){
+
+        // gets list of rides from livedata
         allRides = new ArrayList<>();
         adapter = new RidesAdapter(getContext(), allRides);
 
@@ -74,63 +114,6 @@ public class HomeFragment extends Fragment {
         // Set the layout manager on the recycler view
         rvRides.setLayoutManager(new LinearLayoutManager(getContext()));
         layoutManager = (LinearLayoutManager) rvRides.getLayoutManager();
-
-        // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-
-        // Listener for refreshing timeline
-        refreshListener();
-
-        createScrollListener();
-
-        // Gets all the rides for the timeline
-        queryRides();
-    }
-
-    protected void createScrollListener() {
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.i(TAG, "onLoadMore: " + page);
-                loadMoreData();
-            }
-        };
-
-        // Adds the scroll listener to the RV
-        rvRides.addOnScrollListener(scrollListener);
-    }
-
-    // Loads more rides when we reach the bottom of TL
-    protected void loadMoreData() {
-        Log.i(TAG, "Loading more data");
-        totalRides = totalRides + NEW_RIDES;
-        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-        query.include(Ride.KEY_DRIVER);
-
-        // Set a limit
-        query.setLimit(totalRides);
-
-        // Sort by created at
-        query.addDescendingOrder(Ride.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Ride>() {
-            @Override
-            public void done(List<Ride> rides, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Issue with getting rides", e);
-                    return;
-                }
-                for(Ride ride : rides){
-                    //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
-                }
-
-                //Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-
-                // Add rides to adapter
-                adapter.setAll(rides);
-                adapter.notifyItemRangeInserted(rides.size()-5, rides.size());
-            }
-        });
     }
 
 
@@ -140,9 +123,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                queryRides();
+                mHomeFragmentViewModel.queryRides();
             }
         });
         // Configure the refreshing colors
@@ -150,44 +131,19 @@ public class HomeFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
     }
 
-
-    // Gets rides and notifies adapter
-    protected void queryRides(){
-
-        pbLoading.setVisibility(ProgressBar.VISIBLE);
-
-        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-        query.include(Ride.KEY_DRIVER);
-
-        // Set a limit
-        query.setLimit(totalRides);
-
-        // Sort by created at
-        query.addDescendingOrder(Ride.KEY_CREATED_AT);
-        query.findInBackground(new FindCallback<Ride>() {
+    // Listens for when you need to load more data
+    protected void createScrollListener() {
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void done(List<Ride> rides, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-                for(Ride ride : rides){
-                    //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
-                }
-                // run a background job and once complete
-                pbLoading.setVisibility(ProgressBar.INVISIBLE);
-
-                //Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-
-                // Add rides to adapter
-                adapter.setAll(rides);
-                adapter.notifyDataSetChanged();
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                Log.i(TAG, "onLoadMore: " + page);
+                mHomeFragmentViewModel.loadMoreData();
             }
-        });
-    }
+        };
 
+        // Adds the scroll listener to the RV
+        rvRides.addOnScrollListener(scrollListener);
+    }
 }

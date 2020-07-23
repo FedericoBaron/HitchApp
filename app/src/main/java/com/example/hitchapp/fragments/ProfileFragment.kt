@@ -40,8 +40,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         // Unwrap the user passed in via bundle, using its simple name as a key
         //driver = Parcels.unwrap(getArguments().getParcelable("user"));
         val bundle = this.arguments

@@ -104,42 +104,42 @@ public class MyRidesFragment extends HomeFragment {
         });
     }
 
-    @Override
-    // Loads more posts when we reach the bottom of TL
-    protected void loadMoreData() {
-        Log.i(TAG, "Loading more data");
-        totalPosts = totalPosts + NEW_RIDES;
-        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
-        query.whereEqualTo("participants", currentUser);
-        query.include("participants");
-        query.include("driver");
+//    @Override
+//    // Loads more posts when we reach the bottom of TL
+//    protected void loadMoreData() {
+//        Log.i(TAG, "Loading more data");
+//        totalPosts = totalPosts + NEW_RIDES;
+//        ParseQuery<Ride> query = ParseQuery.getQuery(Ride.class);
+//        query.whereEqualTo("participants", currentUser);
+//        query.include("participants");
+//        query.include("driver");
+//
+//        // Set a limit of 20 posts
+//        query.setLimit(totalPosts);
+//
+//        // Sort by created at
+//        query.addDescendingOrder(Ride.KEY_CREATED_AT);
+//
+//        // Finds the posts asynchronously
+//        query.findInBackground(new FindCallback<Ride>() {
+//            @Override
+//            public void done(List<Ride> rides, ParseException e) {
+//                if(e != null){
+//                    Log.e(TAG, "Issue with getting rides", e);
+//                    return;
+//                }
+//                for(Ride ride: rides){
+//                    //Log.i(TAG, "Ride: " + ride.getDriver().get + ", username: " + ride.getUser().getUsername());
+//                }
+//
+//                //Now we call setRefreshing(false) to signal refresh has finished
+//                swipeContainer.setRefreshing(false);
+//
+//                // Add posts to adapter
+//                adapter.setAll(rides);
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
 
-        // Set a limit of 20 posts
-        query.setLimit(totalPosts);
-
-        // Sort by created at
-        query.addDescendingOrder(Ride.KEY_CREATED_AT);
-
-        // Finds the posts asynchronously
-        query.findInBackground(new FindCallback<Ride>() {
-            @Override
-            public void done(List<Ride> rides, ParseException e) {
-                if(e != null){
-                    Log.e(TAG, "Issue with getting rides", e);
-                    return;
-                }
-                for(Ride ride: rides){
-                    //Log.i(TAG, "Ride: " + ride.getDriver().get + ", username: " + ride.getUser().getUsername());
-                }
-
-                //Now we call setRefreshing(false) to signal refresh has finished
-                swipeContainer.setRefreshing(false);
-
-                // Add posts to adapter
-                adapter.setAll(rides);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-    }
+//    }
 }
