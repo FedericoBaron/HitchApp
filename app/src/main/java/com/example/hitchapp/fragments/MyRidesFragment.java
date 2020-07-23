@@ -20,17 +20,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.hitchapp.EndlessRecyclerViewScrollListener;
 import com.example.hitchapp.R;
 import com.example.hitchapp.adapters.MyRidesAdapter;
-import com.example.hitchapp.adapters.RidesAdapter;
-import com.example.hitchapp.fragments.HomeFragment;
 import com.example.hitchapp.models.Ride;
 import com.example.hitchapp.models.User;
-import com.example.hitchapp.viewmodels.HomeFragmentViewModel;
 import com.example.hitchapp.viewmodels.MyRidesFragmentViewModel;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +31,7 @@ import java.util.List;
 public class MyRidesFragment extends Fragment {
 
     private static final String TAG = "MyRidesFragment";
-    private int totalPosts = 20;
 
-    User currentUser = (User) ParseUser.getCurrentUser();
     protected ProgressBar pbLoading;
     private RecyclerView rvRides;
     public static MyRidesAdapter adapter;
