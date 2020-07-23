@@ -65,12 +65,27 @@ public class HomeFragment extends Fragment {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         rvRides.addItemDecoration(itemDecoration);
 
-        mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel.class);
-
-        mHomeFragmentViewModel.init();
+        startViewModel();
 
         // Show progress bar loading
         pbLoading.setVisibility(View.VISIBLE);
+
+        initRecyclerView();
+
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
+        // Listener for refreshing timeline
+        refreshListener();
+
+        // Listens for when you need to load more data
+        createScrollListener();
+    }
+
+    protected void startViewModel(){
+        mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel.class);
+
+        mHomeFragmentViewModel.init();
 
         // Create the observer which updates the UI.
         final Observer<List<Ride>> ridesObserver = new Observer<List<Ride>>() {
@@ -89,20 +104,9 @@ public class HomeFragment extends Fragment {
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         mHomeFragmentViewModel.getRides().observe(getViewLifecycleOwner(), ridesObserver);
-
-        initRecyclerView();
-
-        // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
-
-        // Listener for refreshing timeline
-        refreshListener();
-
-        // Listens for when you need to load more data
-        createScrollListener();
     }
 
-    private void initRecyclerView(){
+    protected void initRecyclerView(){
 
         // gets list of rides from livedata
         allRides = new ArrayList<>();

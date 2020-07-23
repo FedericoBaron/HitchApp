@@ -17,10 +17,10 @@ public class HomeFragmentViewModel extends ViewModel {
 
     public static final String TAG = "HomeFragmentViewModel";
 
-    private MutableLiveData<List<Ride>> mRides;
-    private RideRepository mRepo;
-    private int totalRides = 5;
-    private static final int NEW_RIDES = 5;
+    protected MutableLiveData<List<Ride>> mRides;
+    protected RideRepository mRepo;
+    protected int totalRides = 5;
+    protected static final int NEW_RIDES = 5;
 
     public void init(){
         if(mRides != null){
