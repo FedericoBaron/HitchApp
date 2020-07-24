@@ -42,7 +42,7 @@ class ComposeFragmentViewModel : ViewModel(){
             ride.participants = JSONArray()
         }
         var participants = ride.participants
-        participants.put(currentUser);
+        participants?.put(currentUser);
         ride.participants = participants
 
         // Calls repo to method to save ride
