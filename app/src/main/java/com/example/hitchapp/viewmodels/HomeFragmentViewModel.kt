@@ -1,11 +1,14 @@
 package com.example.hitchapp.viewmodels
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.hitchapp.activities.LoginActivity
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.RideRepository
+import com.parse.FindCallback
 
 class HomeFragmentViewModel : ViewModel() {
     protected var mRides: MutableLiveData<List<Ride>>? = null
@@ -16,7 +19,7 @@ class HomeFragmentViewModel : ViewModel() {
         if (mRides != null) {
             return
         }
-        mRepo = RideRepository.getInstance()
+        mRepo = RideRepository.instance
         queryRides()
     }
 
@@ -30,10 +33,18 @@ class HomeFragmentViewModel : ViewModel() {
 
     // Query rides from repo
     fun queryRides() {
-        mRepo?.ridesQuery(totalRides) { objects, e ->
-            Log.i(TAG, objects.toString())
-            mRides?.postValue(objects)
+
+        val findCallback = FindCallback<Ride>{ rides, e ->
+            if(e == null){
+                Log.i(TAG, rides.toString())
+                mRides?.postValue(rides)
+            }
+            else{
+                Log.i(TAG, "Error querying for rides")
+            }
         }
+
+        mRepo?.ridesQuery(totalRides, findCallback)
     }
 
     // Loads more rides when we reach the bottom of TL

@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,7 @@ import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RequestsAdapter
 import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.User
+import com.example.hitchapp.viewmodels.RequestsFragmentViewModel
 import com.parse.FindCallback
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -27,10 +30,8 @@ class RequestsFragment : Fragment() {
     protected var swipeContainer: SwipeRefreshLayout? = null
     private var scrollListener: EndlessRecyclerViewScrollListener? = null
     protected var layoutManager: LinearLayoutManager? = null
-    private var totalRequests = 20
-    private var currentUser: User? = null
     protected var pbLoading: ProgressBar? = null
-    private val REQUEST_CODE = 20
+    private var mRequestsFragmentViewModel: RequestsFragmentViewModel? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -44,13 +45,49 @@ class RequestsFragment : Fragment() {
         val itemDecoration: ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvRequests?.addItemDecoration(itemDecoration)
 
-        // Create layout for one row in the list
-        // Create the adapter
+        startViewModel()
+
+        // Show progress bar loading
+        pbLoading?.setVisibility(View.VISIBLE)
+        initRecyclerView()
+
+        // Lookup the swipe container view
+        swipeContainer = view.findViewById<View>(R.id.swipeContainer) as SwipeRefreshLayout
+
+        // Listener for refreshing timeline
+        refreshListener()
+
+        // Listener for infinite scrolling
+        createScrollListener()
+
+    }
+
+    protected fun startViewModel() {
+        mRequestsFragmentViewModel = ViewModelProviders.of(this).get(RequestsFragmentViewModel::class.java)
+        mRequestsFragmentViewModel?.init()
+
+        // Create the observer which updates the UI.
+        val requestsObserver: Observer<List<Request>?> = Observer { requests -> // Update the UI
+            if (requests != null) {
+                for (request in requests) {
+                    Log.i(TAG, "Request: " + request?.driver + ", username: " + request?.requester)
+                }
+            }
+            adapter?.setAll(requests)
+            adapter?.notifyDataSetChanged()
+            pbLoading?.visibility = View.GONE
+            swipeContainer?.isRefreshing = false
+        }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        mRequestsFragmentViewModel?.requests?.observe(viewLifecycleOwner, requestsObserver)
+    }
+
+    protected fun initRecyclerView() {
+
+        // gets list of rides from livedata
         allRequests = ArrayList()
         adapter = RequestsAdapter(context, allRequests)
-
-        // Current user
-        currentUser = ParseUser.getCurrentUser() as User
 
         // Set the adapter on the recycler view
         rvRequests?.adapter = adapter
@@ -58,23 +95,13 @@ class RequestsFragment : Fragment() {
         // Set the layout manager on the recycler view
         rvRequests?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRequests?.layoutManager as LinearLayoutManager?
-
-        // Lookup the swipe container view
-        swipeContainer = view.findViewById<View>(R.id.swipeContainer) as SwipeRefreshLayout
-
-        // Listener for refreshing timeline
-        refreshListener()
-        createScrollListener()
-
-        // Gets all the rides for the timeline
-        queryRequests()
     }
 
     protected fun createScrollListener() {
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 Log.i(TAG, "onLoadMore: $page")
-                loadMoreData()
+                mRequestsFragmentViewModel?.loadMoreData()
             }
         }
 
@@ -82,88 +109,18 @@ class RequestsFragment : Fragment() {
         rvRequests?.addOnScrollListener(scrollListener as EndlessRecyclerViewScrollListener)
     }
 
-    // Loads more rides when we reach the bottom of TL
-    protected fun loadMoreData() {
-        Log.i(TAG, "Loading more data")
-        totalRequests += NEW_REQUESTS
-        val query = ParseQuery.getQuery(Request::class.java)
-        query.include("driver")
-        query.whereEqualTo("driver", currentUser)
-        Log.i(TAG, "Here are the requests")
-
-        // Set a limit
-        query.limit = totalRequests
-
-        // Sort by created at
-        query.addDescendingOrder("createdAt")
-        query.findInBackground(FindCallback { requests, e ->
-            if (e != null) {
-                Log.e(TAG, "Issue with getting rides", e)
-                return@FindCallback
-            }
-            for (request in requests) {
-                //Log.i(TAG, "OBJECT ID " + request.getRide().getDriver().getObjectId());
-                //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
-            }
-
-            //Now we call setRefreshing(false) to signal refresh has finished
-            swipeContainer?.isRefreshing = false
-
-            // Add rides to adapter
-            adapter?.setAll(requests)
-            adapter?.notifyItemRangeInserted(requests.size - 5, requests.size)
-        })
-    }
-
     protected fun refreshListener() {
         // Setup refresh listener which triggers new data loading
         swipeContainer?.setOnRefreshListener { // Your code to refresh the list here.
             // Make sure you call swipeContainer.setRefreshing(false)
             // once the network request has completed successfully.
-            queryRequests()
+            mRequestsFragmentViewModel?.queryRequests()
         }
         // Configure the refreshing colors
         swipeContainer?.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light)
-    }
-
-    // Gets rides and notifies adapter
-    protected fun queryRequests() {
-        pbLoading?.visibility = ProgressBar.VISIBLE
-        Log.i(TAG, "Here are the requests")
-        val query = ParseQuery.getQuery(Request::class.java)
-        query.include("driver")
-        query.whereEqualTo("driver", currentUser)
-        //query.whereEqualTo("ride.driver.objectId",  User.createWithoutData(User.class, currentUser.getObjectId()));
-        Log.i(TAG, currentUser?.objectId)
-
-
-        // Set a limit
-        query.limit = totalRequests
-
-        // Sort by created at
-        query.addDescendingOrder("createdAt")
-        query.findInBackground(FindCallback { requests, e ->
-            if (e != null) {
-                Log.e(TAG, "Issue with getting requests", e)
-                return@FindCallback
-            }
-            for (request in requests) {
-                //Log.i(TAG, "Ride: " + ride.getDescription() + ", username: " + ride.getUser().getUsername());
-                Log.i(TAG, "request" + request.requester)
-            }
-            // run a background job and once complete
-            pbLoading?.visibility = ProgressBar.INVISIBLE
-
-            //Now we call setRefreshing(false) to signal refresh has finished
-            swipeContainer?.isRefreshing = false
-
-            // Add rides to adapter
-            adapter?.setAll(requests)
-            adapter?.notifyDataSetChanged()
-        })
     }
 
     companion object {

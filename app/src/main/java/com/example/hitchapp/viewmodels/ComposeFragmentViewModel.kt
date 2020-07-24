@@ -24,7 +24,7 @@ class ComposeFragmentViewModel : ViewModel(){
     private val REQUEST_CODE = 20
 
     fun init() {
-        mRepo = RideRepository.getInstance()
+        mRepo = RideRepository.instance
     }
 
     // Adds every aspect of the ride to a new Ride object and calls saveRide repo
