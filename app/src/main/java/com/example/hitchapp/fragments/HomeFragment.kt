@@ -106,7 +106,7 @@ class HomeFragment : Fragment() {
     // Listens for when you need to load more data
     protected fun createScrollListener() {
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 Log.i(TAG, "onLoadMore: $page")
                 mHomeFragmentViewModel?.loadMoreData()
             }
