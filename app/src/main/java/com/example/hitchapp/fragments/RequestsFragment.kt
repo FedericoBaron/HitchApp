@@ -127,6 +127,5 @@ class RequestsFragment : Fragment() {
         private const val TAG = "RequestsFragment"
         var adapter: RequestsAdapter? = null
         var allRequests: List<Request>? = null
-        protected const val NEW_REQUESTS = 5
     }
 }
