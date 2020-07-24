@@ -12,11 +12,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProviders
 import com.example.hitchapp.R
-import com.example.hitchapp.activities.SignupActivity
 import com.example.hitchapp.models.User
+import com.example.hitchapp.viewmodels.SignupActivityViewModel
 import com.parse.ParseFile
 import com.parse.SaveCallback
+import com.parse.SignUpCallback
 import java.io.File
 
 class SignupActivity : AppCompatActivity() {
@@ -31,6 +33,8 @@ class SignupActivity : AppCompatActivity() {
     private var etLastName: EditText? = null
     private var btnUploadStudentId: Button? = null
     private var etCollege: EditText? = null
+    private var mSignupActivityViewModel: SignupActivityViewModel? = null
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -43,6 +47,9 @@ class SignupActivity : AppCompatActivity() {
         btnUploadStudentId = findViewById(R.id.btnUploadStudentId)
         etCollege = findViewById(R.id.etCollege)
 
+        // Init ViewModel
+        mSignupActivityViewModel = ViewModelProviders.of(this).get(SignupActivityViewModel::class.java)
+        mSignupActivityViewModel?.init()
 
         // Listens for signup button click
         listenBtnSignupClick()
@@ -70,29 +77,24 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun signupUser(username: String, password: String, email: String, firstName: String, lastName: String, college: String) {
-        // Create the ParseUser
-        //User user = new User();
 
-        // Set core properties
-        user.username = username.toLowerCase()
-        user.setPassword(password)
-        user.email = email
-        user.firstName = firstName
-        user.lastName = lastName
-        user.college = college
-
-        // Invoke signUpInBackground
-        user.signUpInBackground { e ->
-            if (e == null) {
+        // Gets callback to handle results in the activity
+        val signUpCallback = SignUpCallback{ e ->
+            if(e == null){
                 // Hooray! Let them use the app now.
                 goMainActivity()
                 Toast.makeText(this@SignupActivity, "Success!", Toast.LENGTH_SHORT).show()
-            } else {
+            }
+            else{
                 Log.e(TAG, "Unsuccessful signup", e)
-                // Sign up didn't succeed. Look at the ParseException
-                // to figure out what went wrong
+                Toast.makeText(this@SignupActivity, "Issue with signup", Toast.LENGTH_SHORT).show()
+                return@SignUpCallback
             }
         }
+
+        // Attempts to sign up new user
+        mSignupActivityViewModel?.signupUser(username, password, email, firstName, lastName, college, signUpCallback)
+
     }
 
     private fun goMainActivity() {
@@ -132,9 +134,20 @@ class SignupActivity : AppCompatActivity() {
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
                 val photo = ParseFile(photoFile)
-                photo.saveInBackground(SaveCallback { e -> if (null == e) user.collegeId = photo })
+
+                val saveCallback = SaveCallback { e ->
+                    if(e == null){
+                        Log.i(TAG, "Picture saved!")
+                        Toast.makeText(this, "Picture saved!", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                mSignupActivityViewModel?.savePhoto(photo, saveCallback)
+
             } else { // Result was a failure
-                Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show()
+
             }
         }
     }
