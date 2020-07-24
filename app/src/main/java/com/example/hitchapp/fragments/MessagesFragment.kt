@@ -75,7 +75,7 @@ class MessagesFragment : Fragment() {
         //driver = Parcels.unwrap(getArguments().getParcelable("user"));
         val bundle = this.arguments
         ride = bundle?.getParcelable<Parcelable>("ride") as Ride?
-        if (ride?.messages == null){
+        if (ride?.messages == null) {
             ride?.messages = JSONArray()
             save()
         }
@@ -110,48 +110,6 @@ class MessagesFragment : Fragment() {
                 rvMessages?.scrollToPosition(0)
             })
         }
-        Log.i(TAG, "Random test")
-
-        // Listen for CREATE events
-        // Listen for CREATE events
-//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
-//            mMessages.add(0, `object`)
-//
-//            // RecyclerView updates need to be run on the UI thread
-//            runOnUiThread(Runnable {
-//                mAdapter.notifyDataSetChanged()
-//                rvChat.scrollToPosition(0)
-//            })
-//        }
-
-
-        // Listen for CREATE events
-//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
-//            messages?.put(`object`)
-//
-//            Log.i(TAG ,"You are here now")
-//            // RecyclerView updates need to be run on the UI thread
-//            activity?.runOnUiThread(
-//                    object : Runnable {
-//                        override fun run() {
-//                            Log.i(TAG, "runOnUiThread")
-//                            adapter?.notifyDataSetChanged()
-//                            rvMessages?.scrollToPosition(0)
-//                        }
-//                    }
-//            )
-//        }
-        // Listen for CREATE events
-//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, object : SubscriptionHandling.HandleEventCallback<Message?> {
-//            override fun onEvent(query: ParseQuery<Message?>?, `object`: Message?) {
-//                Log.i(TAG, "MESSAGE RECEIVED")
-//
-//
-//                // RecyclerView updates need to be run on the UI thread
-//                // RecyclerView updates need to be run on the UI thread
-//
-//            }
-//        })
     }
 
     // Create a handler which can run code periodically

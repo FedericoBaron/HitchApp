@@ -7,6 +7,7 @@ import com.example.hitchapp.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 public class RideRepository {
 
@@ -52,4 +53,11 @@ public class RideRepository {
         // Finds the posts asynchronously
         query.findInBackground(findCallback);
     }
+
+
+    // Saves the ride
+    public void saveRide(Ride ride, SaveCallback saveCallback){
+        ride.saveInBackground(saveCallback);
+    }
+
 }

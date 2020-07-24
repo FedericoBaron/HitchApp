@@ -15,9 +15,9 @@ import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
 import com.example.hitchapp.R
-import com.example.hitchapp.models.Ride
-import com.example.hitchapp.models.User
+import com.example.hitchapp.viewmodels.ComposeFragmentViewModel
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -25,8 +25,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.parse.ParseUser
-import org.json.JSONArray
+import com.parse.SaveCallback
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +40,7 @@ class ComposeFragment : Fragment() {
     private var switchPricePerParticipant: Switch? = null
     private val REQUEST_CODE = 20
     private var toSelected = false
+    private var mComposeFragmentViewModel: ComposeFragmentViewModel? = null
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -62,11 +62,15 @@ class ComposeFragment : Fragment() {
         btnPost = view.findViewById(R.id.btnPost)
         switchPricePerParticipant = view.findViewById(R.id.switchPricePerParticipant)
 
+
+        // Init ViewModel
+        mComposeFragmentViewModel = ViewModelProviders.of(this).get(ComposeFragmentViewModel::class.java)
+        mComposeFragmentViewModel?.init()
+
         editDepartureDateListener()
         editDepartureTimeListener()
         editFromListener()
         editToListener()
-
         btnPostRideListener()
 
     }
@@ -104,13 +108,38 @@ class ComposeFragment : Fragment() {
                 return@OnClickListener
             }
 
-
-            // Gets the person who's logged in
-            val currentUser = ParseUser.getCurrentUser() as User
-
-            // Save ride to the backend
-            saveRide(from, to, price, departureDate, departureTime, currentUser)
+            saveRide(from, to, price, departureDate, departureTime)
         })
+    }
+
+
+    // Save ride to the backend
+    private fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String) {
+        val saveRideCallback = SaveCallback {e ->
+            if (e == null) {
+                // Empties all edit text forms for next time
+                etFrom?.setText("")
+                etPrice?.setText("")
+                etTo?.setText("")
+                etDepartureDate?.setText("")
+                etDepartureTime?.setText("")
+                Log.i(ComposeFragmentViewModel.TAG, "Ride save was successful!")
+                Toast.makeText(context, "Ride was posted!", Toast.LENGTH_SHORT).show()
+
+            }
+            else{
+                Log.e(ComposeFragmentViewModel.TAG, "Error while saving", e)
+                Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, saveRideCallback)
+
+        // Changes to home fragment
+        val fragment: Fragment = HomeFragment()
+        (context as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.flContainer, fragment)
+                .commit()
     }
 
     private fun editFromListener(){
@@ -122,6 +151,7 @@ class ComposeFragment : Fragment() {
 
             // Create a new Places client instance.
             val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
+
             // Set the fields to specify which types of place data to
             // return after the user has made a selection.
             val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
@@ -158,6 +188,7 @@ class ComposeFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        //mComposeFragmentViewModel?.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
@@ -223,45 +254,6 @@ class ComposeFragment : Fragment() {
             dpd.show()
             dpd?.getButton(DatePickerDialog.BUTTON_NEGATIVE)?.setBackgroundColor(resources.getColor(R.color.colorNegative))
             dpd?.getButton(DatePickerDialog.BUTTON_POSITIVE)?.setBackgroundColor(resources.getColor(R.color.colorPositive))
-        }
-    }
-
-    // Adds ride to the database
-    private fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String, currentUser: ParseUser) {
-        val ride = Ride()
-        ride.price = price.toInt()
-        ride.from = from
-        ride.to = to
-        ride.driver = currentUser
-        ride.departureDate = departureDate
-        ride.departureTime = departureTime
-        if(ride.participants == null){
-            ride.participants = JSONArray()
-        }
-        var participants = ride.participants
-        participants.put(currentUser);
-        ride.participants = participants
-
-        ride.saveInBackground { e ->
-            if (e != null) {
-                Log.e(TAG, "Error while saving", e)
-                Toast.makeText(context, "Error while saving!", Toast.LENGTH_SHORT).show()
-            }
-            Log.i(TAG, "Ride save was successful!")
-
-            // Empties all edit text forms for next time
-            etFrom?.setText("")
-            etPrice?.setText("")
-            etTo?.setText("")
-            etDepartureDate?.setText("")
-            etDepartureTime?.setText("")
-
-            // Changes to home fragment
-            val fragment: Fragment = HomeFragment()
-            (context as FragmentActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.flContainer, fragment)
-                    .commit()
-
         }
     }
 

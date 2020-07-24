@@ -30,16 +30,16 @@ class HomeFragmentViewModel : ViewModel() {
 
     // Query rides from repo
     fun queryRides() {
-        mRepo!!.ridesQuery(totalRides) { objects, e ->
+        mRepo?.ridesQuery(totalRides) { objects, e ->
             Log.i(TAG, objects.toString())
-            mRides!!.postValue(objects)
+            mRides?.postValue(objects)
         }
     }
 
     // Loads more rides when we reach the bottom of TL
     fun loadMoreData() {
         // Adds more rides to the amount of rides queried in the repository
-        totalRides = totalRides + NEW_RIDES
+        totalRides += NEW_RIDES
 
         // Query rides from repo
         queryRides()

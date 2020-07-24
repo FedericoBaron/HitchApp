@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
         mHomeFragmentViewModel?.init()
 
         // Create the observer which updates the UI.
-        val ridesObserver: Observer<List<Ride>?> = Observer<List<Ride>?> { rides -> // Update the UI
+        val ridesObserver: Observer<List<Ride>?> = Observer { rides -> // Update the UI
             if (rides != null) {
                 for (ride in rides) {
                     Log.i(TAG, "Ride: " + ride?.driver + ", username: " + ride?.messages)
