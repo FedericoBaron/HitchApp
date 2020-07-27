@@ -25,6 +25,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.parse.ParseGeoPoint
 import com.parse.SaveCallback
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,6 +42,7 @@ class ComposeFragment : Fragment() {
     private val REQUEST_CODE = 20
     private var toSelected = false
     private var mComposeFragmentViewModel: ComposeFragmentViewModel? = null
+    private var fromLocation: ParseGeoPoint? = null
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -133,7 +135,7 @@ class ComposeFragment : Fragment() {
             }
         }
 
-        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, saveRideCallback)
+        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, saveRideCallback)
 
         // Changes to home fragment
         val fragment: Fragment = HomeFragment()
@@ -154,7 +156,7 @@ class ComposeFragment : Fragment() {
 
             // Set the fields to specify which types of place data to
             // return after the user has made a selection.
-            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
 
             // Start the autocomplete intent.
             val intent = context?.let { it1 ->
@@ -176,7 +178,7 @@ class ComposeFragment : Fragment() {
             val placesClient: PlacesClient? = context?.let { Places.createClient(it) }
             // Set the fields to specify which types of place data to
             // return after the user has made a selection.
-            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS)
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
 
             // Start the autocomplete intent.
             val intent = context?.let { it1 ->
@@ -193,11 +195,13 @@ class ComposeFragment : Fragment() {
             if (resultCode == RESULT_OK) {
                 val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
                 if (place != null) {
-                    Log.i(TAG, "Place: " + place.name + ", " + place.id + ", " + place.address)
+                    Log.i(TAG, "Place: " + place.name + ", " + place.id + ", " + place.address + ", " + place.latLng)
                 }
                 val address = place?.address
-                if(toSelected)
+                if(toSelected) {
                     etTo?.setText(address)
+                    fromLocation = place?.latLng?.latitude?.let { place?.latLng?.longitude?.let { it1 -> ParseGeoPoint(it, it1) } }
+                }
                 else
                     etFrom?.setText(address)
                 // do query with address

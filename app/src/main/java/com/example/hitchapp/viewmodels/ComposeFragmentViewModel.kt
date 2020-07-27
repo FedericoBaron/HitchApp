@@ -1,17 +1,10 @@
 package com.example.hitchapp.viewmodels
 
-import android.app.Activity
-import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.hitchapp.fragments.ComposeFragment
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.repositories.RideRepository
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.parse.ParseGeoPoint
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import org.json.JSONArray
@@ -28,7 +21,7 @@ class ComposeFragmentViewModel : ViewModel(){
     }
 
     // Adds every aspect of the ride to a new Ride object and calls saveRide repo
-    fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String, saveRideCallback: SaveCallback) {
+    fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String, fromLocation: ParseGeoPoint?, saveRideCallback: SaveCallback) {
 
         // Sets ride to be everything that was set by user
         val ride = Ride()
@@ -38,6 +31,7 @@ class ComposeFragmentViewModel : ViewModel(){
         ride.driver = currentUser
         ride.departureDate = departureDate
         ride.departureTime = departureTime
+        ride.fromLocation = fromLocation
         if (ride.participants == null) {
             ride.participants = JSONArray()
         }

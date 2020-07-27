@@ -2,6 +2,7 @@ package com.example.hitchapp.models
 
 import com.parse.ParseClassName
 import com.parse.ParseFile
+import com.parse.ParseGeoPoint
 import com.parse.ParseUser
 import org.json.JSONArray
 import org.parceler.Parcel
@@ -44,6 +45,13 @@ class User : ParseUser() {
         set(collegeId) {
             collegeId?.let { put(KEY_COLLEGE_ID, it) }
         }
+
+    var currentLocation: ParseGeoPoint?
+        get() = getParseGeoPoint(KEY_CURRENT_LOCATION)
+        set(currentLocation) {
+            currentLocation?.let { put(KEY_CURRENT_LOCATION, it) }
+        }
+
 
     val driversLicense: ParseFile?
         get() = getParseFile(KEY_DRIVERS_LICENSE)
@@ -92,5 +100,6 @@ class User : ParseUser() {
         const val KEY_CAR = "car"
         const val KEY_REVIEWS = "reviews"
         const val KEY_IS_DRIVER = "isDriver"
+        const val KEY_CURRENT_LOCATION = "currentLocation"
     }
 }

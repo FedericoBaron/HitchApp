@@ -12,6 +12,8 @@ class RideRepository {
     fun ridesQuery(rides: Int, findCallback: FindCallback<Ride>?) {
         val query = ParseQuery.getQuery(Ride::class.java)
         query.include(Ride.KEY_DRIVER)
+        var currentUser: User = ParseUser.getCurrentUser() as User
+        //query.whereWithinMiles(Ride.KEY_FROM_LOCATION, currentUser.currentLocation, 100.0)
 
         // Set a limit
         query.limit = rides

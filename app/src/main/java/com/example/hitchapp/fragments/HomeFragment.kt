@@ -1,11 +1,17 @@
 package com.example.hitchapp.fragments
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,6 +25,10 @@ import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -28,6 +38,15 @@ class HomeFragment : Fragment() {
     protected var layoutManager: LinearLayoutManager? = null
     protected var pbLoading: ProgressBar? = null
     private var mHomeFragmentViewModel: HomeFragmentViewModel? = null
+    private val mapFragment: SupportMapFragment? = null
+    private val map: GoogleMap? = null
+    private val mLocationRequest: LocationRequest? = null
+    //var mCurrentLocation: Location? = null
+    private val permissionFineLocation=android.Manifest.permission.ACCESS_FINE_LOCATION
+    private val permissionCoarseLocation=android.Manifest.permission.ACCESS_COARSE_LOCATION
+
+    private val REQUEST_CODE_LOCATION=100
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -36,14 +55,23 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         rvRides = view.findViewById(R.id.rvRides)
         pbLoading = view.findViewById(R.id.pbLoading)
         val itemDecoration: ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvRides?.addItemDecoration(itemDecoration)
         startViewModel()
 
+        if (validatePermissionsLocation()){
+            Log.i(TAG, "permission")
+            getMyLocation()
+        }
+        else{
+            requestPermissions()
+        }
+
         // Show progress bar loading
-        pbLoading?.setVisibility(View.VISIBLE)
+        pbLoading?.visibility = View.VISIBLE
         initRecyclerView()
 
         // Lookup the swipe container view
@@ -91,6 +119,24 @@ class HomeFragment : Fragment() {
         layoutManager = rvRides?.layoutManager as LinearLayoutManager?
     }
 
+    private fun requestPermissions(){
+        val contextProvider= activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permissionFineLocation) }
+
+        if(contextProvider!!){
+            Toast.makeText(activity?.applicationContext, "Permission is required to obtain location", Toast.LENGTH_SHORT).show()
+        }
+        permissionRequest()
+    }
+    private fun permissionRequest(){
+        activity?.let { ActivityCompat.requestPermissions(it, arrayOf(permissionFineLocation, permissionCoarseLocation), REQUEST_CODE_LOCATION) }
+    }
+    private fun validatePermissionsLocation():Boolean{
+        val fineLocationAvailable= activity?.applicationContext?.let { ActivityCompat.checkSelfPermission(it, permissionFineLocation) } == PackageManager.PERMISSION_GRANTED
+        val coarseLocationAvailable= activity?.applicationContext?.let { ActivityCompat.checkSelfPermission(it, permissionCoarseLocation) } ==PackageManager.PERMISSION_GRANTED
+
+        return fineLocationAvailable && coarseLocationAvailable
+    }
+
     protected fun refreshListener() {
         // Setup refresh listener which triggers new data loading
         swipeContainer?.setOnRefreshListener { // Your code to refresh the list here.
@@ -116,9 +162,24 @@ class HomeFragment : Fragment() {
         rvRides?.addOnScrollListener(scrollListener as EndlessRecyclerViewScrollListener)
     }
 
+    @SuppressWarnings("MissingPermission")
+    //@NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    fun getMyLocation() {
+        Log.i(TAG, "GETTING  LIOCATION ")
+        map?.isMyLocationEnabled = true
+        map?.uiSettings?.isMyLocationButtonEnabled = true
+        val locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
+        Log.i(TAG, "LOCATION CLIENT " + locationClient)
+        mHomeFragmentViewModel?.getMyLocation(locationClient)
+
+    }
+
+
     companion object {
         private const val TAG = "HomeFragment"
         var adapter: RidesAdapter? = null
         var allRides: List<Ride>? = null
+        private const val PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 100
+        private const val PERMISSION_REQUEST_ACCESS_COARSE_LOCATION= 100
     }
 }

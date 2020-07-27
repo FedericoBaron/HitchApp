@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +22,7 @@ import com.example.hitchapp.adapters.MessagesAdapter
 import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
+import com.example.hitchapp.viewmodels.MessagesFragmentViewModel
 import com.parse.ParseException
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -32,9 +35,8 @@ class MessagesFragment : Fragment() {
     var messages: JSONArray? = null
     private var currentUser: User? = null
     private var layoutManager: LinearLayoutManager? = null
-    private val participants: JSONArray? = null
-    private val num_messages = 20
     private var ride: Ride? = null
+    private var mMessagesFragmentViewModel: MessagesFragmentViewModel? = null
 
     // Keep track of initial load to scroll to the bottom of the ListView
     var mFirstLoad = false
@@ -57,19 +59,7 @@ class MessagesFragment : Fragment() {
         val itemDecoration: ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvMessages?.addItemDecoration(itemDecoration)
 
-        // Create layout for one row in the list
-        // Create the adapter
-        allMessages = ArrayList()
         currentUser = ParseUser.getCurrentUser() as User
-        adapter = MessagesAdapter(context, currentUser?.objectId, allMessages)
-
-        // Set the adapter on the recycler view
-        rvMessages?.setAdapter(adapter)
-
-        // Set the layout manager on the recycler view
-        rvMessages?.setLayoutManager(LinearLayoutManager(context))
-        layoutManager = rvMessages?.getLayoutManager() as LinearLayoutManager?
-        layoutManager?.reverseLayout = false
 
         // Unwrap the user passed in via bundle, using its simple name as a key
         //driver = Parcels.unwrap(getArguments().getParcelable("user"));
@@ -79,37 +69,59 @@ class MessagesFragment : Fragment() {
             ride?.messages = JSONArray()
             save()
         }
+
+        initRecyclerView()
+
         messages = ride?.messages
+        //ride?.let { startViewModel(it) }
+
+
         queryMessages()
         setupMessagePosting()
 
-        // Make sure the Parse server is setup to configured for live queries
-        val parseLiveQueryClient: ParseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+        liveQuery()
+    }
 
-        val parseQuery: ParseQuery<Message> = ParseQuery.getQuery(Message::class.java)
+    protected fun startViewModel(ride: Ride) {
+        mMessagesFragmentViewModel = ViewModelProviders.of(this).get(MessagesFragmentViewModel::class.java)
+        mMessagesFragmentViewModel?.init(ride)
 
-        // Connect to Parse server
-        val subscriptionHandling: SubscriptionHandling<Message> = parseLiveQueryClient.subscribe(parseQuery)
-        subscriptionHandling.handleSubscribe {
-            Log.i(TAG, "Subscribed")
-        }
-        subscriptionHandling.handleEvents { query, event, `object` ->
-            Log.i(TAG, "handle")
-        }
-        subscriptionHandling.handleError { query, exception ->
-            Log.i(TAG, "ERROR")
-        }
+        // Create the observer which updates the UI.
+        val messagesObserver: Observer<List<Message>?> = Observer { messages -> // Update the UI
+            if (messages != null) {
+                for (message in messages) {
+                    Log.i(TAG, "Author: " + message?.author + ", message: " + message?.content)
+                }
+            }
+            Log.i(TAG, "change")
+            adapter?.setAll(messages)
+            adapter?.notifyDataSetChanged()
 
-        // Listen for CREATE events
-        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
-            val handler = Handler(Looper.getMainLooper())
-            Log.i(TAG, "trying to test")
-            handler.post(Runnable {
-                Log.i(TAG, "runOnUiThread")
-                adapter?.notifyDataSetChanged()
+            if (mFirstLoad) {
                 rvMessages?.scrollToPosition(0)
-            })
+                mFirstLoad = false
+            }
         }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        mMessagesFragmentViewModel?.messages?.observe(viewLifecycleOwner, messagesObserver)
+    }
+
+
+    protected fun initRecyclerView() {
+
+        // gets list of rides from livedata
+        allMessages = ArrayList()
+
+        adapter = MessagesAdapter(context, currentUser?.objectId, allMessages)
+
+        // Set the adapter on the recycler view
+        rvMessages?.adapter = adapter
+
+        // Set the layout manager on the recycler view
+        rvMessages?.layoutManager = LinearLayoutManager(context)
+        layoutManager = rvMessages?.layoutManager as LinearLayoutManager?
+        layoutManager?.reverseLayout = false
     }
 
     // Create a handler which can run code periodically
@@ -129,6 +141,7 @@ class MessagesFragment : Fragment() {
         btnSend = view?.findViewById<View>(R.id.btnSend) as Button
         // When send button is clicked, create message object on Parse
         btnSend?.setOnClickListener {
+
             val content = etMessage?.text.toString()
             val message = Message()
             message.author = currentUser
@@ -139,7 +152,7 @@ class MessagesFragment : Fragment() {
             message.saveInBackground();
             save()
             etMessage?.text = null
-            queryMessages()
+            mMessagesFragmentViewModel?.queryMessages()
         }
     }
 
@@ -171,6 +184,49 @@ class MessagesFragment : Fragment() {
             Log.i(TAG, "update save was successful!")
         }
     }
+
+    private fun liveQuery(){
+        // Make sure the Parse server is setup to configured for live queries
+        val parseLiveQueryClient: ParseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+
+        val parseQuery: ParseQuery<Message> = ParseQuery.getQuery(Message::class.java)
+
+        // Connect to Parse server
+        val subscriptionHandling: SubscriptionHandling<Message> = parseLiveQueryClient.subscribe(parseQuery)
+        subscriptionHandling.handleSubscribe {
+            Log.i(TAG, "Subscribed")
+        }
+        subscriptionHandling.handleEvents { query, event, `object` ->
+            Log.i(TAG, event.name)
+            Log.i(TAG, "handle")
+        }
+        subscriptionHandling.handleError { query, exception ->
+            Log.i(TAG, "ERROR")
+        }
+
+
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE){ parseQuery: ParseQuery<Message>, message: Message ->
+            val handler = Handler(Looper.getMainLooper())
+            Log.i(TAG, "trying to test")
+            handler.post(Runnable {
+                Log.i(TAG, "runOnUiThread")
+                adapter?.notifyDataSetChanged()
+                rvMessages?.scrollToPosition(0)
+            })
+        }
+
+        // Listen for CREATE events
+//        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE) { query, `object` ->
+//            val handler = Handler(Looper.getMainLooper())
+//            Log.i(TAG, "trying to test")
+//            handler.post(Runnable {
+//                Log.i(TAG, "runOnUiThread")
+//                adapter?.notifyDataSetChanged()
+//                rvMessages?.scrollToPosition(0)
+//            })
+//        }
+    }
+
 
     companion object {
         private const val TAG = "MessagesFragment"

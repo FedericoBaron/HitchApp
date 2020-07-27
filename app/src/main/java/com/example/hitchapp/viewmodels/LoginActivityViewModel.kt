@@ -9,7 +9,7 @@ class LoginActivityViewModel : ViewModel(){
     protected var mRepo: UserRepository? = null
 
     fun init() {
-        mRepo = UserRepository.getInstance()
+        mRepo = UserRepository.instance
     }
 
     fun loginUser(username: String, password: String, loginCallBack: LogInCallback) {

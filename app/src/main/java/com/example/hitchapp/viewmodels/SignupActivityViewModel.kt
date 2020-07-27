@@ -12,7 +12,7 @@ class SignupActivityViewModel: ViewModel(){
     private val user = User()
 
     fun init() {
-        mRepo = UserRepository.getInstance()
+        mRepo = UserRepository.instance
     }
 
     fun signupUser(username: String, password: String, email: String, firstName: String, lastName: String, college: String, signUpCallback: SignUpCallback) {

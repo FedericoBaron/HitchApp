@@ -1,19 +1,32 @@
 package com.example.hitchapp.viewmodels
 
+import android.location.Location
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hitchapp.activities.LoginActivity
+import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.models.Ride
+import com.example.hitchapp.models.User
 import com.example.hitchapp.repositories.RideRepository
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.SupportMapFragment
 import com.parse.FindCallback
+import com.parse.ParseGeoPoint
+import com.parse.ParseUser
 
 class HomeFragmentViewModel : ViewModel() {
     protected var mRides: MutableLiveData<List<Ride>>? = null
     protected var mRepo: RideRepository? = null
     protected var totalRides = 5
+    private val mapFragment: SupportMapFragment? = null
+    private val map: GoogleMap? = null
+    private val mLocationRequest: LocationRequest? = null
+    var mCurrentLocation: Location? = null
+    private val currentUser = ParseUser.getCurrentUser() as User
 
     fun init() {
         if (mRides != null) {
@@ -54,6 +67,37 @@ class HomeFragmentViewModel : ViewModel() {
 
         // Query rides from repo
         queryRides()
+    }
+
+    @SuppressWarnings("MissingPermission")
+    //@NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+    fun getMyLocation(locationClient: FusedLocationProviderClient?) {
+        Log.i(TAG, "THIS IS THE LOCATION")
+        locationClient?.lastLocation
+                ?.addOnSuccessListener { location ->
+                    onLocationChanged(location)
+                }
+                ?.addOnFailureListener { e ->
+                    Log.e(TAG, "Exception", e)
+                }
+    }
+
+    private fun onLocationChanged(location: Location?) {
+        Log.i(TAG, "location is this")
+        // GPS may be turned off
+        if (location == null) {
+            Log.i(TAG, "location is NULL")
+            return
+        }
+
+        // Report to the UI that the location was updated
+        mCurrentLocation = location
+        Log.i(TAG, "THE FINAL LIOCATION OS" + mCurrentLocation?.latitude.toString())
+
+        var geoPoint = ParseGeoPoint(location.latitude, location.longitude)
+
+        currentUser.currentLocation = geoPoint
+        currentUser.saveInBackground()
     }
 
     companion object {
