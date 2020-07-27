@@ -70,13 +70,13 @@ class MessagesFragment : Fragment() {
             save()
         }
 
-        initRecyclerView()
+
 
         messages = ride?.messages
-        //ride?.let { startViewModel(it) }
+        ride?.let { startViewModel(it) }
+        initRecyclerView()
 
-
-        queryMessages()
+        //queryMessages()
         setupMessagePosting()
 
         liveQuery()
@@ -122,6 +122,8 @@ class MessagesFragment : Fragment() {
         rvMessages?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvMessages?.layoutManager as LinearLayoutManager?
         layoutManager?.reverseLayout = false
+
+        mMessagesFragmentViewModel?.queryMessages()
     }
 
     // Create a handler which can run code periodically
@@ -151,28 +153,9 @@ class MessagesFragment : Fragment() {
             ride?.messages = messages
             message.saveInBackground();
             save()
-            queryMessages()
+            //queryMessages()
             etMessage?.text = null
-            //mMessagesFragmentViewModel?.queryMessages()
-        }
-    }
-
-    // Gets posts and notifies adapter
-    protected fun queryMessages() {
-
-        val messagesList = ride?.getList<Message>("messages")
-        for (i in messagesList?.indices!!) {
-            try {
-                messagesList[i]?.fetchIfNeeded<Message>()
-            } catch (e: ParseException) {
-                Log.e(TAG, "exception fetching messages", e)
-            }
-        }
-        adapter?.setAll(messagesList)
-        adapter?.notifyDataSetChanged()
-        if (mFirstLoad) {
-            rvMessages?.scrollToPosition(0)
-            mFirstLoad = false
+            mMessagesFragmentViewModel?.queryMessages()
         }
     }
 
