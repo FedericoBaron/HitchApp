@@ -151,8 +151,9 @@ class MessagesFragment : Fragment() {
             ride?.messages = messages
             message.saveInBackground();
             save()
+            queryMessages()
             etMessage?.text = null
-            mMessagesFragmentViewModel?.queryMessages()
+            //mMessagesFragmentViewModel?.queryMessages()
         }
     }
 

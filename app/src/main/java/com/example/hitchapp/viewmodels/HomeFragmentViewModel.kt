@@ -93,6 +93,7 @@ class HomeFragmentViewModel : ViewModel() {
         // Report to the UI that the location was updated
         mCurrentLocation = location
         Log.i(TAG, "THE FINAL LIOCATION OS" + mCurrentLocation?.latitude.toString())
+        Log.i(TAG, "THE FINAL LIOCATION OS" + mCurrentLocation?.longitude.toString())
 
         var geoPoint = ParseGeoPoint(location.latitude, location.longitude)
 

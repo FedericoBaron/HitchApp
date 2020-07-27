@@ -200,10 +200,11 @@ class ComposeFragment : Fragment() {
                 val address = place?.address
                 if(toSelected) {
                     etTo?.setText(address)
+                }
+                else {
+                    etFrom?.setText(address)
                     fromLocation = place?.latLng?.latitude?.let { place?.latLng?.longitude?.let { it1 -> ParseGeoPoint(it, it1) } }
                 }
-                else
-                    etFrom?.setText(address)
                 // do query with address
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.

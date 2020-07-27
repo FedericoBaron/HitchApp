@@ -117,6 +117,8 @@ class HomeFragment : Fragment() {
         // Set the layout manager on the recycler view
         rvRides?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRides?.layoutManager as LinearLayoutManager?
+
+        mHomeFragmentViewModel?.queryRides()
     }
 
     private fun requestPermissions(){
