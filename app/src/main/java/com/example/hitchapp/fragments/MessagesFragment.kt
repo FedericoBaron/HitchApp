@@ -159,6 +159,25 @@ class MessagesFragment : Fragment() {
         }
     }
 
+    // Gets posts and notifies adapter
+    protected fun queryMessages() {
+
+        val messagesList = ride?.getList<Message>("messages")
+        for (i in messagesList?.indices!!) {
+            try {
+                messagesList[i]?.fetchIfNeeded<Message>()
+            } catch (e: ParseException) {
+                Log.e(TAG, "exception fetching messages", e)
+            }
+        }
+        adapter?.setAll(messagesList)
+        adapter?.notifyDataSetChanged()
+        if (mFirstLoad) {
+            rvMessages?.scrollToPosition(0)
+            mFirstLoad = false
+        }
+    }
+
     private fun save() {
         ride?.saveInBackground { e ->
             if (e != null) {

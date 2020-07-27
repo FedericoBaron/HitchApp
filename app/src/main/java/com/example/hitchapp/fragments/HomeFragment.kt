@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
         rvRides?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRides?.layoutManager as LinearLayoutManager?
 
-        mHomeFragmentViewModel?.queryRides()
+        //mHomeFragmentViewModel?.queryRides()
     }
 
     private fun requestPermissions(){

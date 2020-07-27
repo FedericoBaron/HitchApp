@@ -17,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.parse.FindCallback
 import com.parse.ParseGeoPoint
 import com.parse.ParseUser
+import java.util.*
 
 class HomeFragmentViewModel : ViewModel() {
     protected var mRides: MutableLiveData<List<Ride>>? = null
@@ -49,6 +50,11 @@ class HomeFragmentViewModel : ViewModel() {
 
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
+                Log.i(MyRidesFragmentViewModel.TAG, rides.toString())
+                for(i in 0 .. rides.size -1) {
+                    if (rides.get(i).departureDate?.compareTo(Calendar.getInstance().time as Date)!! > 0)
+                        Log.i(MyRidesFragmentViewModel.TAG, rides.get(i).departureDate.toString())
+                }
                 Log.i(TAG, rides.toString())
                 mRides?.postValue(rides)
             }

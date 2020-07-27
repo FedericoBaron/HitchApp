@@ -6,6 +6,7 @@ import com.parse.ParseObject
 import com.parse.ParseUser
 import org.json.JSONArray
 import org.parceler.Parcel
+import java.util.*
 
 @Parcel(analyze = [Ride::class])
 @ParseClassName("Ride")
@@ -53,8 +54,8 @@ class Ride : ParseObject() {
         }
 
 
-    var departureDate: String?
-        get() = getString(KEY_DEPARTURE_DATE)
+    var departureDate: Date?
+        get() = getDate(KEY_DEPARTURE_DATE)
         set(time) {
             time?.let { put(KEY_DEPARTURE_DATE, it) }
         }

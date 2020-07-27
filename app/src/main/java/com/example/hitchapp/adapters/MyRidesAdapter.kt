@@ -19,6 +19,7 @@ import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import org.parceler.Parcels
+import java.text.SimpleDateFormat
 
 class MyRidesAdapter(private val context: Context, private val rides: MutableList<Ride>) : RecyclerView.Adapter<MyRidesAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,6 +56,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
+        private val DateFor: SimpleDateFormat? = SimpleDateFormat("dd/MM/yyyy")
         private val tvFirstName: TextView = itemView.findViewById(R.id.tvFirstName)
         private val tvLastName: TextView = itemView.findViewById(R.id.tvLastName)
         private val ivProfilePicture: ImageView = itemView.findViewById(R.id.ivProfilePicure)
@@ -73,7 +75,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
             tvFrom.text = ride.from
             tvTo.text = ride.to
             tvDepartureTime.text = ride.departureTime
-            tvDepartureDate.text = ride.departureDate
+            tvDepartureDate.text = DateFor?.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
             val profile = user.profilePicture
             if (profile != null) {

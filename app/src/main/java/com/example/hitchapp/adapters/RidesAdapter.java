@@ -29,6 +29,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> {
@@ -117,6 +118,8 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
         }
 
         public void bind(Ride ride) {
+            SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
+
             // Bind the ride data to the view elements
             User user = (User) ride.getDriver();
             tvFirstName.setText(user.getFirstName());
@@ -124,7 +127,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             tvFrom.setText(ride.getFrom());
             tvTo.setText(ride.getTo());
             tvDepartureTime.setText(ride.getDepartureTime());
-            tvDepartureDate.setText(ride.getDepartureDate());
+            tvDepartureDate.setText(DateFor.format(ride.getDepartureDate()));
             tvPrice.setText(String.valueOf(ride.getPrice()));
             if(ParseUser.getCurrentUser().getObjectId().equals(ride.getDriver().getObjectId()))
                 btnRequest.setVisibility(View.GONE);

@@ -27,6 +27,8 @@ import com.parse.SaveCallback;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHolder> {
@@ -90,6 +92,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         private TextView tvPrice;
         protected Button btnAccept;
         protected Button btnDecline;
+        SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -130,12 +133,14 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                 e.printStackTrace();
             }
 
+
+
             tvFirstName.setText(requester.getFirstName());
             tvLastName.setText(requester.getLastName());
             tvFrom.setText(ride.getFrom());
             tvTo.setText(ride.getTo());
             tvDepartureTime.setText(ride.getDepartureTime());
-            tvDepartureDate.setText(ride.getDepartureDate());
+            tvDepartureDate.setText(DateFor.format(ride.getDepartureDate()));
             tvPrice.setText(String.valueOf(ride.getPrice()));
 
             ParseFile profile = requester.getProfilePicture();

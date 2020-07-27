@@ -1,5 +1,6 @@
 package com.example.hitchapp.viewmodels
 
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.RideRepository
 import com.example.hitchapp.repositories.RideRepository.Companion.instance
 import com.parse.FindCallback
+import java.util.*
 
 class MyRidesFragmentViewModel : ViewModel() {
     protected var mRides: MutableLiveData<List<Ride>>? = null
@@ -33,7 +35,6 @@ class MyRidesFragmentViewModel : ViewModel() {
     fun queryMyRides() {
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
-                Log.i(TAG, rides.toString())
                 mRides?.postValue(rides)
             }
             else{

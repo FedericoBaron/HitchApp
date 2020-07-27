@@ -8,6 +8,7 @@ import com.parse.ParseGeoPoint
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import org.json.JSONArray
+import java.util.*
 
 class ComposeFragmentViewModel : ViewModel(){
 
@@ -21,7 +22,7 @@ class ComposeFragmentViewModel : ViewModel(){
     }
 
     // Adds every aspect of the ride to a new Ride object and calls saveRide repo
-    fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String, fromLocation: ParseGeoPoint?, saveRideCallback: SaveCallback) {
+    fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, fromLocation: ParseGeoPoint?, saveRideCallback: SaveCallback) {
 
         // Sets ride to be everything that was set by user
         val ride = Ride()

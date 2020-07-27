@@ -43,6 +43,8 @@ class ComposeFragment : Fragment() {
     private var toSelected = false
     private var mComposeFragmentViewModel: ComposeFragmentViewModel? = null
     private var fromLocation: ParseGeoPoint? = null
+    private var departureDate: Date? = null
+    private var newCal: Calendar = Calendar.getInstance()
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -85,7 +87,8 @@ class ComposeFragment : Fragment() {
             val from = etFrom?.text.toString()
             val to = etTo?.text.toString()
             val price = etPrice?.text.toString()
-            val departureDate = etDepartureDate?.text.toString()
+            //val departureDate = etDepartureDate?.text.toString()
+            val departureDate = departureDate
             val departureTime = etDepartureTime?.text.toString()
 
             // check if any of the input fields are still empty
@@ -101,7 +104,7 @@ class ComposeFragment : Fragment() {
                 Toast.makeText(context, "price cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
-            if (departureDate.isEmpty()) {
+            if (departureDate == null) {
                 Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
@@ -116,7 +119,7 @@ class ComposeFragment : Fragment() {
 
 
     // Save ride to the backend
-    private fun saveRide(from: String, to: String, price: String, departureDate: String, departureTime: String) {
+    private fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String) {
         val saveRideCallback = SaveCallback {e ->
             if (e == null) {
                 // Empties all edit text forms for next time
@@ -204,7 +207,9 @@ class ComposeFragment : Fragment() {
                 else {
                     etFrom?.setText(address)
                     fromLocation = place?.latLng?.latitude?.let { place?.latLng?.longitude?.let { it1 -> ParseGeoPoint(it, it1) } }
+
                 }
+
                 // do query with address
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -225,9 +230,16 @@ class ComposeFragment : Fragment() {
         // Edit departure time button clicked
         etDepartureDate?.setOnClickListener(View.OnClickListener {
             val dpd = context?.let { it1 ->
-                DatePickerDialog(it1, DatePickerDialog.OnDateSetListener { view, mYear, mMonth, mDay ->
+                DatePickerDialog(it1, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                     // Set to textView
-                    etDepartureDate?.setText("" + mDay + "/" + mMonth + "/" + mYear)
+                    //departureDate = Date(year, month, dayOfMonth)
+
+                    newCal.set(Calendar.YEAR, year)
+                    newCal.set(Calendar.MONTH, monthOfYear)
+                    newCal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    departureDate = newCal.time
+                    var month = monthOfYear +1
+                    etDepartureDate?.setText("" + dayOfMonth + "/" + month + "/" + year)
                 }, year, month, day)
             }
 
@@ -247,13 +259,16 @@ class ComposeFragment : Fragment() {
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
 
+                newCal.set(Calendar.HOUR_OF_DAY, hour)
+                newCal.set(Calendar.MINUTE, minute)
+                departureDate = newCal.time
                 // Sets AM or PM accordingly
                 var amOrPm: String = if(hour >= 12)
                     "PM"
                 else{
                     "AM"
                 }
-                etDepartureTime?.setText("@" + SimpleDateFormat("HH:mm").format(cal.time) + amOrPm)
+                etDepartureTime?.setText("@" + SimpleDateFormat("HH:mm").format(departureDate) + amOrPm)
             }
             val dpd = TimePickerDialog(context, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true)
             dpd.show()
