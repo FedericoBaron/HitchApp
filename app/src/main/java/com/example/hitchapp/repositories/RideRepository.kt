@@ -13,12 +13,17 @@ class RideRepository {
         val query = ParseQuery.getQuery(Ride::class.java)
         query.include(Ride.KEY_DRIVER)
         var currentUser: User = ParseUser.getCurrentUser() as User
-        query.whereWithinMiles(Ride.KEY_FROM_LOCATION, currentUser.currentLocation, 100.0)
+
+        // get rides within 20 miles
+        query.whereWithinMiles(Ride.KEY_FROM_LOCATION, currentUser.currentLocation, 20.0)
+
+        // Get only rides that are scheduled
+        query.whereEqualTo(Ride.KEY_STATE, "scheduled")
         // Set a limit
         query.limit = rides
 
-        // Sort by created at
-        query.addDescendingOrder("createdAt")
+        // Sort by departure date
+        query.addAscendingOrder("departureDate")
 
         // Finds the posts asynchronously
         query.findInBackground(findCallback)

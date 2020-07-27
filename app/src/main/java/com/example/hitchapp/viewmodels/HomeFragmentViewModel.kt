@@ -50,10 +50,14 @@ class HomeFragmentViewModel : ViewModel() {
 
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
-                Log.i(MyRidesFragmentViewModel.TAG, rides.toString())
-                for(i in 0 .. rides.size -1) {
-                    if (rides.get(i).departureDate?.compareTo(Calendar.getInstance().time as Date)!! > 0)
-                        Log.i(MyRidesFragmentViewModel.TAG, rides.get(i).departureDate.toString())
+                Log.i(TAG, rides.toString())
+                Log.i(TAG, "look " + rides.toString())
+                for(i in 0 until rides.size) {
+                    if (rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
+                        rides[i].state = "finished"
+                        rides[i].save()
+                        Log.i(TAG, rides[i].departureDate.toString())
+                    }
                 }
                 Log.i(TAG, rides.toString())
                 mRides?.postValue(rides)
