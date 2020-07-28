@@ -1,8 +1,6 @@
 package com.example.hitchapp.fragments
 
-import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.hitchapp.EndlessRecyclerViewScrollListener
+import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.models.Ride

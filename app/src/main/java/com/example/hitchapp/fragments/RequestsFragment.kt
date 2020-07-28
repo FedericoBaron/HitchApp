@@ -14,15 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.hitchapp.EndlessRecyclerViewScrollListener
+import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RequestsAdapter
 import com.example.hitchapp.models.Request
-import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.RequestsFragmentViewModel
-import com.parse.FindCallback
-import com.parse.ParseQuery
-import com.parse.ParseUser
 import java.util.*
 
 class RequestsFragment : Fragment() {

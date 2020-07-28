@@ -42,6 +42,10 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         notifyDataSetChanged()
     }
 
+    fun getItem(position: Int): Ride? {
+        return rides[position]
+    }
+
     // Add a list of items -- change to type used
     fun addAll(list: Collection<Ride?>) {
         rides.addAll(list as Collection<Ride>)
@@ -54,6 +58,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         notifyDataSetChanged()
     }
 
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         private val dateFor: SimpleDateFormat? = SimpleDateFormat("MM/dd/yyyy")
@@ -65,9 +70,9 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val tvDepartureTime: TextView = itemView.findViewById(R.id.tvDepartureTime)
         private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
-        private val btnChat: Button = itemView.findViewById(R.id.btnChat)
+        //private val btnChat: Button = itemView.findViewById(R.id.btnChat)
         private val tvState: TextView = itemView.findViewById(R.id.tvState)
-        private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
+        //private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
         private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
 
 
@@ -102,44 +107,44 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         }
 
         override fun onClick(v: View) {}
-        private fun btnChatClickListener() {
-            btnChat.setOnClickListener { v ->
-                val position = adapterPosition
-                // Make sure the position is valid i.e actually exists in the view
-                if (position != RecyclerView.NO_POSITION) {
-                    // Get the ride at the position, this won't work if the class is static
-                    val ride = rides[position]
-                    val bundle = Bundle()
-                    Log.i(TAG, ride.toString())
-                    bundle.putParcelable("ride", ride)
-                    val fragment: Fragment = MessagesFragment()
-                    fragment.arguments = bundle
-                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
-                            .replace(R.id.flContainer, fragment)
-                            .addToBackStack(TAG)
-                            .commit()
-                }
-            }
-        }
-        private fun btnEditClickListener() {
-            btnEdit.setOnClickListener { v ->
-                val position = adapterPosition
-                // Make sure the position is valid i.e actually exists in the view
-                if (position != RecyclerView.NO_POSITION) {
-                    // Get the ride at the position, this won't work if the class is static
-                    val ride = rides[position]
-                    val bundle = Bundle()
-                    Log.i(TAG, ride.toString())
-                    bundle.putParcelable("ride", ride)
-                    val fragment: Fragment = EditRideFragment()
-                    fragment.arguments = bundle
-                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
-                            .replace(R.id.flContainer, fragment)
-                            .addToBackStack(TAG)
-                            .commit()
-                }
-            }
-        }
+//        private fun btnChatClickListener() {
+//            btnChat.setOnClickListener { v ->
+//                val position = adapterPosition
+//                // Make sure the position is valid i.e actually exists in the view
+//                if (position != RecyclerView.NO_POSITION) {
+//                    // Get the ride at the position, this won't work if the class is static
+//                    val ride = rides[position]
+//                    val bundle = Bundle()
+//                    Log.i(TAG, ride.toString())
+//                    bundle.putParcelable("ride", ride)
+//                    val fragment: Fragment = MessagesFragment()
+//                    fragment.arguments = bundle
+//                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
+//                            .replace(R.id.flContainer, fragment)
+//                            .addToBackStack(TAG)
+//                            .commit()
+//                }
+//            }
+//        }
+//        private fun btnEditClickListener() {
+//            btnEdit.setOnClickListener { v ->
+//                val position = adapterPosition
+//                // Make sure the position is valid i.e actually exists in the view
+//                if (position != RecyclerView.NO_POSITION) {
+//                    // Get the ride at the position, this won't work if the class is static
+//                    val ride = rides[position]
+//                    val bundle = Bundle()
+//                    Log.i(TAG, ride.toString())
+//                    bundle.putParcelable("ride", ride)
+//                    val fragment: Fragment = EditRideFragment()
+//                    fragment.arguments = bundle
+//                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
+//                            .replace(R.id.flContainer, fragment)
+//                            .addToBackStack(TAG)
+//                            .commit()
+//                }
+//            }
+//        }
 
         // When someone's profile pic gets clicked you get taken to their profile
         private fun profilePicListener() {
@@ -173,9 +178,9 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
             profilePicListener()
 
             // Chat button listener
-            btnChatClickListener()
+            //btnChatClickListener()
 
-            btnEditClickListener()
+            //btnEditClickListener()
         }
     }
 
