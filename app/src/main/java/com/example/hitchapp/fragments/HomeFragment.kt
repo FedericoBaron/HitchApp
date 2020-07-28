@@ -109,7 +109,7 @@ class HomeFragment : Fragment() {
 
         // gets list of rides from livedata
         allRides = ArrayList()
-        adapter = RidesAdapter(context, allRides)
+        adapter = context?.let { RidesAdapter(it, allRides as ArrayList<Ride>) }
 
         // Set the adapter on the recycler view
         rvRides?.adapter = adapter

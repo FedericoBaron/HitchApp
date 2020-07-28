@@ -70,6 +70,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val tvState: TextView = itemView.findViewById(R.id.tvState)
         private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
 
+
         fun bind(ride: Ride) {
             // Bind the ride data to the view elements
 

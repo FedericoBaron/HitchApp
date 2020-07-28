@@ -203,4 +203,17 @@
         android:textSize="18sp"
         tools:text="Finished" />
 
+    <TextView
+        android:id="@+id/tvPerPerson"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_below="@+id/tvDepartureDate"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/tvPrice"
+        android:gravity="center_vertical"
+        android:text="per person"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
 </RelativeLayout>

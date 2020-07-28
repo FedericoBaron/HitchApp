@@ -147,8 +147,8 @@ open class ComposeFragment : Fragment() {
 
         mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, pricePerParticipant, saveRideCallback)
 
-        // Changes to home fragment
-        val fragment: Fragment = HomeFragment()
+        // Changes to my rides fragment
+        val fragment: Fragment = MyRidesFragment()
         (context as FragmentActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.flContainer, fragment)
                 .commit()
