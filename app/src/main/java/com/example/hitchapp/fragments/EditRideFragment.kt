@@ -42,9 +42,6 @@ class EditRideFragment: ComposeFragment() {
         val bundle = this.arguments
         ride = bundle?.getParcelable<Parcelable>("ride") as Ride?
 
-        if(departureDate == null)
-            departureDate = ride?.departureDate
-
         etFrom?.setText(ride?.from)
         etTo?.setText(ride?.to)
         etDepartureTime?.setText(ride?.departureTime)

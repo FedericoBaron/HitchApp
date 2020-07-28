@@ -44,7 +44,7 @@ open class ComposeFragment : Fragment() {
     private var mComposeFragmentViewModel: ComposeFragmentViewModel? = null
     protected var fromLocation: ParseGeoPoint? = null
     protected var departureDate: Date? = null
-    private var newCal: Calendar = Calendar.getInstance()
+    protected var newCal: Calendar = Calendar.getInstance()
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
