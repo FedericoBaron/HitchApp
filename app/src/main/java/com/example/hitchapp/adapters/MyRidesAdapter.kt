@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hitchapp.R
+import com.example.hitchapp.fragments.EditRideFragment
 import com.example.hitchapp.fragments.MessagesFragment
 import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Ride
@@ -56,7 +57,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val DateFor: SimpleDateFormat? = SimpleDateFormat("dd/MM/yyyy")
+        private val DateFor: SimpleDateFormat? = SimpleDateFormat("MM/dd/yyyy")
         private val tvFirstName: TextView = itemView.findViewById(R.id.tvFirstName)
         private val tvLastName: TextView = itemView.findViewById(R.id.tvLastName)
         private val ivProfilePicture: ImageView = itemView.findViewById(R.id.ivProfilePicure)
@@ -67,6 +68,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
         private val btnChat: Button = itemView.findViewById(R.id.btnChat)
         private val tvState: TextView = itemView.findViewById(R.id.tvState)
+        private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
 
         fun bind(ride: Ride) {
             // Bind the ride data to the view elements
@@ -110,6 +112,25 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
                 }
             }
         }
+        private fun btnEditClickListener() {
+            btnEdit.setOnClickListener { v ->
+                val position = adapterPosition
+                // Make sure the position is valid i.e actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // Get the ride at the position, this won't work if the class is static
+                    val ride = rides[position]
+                    val bundle = Bundle()
+                    Log.i(TAG, ride.toString())
+                    bundle.putParcelable("ride", ride)
+                    val fragment: Fragment = EditRideFragment()
+                    fragment.arguments = bundle
+                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
+                            .replace(R.id.flContainer, fragment)
+                            .addToBackStack(TAG)
+                            .commit()
+                }
+            }
+        }
 
         // When someone's profile pic gets clicked you get taken to their profile
         private fun profilePicListener() {
@@ -144,6 +165,8 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
 
             // Chat button listener
             btnChatClickListener()
+
+            btnEditClickListener()
         }
     }
 

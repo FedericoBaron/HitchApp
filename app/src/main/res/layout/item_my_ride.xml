@@ -166,6 +166,17 @@
         android:background="@color/colorPrimary"
         android:text="chat" />
 
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnChat"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/colorPrimary"
+        android:text="edit post" />
+
     <TextView
         android:id="@+id/tvStateText"
         android:layout_width="wrap_content"

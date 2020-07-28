@@ -31,19 +31,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ComposeFragment : Fragment() {
-    private var etFrom: EditText? = null
-    private var etTo: EditText? = null
-    private var etDepartureTime: EditText? = null
-    private var etDepartureDate: EditText? = null
-    private var etPrice: EditText? = null
-    private var btnPost: Button? = null
-    private var switchPricePerParticipant: Switch? = null
+open class ComposeFragment : Fragment() {
+    protected var etFrom: EditText? = null
+    protected var etTo: EditText? = null
+    protected var etDepartureTime: EditText? = null
+    protected var etDepartureDate: EditText? = null
+    protected var etPrice: EditText? = null
+    protected var btnPost: Button? = null
+    protected var switchPricePerParticipant: Switch? = null
     private val REQUEST_CODE = 20
     private var toSelected = false
     private var mComposeFragmentViewModel: ComposeFragmentViewModel? = null
-    private var fromLocation: ParseGeoPoint? = null
-    private var departureDate: Date? = null
+    protected var fromLocation: ParseGeoPoint? = null
+    protected var departureDate: Date? = null
     private var newCal: Calendar = Calendar.getInstance()
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -58,14 +58,8 @@ class ComposeFragment : Fragment() {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        etFrom = view.findViewById(R.id.etFrom);
-        etTo = view.findViewById(R.id.etTo);
-        etPrice = view.findViewById(R.id.etPrice);
-        etDepartureTime = view.findViewById(R.id.etDepartureTime)
-        etDepartureDate = view.findViewById(R.id.etDepartureDate)
-        btnPost = view.findViewById(R.id.btnPost)
-        switchPricePerParticipant = view.findViewById(R.id.switchPricePerParticipant)
 
+        wireUI()
 
         // Init ViewModel
         mComposeFragmentViewModel = ViewModelProviders.of(this).get(ComposeFragmentViewModel::class.java)
@@ -77,6 +71,16 @@ class ComposeFragment : Fragment() {
         editToListener()
         btnPostRideListener()
 
+    }
+
+    protected fun wireUI(){
+        etFrom = view?.findViewById(R.id.etFrom);
+        etTo = view?.findViewById(R.id.etTo);
+        etPrice = view?.findViewById(R.id.etPrice);
+        etDepartureTime = view?.findViewById(R.id.etDepartureTime)
+        etDepartureDate = view?.findViewById(R.id.etDepartureDate)
+        btnPost = view?.findViewById(R.id.btnPost)
+        switchPricePerParticipant = view?.findViewById(R.id.switchPricePerParticipant)
     }
 
     // Listens for when the post ride button gets clicked
@@ -105,7 +109,7 @@ class ComposeFragment : Fragment() {
                 return@OnClickListener
             }
             if (departureDate == null) {
-                Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "departure date cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
             if (departureTime.isEmpty()) {
@@ -239,7 +243,7 @@ class ComposeFragment : Fragment() {
                     newCal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     departureDate = newCal.time
                     var month = monthOfYear +1
-                    etDepartureDate?.setText("" + dayOfMonth + "/" + month + "/" + year)
+                    etDepartureDate?.setText("" + month + "/" + dayOfMonth + "/" + year)
                 }, year, month, day)
             }
 

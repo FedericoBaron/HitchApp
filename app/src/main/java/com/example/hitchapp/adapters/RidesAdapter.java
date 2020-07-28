@@ -118,7 +118,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
         }
 
         public void bind(Ride ride) {
-            SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat DateFor = new SimpleDateFormat("MM/dd/yyyy");
 
             // Bind the ride data to the view elements
             User user = (User) ride.getDriver();

@@ -92,7 +92,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         private TextView tvPrice;
         protected Button btnAccept;
         protected Button btnDecline;
-        SimpleDateFormat DateFor = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat DateFor = new SimpleDateFormat("MM/dd/yyyy");
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
