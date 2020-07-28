@@ -87,7 +87,7 @@ class RequestsFragment : Fragment() {
 
         // gets list of rides from livedata
         allRequests = ArrayList()
-        adapter = RequestsAdapter(context, allRequests)
+        adapter = context?.let { RequestsAdapter(it, allRequests as ArrayList<Request>) }
 
         // Set the adapter on the recycler view
         rvRequests?.adapter = adapter
