@@ -58,18 +58,19 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val tvFirstName: TextView
-        private val tvLastName: TextView
-        private val ivProfilePicture: ImageView
-        private val tvFrom: TextView
-        private val tvTo: TextView
-        private val tvDepartureTime: TextView
-        private val tvDepartureDate: TextView
-        private val tvPrice: TextView
-        private val tvPerPerson: TextView
-        protected var btnRequest: Button
+        private val tvFirstName: TextView = itemView.findViewById(R.id.tvFirstName)
+        private val tvLastName: TextView = itemView.findViewById(R.id.tvLastName)
+        private val ivProfilePicture: ImageView = itemView.findViewById(R.id.ivProfilePicure)
+        private val tvFrom: TextView = itemView.findViewById(R.id.tvFrom)
+        private val tvTo: TextView = itemView.findViewById(R.id.tvTo)
+        private val tvDepartureTime: TextView = itemView.findViewById(R.id.tvDepartureTime)
+        private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
+        private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
+        private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
+        private var btnRequest: Button = itemView.findViewById(R.id.btnRequest)
+
         fun bind(ride: Ride) {
-            val DateFor = SimpleDateFormat("MM/dd/yyyy")
+            val dateFor = SimpleDateFormat("MM/dd/yyyy")
 
             // Bind the ride data to the view elements
             val user = ride.driver as User?
@@ -78,7 +79,7 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
             tvFrom.text = ride.from
             tvTo.text = ride.to
             tvDepartureTime.text = ride.departureTime
-            tvDepartureDate.text = DateFor.format(ride.departureDate)
+            tvDepartureDate.text = dateFor.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
             if (ParseUser.getCurrentUser().objectId == ride.driver!!.objectId) btnRequest.visibility = View.GONE else {
                 btnRequest.visibility = View.VISIBLE
@@ -180,16 +181,6 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
         }
 
         init {
-            tvFirstName = itemView.findViewById(R.id.tvFirstName)
-            tvLastName = itemView.findViewById(R.id.tvLastName)
-            tvFrom = itemView.findViewById(R.id.tvFrom)
-            tvTo = itemView.findViewById(R.id.tvTo)
-            tvDepartureDate = itemView.findViewById(R.id.tvDepartureDate)
-            tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime)
-            tvPrice = itemView.findViewById(R.id.tvPrice)
-            ivProfilePicture = itemView.findViewById(R.id.ivProfilePicure)
-            btnRequest = itemView.findViewById(R.id.btnRequest)
-            tvPerPerson = itemView.findViewById(R.id.tvPerPerson)
 
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this)

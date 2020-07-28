@@ -48,7 +48,7 @@ class RequestsFragment : Fragment() {
         startViewModel()
 
         // Show progress bar loading
-        pbLoading?.setVisibility(View.VISIBLE)
+        pbLoading?.visibility = View.VISIBLE
         initRecyclerView()
 
         // Lookup the swipe container view

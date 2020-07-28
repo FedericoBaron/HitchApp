@@ -56,17 +56,18 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val tvFirstName: TextView
-        private val tvLastName: TextView
-        private val ivProfilePicture: ImageView
-        private val tvFrom: TextView
-        private val tvTo: TextView
-        private val tvDepartureTime: TextView
-        private val tvDepartureDate: TextView
-        private val tvPrice: TextView
-        protected var btnAccept: Button
-        protected var btnDecline: Button
-        var DateFor = SimpleDateFormat("MM/dd/yyyy")
+        private val tvFirstName: TextView = itemView.findViewById(R.id.tvFirstName)
+        private val tvLastName: TextView = itemView.findViewById(R.id.tvLastName)
+        private val ivProfilePicture: ImageView = itemView.findViewById(R.id.ivProfilePicure)
+        private val tvFrom: TextView = itemView.findViewById(R.id.tvFrom)
+        private val tvTo: TextView = itemView.findViewById(R.id.tvTo)
+        private val tvDepartureTime: TextView = itemView.findViewById(R.id.tvDepartureTime)
+        private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
+        private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
+        private var btnAccept: Button = itemView.findViewById(R.id.btnAccept)
+        private var btnDecline: Button = itemView.findViewById(R.id.btnDecline)
+        private var dateFor = SimpleDateFormat("MM/dd/yyyy")
+
         fun bind(request: Request) {
             // Bind the ride data to the view elements
             val requester = request.requester as User?
@@ -82,7 +83,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             tvFrom.text = ride!!.from
             tvTo.text = ride.to
             tvDepartureTime.text = ride.departureTime
-            tvDepartureDate.text = DateFor.format(ride.departureDate)
+            tvDepartureDate.text = dateFor.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
             val profile = requester.profilePicture
             if (profile != null) {
@@ -159,17 +160,6 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
         }
 
         init {
-            tvFirstName = itemView.findViewById(R.id.tvFirstName)
-            tvLastName = itemView.findViewById(R.id.tvLastName)
-            tvFrom = itemView.findViewById(R.id.tvFrom)
-            tvTo = itemView.findViewById(R.id.tvTo)
-            tvDepartureDate = itemView.findViewById(R.id.tvDepartureDate)
-            tvDepartureTime = itemView.findViewById(R.id.tvDepartureTime)
-            tvPrice = itemView.findViewById(R.id.tvPrice)
-            ivProfilePicture = itemView.findViewById(R.id.ivProfilePicure)
-            btnAccept = itemView.findViewById(R.id.btnAccept)
-            btnDecline = itemView.findViewById(R.id.btnDecline)
-
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this)
 

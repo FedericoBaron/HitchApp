@@ -83,15 +83,10 @@ class MessagesAdapter(private val mContext: Context, private val mUserId: String
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageOther: ImageView
-        var imageMe: ImageView
-        var body: TextView
+        var imageOther: ImageView = itemView.findViewById<View>(R.id.ivProfileOther) as ImageView
+        var imageMe: ImageView = itemView.findViewById<View>(R.id.ivProfileMe) as ImageView
+        var body: TextView = itemView.findViewById<View>(R.id.tvBody) as TextView
 
-        init {
-            imageOther = itemView.findViewById<View>(R.id.ivProfileOther) as ImageView
-            imageMe = itemView.findViewById<View>(R.id.ivProfileMe) as ImageView
-            body = itemView.findViewById<View>(R.id.tvBody) as TextView
-        }
     }
 
     companion object {
