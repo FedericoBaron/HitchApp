@@ -113,7 +113,7 @@ class MessagesFragment : Fragment() {
         // gets list of rides from livedata
         allMessages = ArrayList()
 
-        adapter = MessagesAdapter(context, currentUser?.objectId, allMessages)
+        adapter = context?.let { currentUser?.objectId?.let { it1 -> MessagesAdapter(it, it1, allMessages as ArrayList<Message>) } }
 
         // Set the adapter on the recycler view
         rvMessages?.adapter = adapter
