@@ -18,7 +18,7 @@ class RideRepository {
         query.whereWithinMiles(Ride.KEY_FROM_LOCATION, currentUser.currentLocation, 20.0)
 
         // Get only rides that are scheduled
-        query.whereEqualTo(Ride.KEY_STATE, "scheduled")
+        query.whereEqualTo(Ride.KEY_STATE, "Scheduled")
         // Set a limit
         query.limit = rides
 

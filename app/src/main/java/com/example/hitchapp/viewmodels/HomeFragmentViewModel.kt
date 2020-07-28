@@ -20,13 +20,10 @@ import com.parse.ParseUser
 import java.util.*
 
 class HomeFragmentViewModel : ViewModel() {
-    protected var mRides: MutableLiveData<List<Ride>>? = null
-    protected var mRepo: RideRepository? = null
-    protected var totalRides = 5
-    private val mapFragment: SupportMapFragment? = null
-    private val map: GoogleMap? = null
-    private val mLocationRequest: LocationRequest? = null
-    var mCurrentLocation: Location? = null
+    private var mRides: MutableLiveData<List<Ride>>? = null
+    private var mRepo: RideRepository? = null
+    private var totalRides = 5
+    private var mCurrentLocation: Location? = null
     private val currentUser = ParseUser.getCurrentUser() as User
 
     fun init() {
@@ -50,11 +47,9 @@ class HomeFragmentViewModel : ViewModel() {
 
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
-                Log.i(TAG, rides.toString())
-                Log.i(TAG, "look " + rides.toString())
                 for(i in 0 until rides.size) {
                     if (rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
-                        rides[i].state = "finished"
+                        rides[i].state = "Finished"
                         rides[i].save()
                         Log.i(TAG, rides[i].departureDate.toString())
                     }

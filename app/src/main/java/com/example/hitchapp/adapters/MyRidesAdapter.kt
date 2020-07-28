@@ -66,9 +66,11 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
         private val btnChat: Button = itemView.findViewById(R.id.btnChat)
+        private val tvState: TextView = itemView.findViewById(R.id.tvState)
 
         fun bind(ride: Ride) {
             // Bind the ride data to the view elements
+
             val user = ride.driver as User
             tvFirstName.text = user.firstName
             tvLastName.text = user.lastName
@@ -77,6 +79,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
             tvDepartureTime.text = ride.departureTime
             tvDepartureDate.text = DateFor?.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
+            tvState.text = ride.state
             val profile = user.profilePicture
             if (profile != null) {
                 Glide.with(context)
