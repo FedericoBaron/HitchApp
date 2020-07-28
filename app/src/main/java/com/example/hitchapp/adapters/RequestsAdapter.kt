@@ -64,6 +64,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
         private val tvDepartureTime: TextView = itemView.findViewById(R.id.tvDepartureTime)
         private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
+        private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
         private var btnAccept: Button = itemView.findViewById(R.id.btnAccept)
         private var btnDecline: Button = itemView.findViewById(R.id.btnDecline)
         private var dateFor = SimpleDateFormat("MM/dd/yyyy")
@@ -85,6 +86,8 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             tvDepartureTime.text = ride.departureTime
             tvDepartureDate.text = dateFor.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
+
+            // Set profile picture with Glide
             val profile = requester.profilePicture
             if (profile != null) {
                 Glide.with(context)
@@ -92,6 +95,15 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
                         .fitCenter()
                         .circleCrop()
                         .into(ivProfilePicture)
+            }
+
+            // If price is per person then show it
+            if (ride.pricePerParticipant) {
+                tvPerPerson.visibility = View.VISIBLE
+            }
+            // Otherwise don't show it
+            else {
+                tvPerPerson.visibility = View.GONE
             }
         }
 

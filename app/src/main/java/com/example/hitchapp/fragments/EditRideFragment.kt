@@ -21,7 +21,7 @@ import java.util.*
 class EditRideFragment: ComposeFragment() {
 
     private var ride: Ride? = null
-    var DateFor = SimpleDateFormat("MM/dd/yyyy")
+    private var dateFor = SimpleDateFormat("MM/dd/yyyy")
     private var mEditRideFragmentViewModel: EditRideFragmentViewModel? = null
 
 
@@ -42,10 +42,13 @@ class EditRideFragment: ComposeFragment() {
         val bundle = this.arguments
         ride = bundle?.getParcelable<Parcelable>("ride") as Ride?
 
+        if(ride?.pricePerParticipant == true)
+            switchPricePerParticipant?.isChecked = true
+
         etFrom?.setText(ride?.from)
         etTo?.setText(ride?.to)
         etDepartureTime?.setText(ride?.departureTime)
-        etDepartureDate?.setText(DateFor.format(ride?.departureDate))
+        etDepartureDate?.setText(dateFor.format(ride?.departureDate))
         etPrice?.setText(ride?.price.toString())
 
         btnPostRideListener()
@@ -63,6 +66,7 @@ class EditRideFragment: ComposeFragment() {
             //val departureDate = etDepartureDate?.text.toString()
             val departureDate = departureDate
             val departureTime = etDepartureTime?.text.toString()
+            val isPerPerson = switchPricePerParticipant?.isChecked
 
             // check if any of the input fields are still empty
             if (from.isEmpty()) {
@@ -86,13 +90,17 @@ class EditRideFragment: ComposeFragment() {
                 return@OnClickListener
             }
 
-            ride?.let { it1 -> saveRide(it1, from, to, price, departureDate, departureTime) }
+            ride?.let { it1 ->
+                if (isPerPerson != null) {
+                    saveRide(it1, from, to, price, departureDate,  departureTime, isPerPerson)
+                }
+            }
         })
     }
 
 
     // Save ride to the backend
-    private fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?, departureTime: String) {
+    private fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?, departureTime: String, isPerPerson: Boolean) {
         val saveRideCallback = SaveCallback {e ->
             if (e == null) {
                 // Empties all edit text forms for next time
@@ -111,7 +119,7 @@ class EditRideFragment: ComposeFragment() {
             }
         }
 
-        mEditRideFragmentViewModel?.saveRide(ride, from, to, price, departureDate, departureTime, fromLocation, saveRideCallback)
+        mEditRideFragmentViewModel?.saveRide(ride, from, to, price, departureDate, departureTime, fromLocation, isPerPerson, saveRideCallback)
 
         // Changes to home fragment
         val fragment: Fragment = MyRidesFragment()

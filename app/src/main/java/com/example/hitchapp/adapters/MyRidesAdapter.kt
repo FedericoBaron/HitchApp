@@ -68,6 +68,8 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val btnChat: Button = itemView.findViewById(R.id.btnChat)
         private val tvState: TextView = itemView.findViewById(R.id.tvState)
         private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
+        private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
+
 
 
         fun bind(ride: Ride) {
@@ -89,6 +91,13 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
                         .fitCenter()
                         .circleCrop()
                         .into(ivProfilePicture)
+            }
+
+            // If price is per person then show it
+            if (ride.pricePerParticipant) {
+                tvPerPerson.visibility = View.VISIBLE
+            } else {
+                tvPerPerson.visibility = View.GONE
             }
         }
 

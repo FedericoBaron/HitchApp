@@ -22,7 +22,8 @@ class EditRideFragmentViewModel: ViewModel(){
     }
 
     // Adds every aspect of the ride to a new Ride object and calls saveRide repo
-    fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?, departureTime: String, fromLocation: ParseGeoPoint?, saveRideCallback: SaveCallback) {
+    fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?,
+                 departureTime: String, fromLocation: ParseGeoPoint?, isPerPerson: Boolean, saveRideCallback: SaveCallback) {
 
         // Sets ride to be everything that was set by user
         ride.price = price.toInt()
@@ -32,6 +33,7 @@ class EditRideFragmentViewModel: ViewModel(){
         ride.departureDate = departureDate
         ride.departureTime = departureTime
         ride.fromLocation = fromLocation
+        ride.pricePerParticipant = isPerPerson
         if (ride.participants == null) {
             ride.participants = JSONArray()
         }
