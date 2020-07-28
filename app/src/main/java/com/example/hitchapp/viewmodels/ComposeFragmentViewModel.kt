@@ -22,7 +22,7 @@ class ComposeFragmentViewModel : ViewModel(){
     }
 
     // Adds every aspect of the ride to a new Ride object and calls saveRide repo
-    fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, fromLocation: ParseGeoPoint?, saveRideCallback: SaveCallback) {
+    fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, fromLocation: ParseGeoPoint?, pricePerParticipant: Boolean, saveRideCallback: SaveCallback) {
 
         // Sets ride to be everything that was set by user
         val ride = Ride()
@@ -33,6 +33,7 @@ class ComposeFragmentViewModel : ViewModel(){
         ride.departureDate = departureDate
         ride.departureTime = departureTime
         ride.fromLocation = fromLocation
+        ride.pricePerParticipant = pricePerParticipant
         if (ride.participants == null) {
             ride.participants = JSONArray()
         }

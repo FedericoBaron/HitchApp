@@ -94,6 +94,7 @@ open class ComposeFragment : Fragment() {
             //val departureDate = etDepartureDate?.text.toString()
             val departureDate = departureDate
             val departureTime = etDepartureTime?.text.toString()
+            val pricePerParticipant = switchPricePerParticipant?.isChecked
 
             // check if any of the input fields are still empty
             if (from.isEmpty()) {
@@ -117,13 +118,15 @@ open class ComposeFragment : Fragment() {
                 return@OnClickListener
             }
 
-            saveRide(from, to, price, departureDate, departureTime)
+            if (pricePerParticipant != null) {
+                saveRide(from, to, price, departureDate, departureTime, pricePerParticipant)
+            }
         })
     }
 
 
     // Save ride to the backend
-    private fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String) {
+    private fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, pricePerParticipant: Boolean) {
         val saveRideCallback = SaveCallback {e ->
             if (e == null) {
                 // Empties all edit text forms for next time
@@ -142,7 +145,7 @@ open class ComposeFragment : Fragment() {
             }
         }
 
-        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, saveRideCallback)
+        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, pricePerParticipant, saveRideCallback)
 
         // Changes to home fragment
         val fragment: Fragment = HomeFragment()

@@ -91,6 +91,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
         private TextView tvDepartureTime;
         private TextView tvDepartureDate;
         private TextView tvPrice;
+        private TextView tvPerPerson;
         protected Button btnRequest;
 
         public ViewHolder(@NonNull View itemView) {
@@ -105,6 +106,7 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
             tvPrice = itemView.findViewById(R.id.tvPrice);
             ivProfilePicture = itemView.findViewById(R.id.ivProfilePicure);
             btnRequest = itemView.findViewById(R.id.btnRequest);
+            tvPerPerson = itemView.findViewById(R.id.tvPerPerson);
 
             // Add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
@@ -133,6 +135,12 @@ public class RidesAdapter extends RecyclerView.Adapter<RidesAdapter.ViewHolder> 
                 btnRequest.setVisibility(View.GONE);
             else{
                 btnRequest.setVisibility(View.VISIBLE);
+            }
+            if(ride.getPricePerParticipant()){
+                tvPerPerson.setVisibility(View.VISIBLE);
+            }
+            else{
+                tvPerPerson.setVisibility(View.GONE);
             }
 
             ParseFile profile = user.getProfilePicture();
