@@ -50,6 +50,7 @@ class EditRideFragment: ComposeFragment() {
         etDepartureTime?.setText(ride?.departureTime)
         etDepartureDate?.setText(dateFor.format(ride?.departureDate))
         etPrice?.setText(ride?.price.toString())
+        departureDate = ride?.departureDate
 
         btnPostRideListener()
 

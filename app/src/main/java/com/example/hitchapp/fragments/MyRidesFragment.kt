@@ -81,10 +81,7 @@ class MyRidesFragment : Fragment() {
                 if (position != RecyclerView.NO_POSITION) {
                     // Get the ride at the position, this won't work if the class is static
                     ride = adapter?.getItem(position)
-                    val bundle = Bundle()
                     Log.i(TAG, ride.toString())
-
-                    bundle.putParcelable("ride", ride)
 
                 }
                 underlayButtons.add(UnderlayButton(
