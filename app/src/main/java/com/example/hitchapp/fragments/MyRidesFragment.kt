@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -20,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.MyRidesAdapter
+import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.helpers.SwipeHelper
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
@@ -28,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseUser
+import org.json.JSONArray
 import java.util.*
 
 class MyRidesFragment : Fragment() {
@@ -85,11 +88,19 @@ class MyRidesFragment : Fragment() {
 
                 }
                 underlayButtons.add(UnderlayButton(
-                        "Delete",
+                        "Leave",
                         0,
                         Color.parseColor("#FF3C30"),
-                        UnderlayButtonClickListener {pos ->
-                            Log.i(TAG, "pos: " + pos)
+                        UnderlayButtonClickListener {
+                            val position = viewHolder.adapterPosition
+
+                            if (position != RecyclerView.NO_POSITION) {
+                                // Get the ride at the position, this won't work if the class is static
+                                val ride = adapter?.getItem(position)
+                                if (ride != null) {
+                                    leaveRide(ride)
+                                }
+                            }
                         }
                 ))
 
@@ -142,6 +153,49 @@ class MyRidesFragment : Fragment() {
         }
         swipeHelper.attachToRecyclerView(rvRides)
     }
+
+    private fun leaveRide(ride: Ride){
+//        try {
+//            ride!!.fetch<ParseObject>()
+//        } catch (e: ParseException) {
+//            e.printStackTrace()
+//        }
+        var participantList = ride.getList<User>("participants")
+//        var location = participantList?.indexOf(currentUser)
+//        Log.i(TAG, "location id of user" + location)
+//        if (location != null) {
+//            Log.i(TAG, "THIS IS THE OBJECT AT LOCATION" + ride.participants?.remove(location))
+//            ride.save()
+//        }
+        for (i in participantList?.indices!!) {
+                try {
+                    participantList[i].fetch()
+                    if (currentUser != null) {
+                        if (currentUser.objectId == participantList[i].objectId) {
+                            //Log.i(TAG,"HELLOOOOOOOOOOOOOOOO THERE" + ride.participants?.remove(i))
+                            ride.participants?.remove(i)
+                            ride.save()
+                            Log.i(TAG, ride.participants?.toString())
+                            break
+                        }
+                    }
+                } catch (e: ParseException) {
+                    Log.e(TAG, "exception fetching participants", e)
+                }
+        }
+
+        if(currentUser == ride.driver){
+            ride.state = "Cancelled"
+        }
+        if(participantList?.size == 1)
+            ride.delete()
+        else{
+            ride.save()
+            myRidesFragmentViewModel?.queryMyRides()
+        }
+        Toast.makeText(context, "You left the ride", Toast.LENGTH_SHORT).show()
+    }
+
 
     private fun initRecyclerView() {
         // gets list of rides from livedata

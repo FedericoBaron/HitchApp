@@ -37,8 +37,7 @@ class EditRideFragment: ComposeFragment() {
         // Init ViewModel
         mEditRideFragmentViewModel = ViewModelProviders.of(this).get(EditRideFragmentViewModel::class.java)
         mEditRideFragmentViewModel?.init()
-        // Unwrap the user passed in via bundle, using its simple name as a key
-        //driver = Parcels.unwrap(getArguments().getParcelable("user"));
+
         val bundle = this.arguments
         ride = bundle?.getParcelable<Parcelable>("ride") as Ride?
 
