@@ -118,6 +118,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
                     val participants = ride!!.participants
                     participants!!.put(request.requester)
                     ride.participants = participants
+                    ride.seatsAvailable--
                     requests.remove(request)
                     request.deleteInBackground()
                     save(ride)

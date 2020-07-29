@@ -7,16 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.hitchapp.R
+import com.example.hitchapp.adapters.MyRidesAdapter
+import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.models.Ride
+import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.ComposeFragmentViewModel
 import com.example.hitchapp.viewmodels.EditRideFragmentViewModel
+import com.parse.ParseObject
 import com.parse.SaveCallback
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 
 class EditRideFragment: ComposeFragment() {
 
@@ -50,6 +57,7 @@ class EditRideFragment: ComposeFragment() {
         etDepartureDate?.setText(dateFor.format(ride?.departureDate))
         etPrice?.setText(ride?.price.toString())
         departureDate = ride?.departureDate
+        etSeatsAvailable?.setText(ride?.seatsAvailable.toString())
 
         btnPostRideListener()
 
@@ -67,6 +75,7 @@ class EditRideFragment: ComposeFragment() {
             val departureDate = departureDate
             val departureTime = etDepartureTime?.text.toString()
             val isPerPerson = switchPricePerParticipant?.isChecked
+            val seatsAvailable = etSeatsAvailable?.text.toString()
 
             // check if any of the input fields are still empty
             if (from.isEmpty()) {
@@ -89,10 +98,38 @@ class EditRideFragment: ComposeFragment() {
                 Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
+            if (seatsAvailable.isEmpty()) {
+                Toast.makeText(context, "seats available cannot be empty", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            try{
+                seatsAvailable.toInt()
+            }
+            catch(e: Exception){
+                Toast.makeText(context, "seats available has to be a number", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            try{
+                seatsAvailable.toInt()
+            }
+            catch(e: Exception){
+                Toast.makeText(context, "price has to be a number", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+
+            try {
+                (ride?.driver as User?)?.car?.fetch<ParseObject>()
+                if((ride?.driver as User?)?.car?.carCapacity!! <= seatsAvailable.toInt()){
+                    Toast.makeText(context, "Your car doesn't have enough seats!", Toast.LENGTH_SHORT).show()
+                    return@OnClickListener
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Couldn't fetch car", e)
+            }
 
             ride?.let { it1 ->
                 if (isPerPerson != null) {
-                    saveRide(it1, from, to, price, departureDate,  departureTime, isPerPerson)
+                    saveRide(it1, from, to, price, departureDate,  departureTime, isPerPerson, seatsAvailable)
                 }
             }
         })
@@ -100,7 +137,7 @@ class EditRideFragment: ComposeFragment() {
 
 
     // Save ride to the backend
-    private fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?, departureTime: String, isPerPerson: Boolean) {
+    private fun saveRide(ride: Ride, from: String, to: String, price: String, departureDate: Date?, departureTime: String, isPerPerson: Boolean, seatsAvailable: String) {
         val saveRideCallback = SaveCallback {e ->
             if (e == null) {
                 // Empties all edit text forms for next time
@@ -109,6 +146,7 @@ class EditRideFragment: ComposeFragment() {
                 etTo?.setText("")
                 etDepartureDate?.setText("")
                 etDepartureTime?.setText("")
+                etSeatsAvailable?.setText("")
                 Log.i(ComposeFragmentViewModel.TAG, "Ride save was successful!")
                 Toast.makeText(context, "Ride was posted!", Toast.LENGTH_SHORT).show()
 
@@ -119,13 +157,17 @@ class EditRideFragment: ComposeFragment() {
             }
         }
 
-        mEditRideFragmentViewModel?.saveRide(ride, from, to, price, departureDate, departureTime, fromLocation, isPerPerson, saveRideCallback)
+        mEditRideFragmentViewModel?.saveRide(ride, from, to, price, departureDate, departureTime, fromLocation, isPerPerson, seatsAvailable, saveRideCallback)
 
         // Changes to home fragment
         val fragment: Fragment = MyRidesFragment()
         (context as FragmentActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.flContainer, fragment)
                 .commit()
+    }
+
+    companion object {
+        private const val TAG = "EditRideFragment"
     }
 
 }

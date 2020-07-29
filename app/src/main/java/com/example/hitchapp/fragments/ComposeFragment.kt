@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.hitchapp.R
+import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.ComposeFragmentViewModel
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
@@ -26,7 +27,10 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.parse.ParseGeoPoint
+import com.parse.ParseObject
+import com.parse.ParseUser
 import com.parse.SaveCallback
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +41,7 @@ open class ComposeFragment : Fragment() {
     protected var etDepartureTime: EditText? = null
     protected var etDepartureDate: EditText? = null
     protected var etPrice: EditText? = null
+    protected var etSeatsAvailable: EditText? = null
     protected var btnPost: Button? = null
     protected var switchPricePerParticipant: Switch? = null
     private val REQUEST_CODE = 20
@@ -45,6 +50,7 @@ open class ComposeFragment : Fragment() {
     protected var fromLocation: ParseGeoPoint? = null
     protected var departureDate: Date? = null
     protected var newCal: Calendar = Calendar.getInstance()
+    private var currentUser: User? = null
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -59,6 +65,7 @@ open class ComposeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        currentUser = ParseUser.getCurrentUser() as User
         wireUI()
 
         // Init ViewModel
@@ -81,6 +88,7 @@ open class ComposeFragment : Fragment() {
         etDepartureDate = view?.findViewById(R.id.etDepartureDate)
         btnPost = view?.findViewById(R.id.btnPost)
         switchPricePerParticipant = view?.findViewById(R.id.switchPricePerParticipant)
+        etSeatsAvailable = view?.findViewById(R.id.etSeatsAvailable)
     }
 
     // Listens for when the post ride button gets clicked
@@ -95,6 +103,7 @@ open class ComposeFragment : Fragment() {
             val departureDate = departureDate
             val departureTime = etDepartureTime?.text.toString()
             val pricePerParticipant = switchPricePerParticipant?.isChecked
+            val seatsAvailable = etSeatsAvailable?.text.toString()
 
             // check if any of the input fields are still empty
             if (from.isEmpty()) {
@@ -117,16 +126,50 @@ open class ComposeFragment : Fragment() {
                 Toast.makeText(context, "departure time cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
+            if (seatsAvailable.isEmpty()) {
+                Toast.makeText(context, "price cannot be empty", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            if (seatsAvailable.isEmpty()) {
+                Toast.makeText(context, "seats available cannot be empty", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            try{
+                seatsAvailable.toInt()
+            }
+            catch(e: Exception){
+                Toast.makeText(context, "seats available has to be a number", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+            try{
+                seatsAvailable.toInt()
+            }
+            catch(e: Exception){
+                Toast.makeText(context, "price has to be a number", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
+
+            try {
+                currentUser?.car?.fetch<ParseObject>()
+                if((currentUser as User?)?.car?.carCapacity!! <= seatsAvailable.toInt()){
+                    Toast.makeText(context, "Your car doesn't have enough seats!", Toast.LENGTH_SHORT).show()
+                    return@OnClickListener
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Couldn't fetch car", e)
+            }
+
+
 
             if (pricePerParticipant != null) {
-                saveRide(from, to, price, departureDate, departureTime, pricePerParticipant)
+                saveRide(from, to, price, departureDate, departureTime, pricePerParticipant, seatsAvailable)
             }
         })
     }
 
 
     // Save ride to the backend
-    private fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, pricePerParticipant: Boolean) {
+    private fun saveRide(from: String, to: String, price: String, departureDate: Date?, departureTime: String, pricePerParticipant: Boolean, seatsAvailable: String) {
         val saveRideCallback = SaveCallback {e ->
             if (e == null) {
                 // Empties all edit text forms for next time
@@ -135,6 +178,7 @@ open class ComposeFragment : Fragment() {
                 etTo?.setText("")
                 etDepartureDate?.setText("")
                 etDepartureTime?.setText("")
+                etSeatsAvailable?.setText("")
                 Log.i(ComposeFragmentViewModel.TAG, "Ride save was successful!")
                 Toast.makeText(context, "Ride was posted!", Toast.LENGTH_SHORT).show()
 
@@ -145,7 +189,7 @@ open class ComposeFragment : Fragment() {
             }
         }
 
-        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, pricePerParticipant, saveRideCallback)
+        mComposeFragmentViewModel?.saveRide(from, to, price, departureDate, departureTime, fromLocation, pricePerParticipant, seatsAvailable, saveRideCallback)
 
         // Changes to my rides fragment
         val fragment: Fragment = MyRidesFragment()

@@ -20,6 +20,7 @@ import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.parse.ParseException
+import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
 import java.text.SimpleDateFormat
@@ -67,6 +68,7 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
         private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
         private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
+        private val tvSeatsAvailable: TextView = itemView.findViewById(R.id.tvSeatsAvailable)
         private var btnRequest: Button = itemView.findViewById(R.id.btnRequest)
 
         fun bind(ride: Ride) {
@@ -81,6 +83,15 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
             tvDepartureTime.text = ride.departureTime
             tvDepartureDate.text = dateFor.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
+
+            // fetch car data
+            try {
+                (ride.driver as User?)?.car?.fetch<ParseObject>()
+            } catch (e: Exception) {
+                Log.e(TAG, "Couldn't fetch car", e)
+            }
+            var seatsAvailableText = ride.seatsAvailable.toString() + "/" + (ride?.driver as User?)?.car?.carCapacity.toString()
+            tvSeatsAvailable.text = seatsAvailableText
             if (ParseUser.getCurrentUser().objectId == ride.driver!!.objectId) btnRequest.visibility = View.GONE else {
                 btnRequest.visibility = View.VISIBLE
             }

@@ -19,6 +19,7 @@ import com.example.hitchapp.fragments.MessagesFragment
 import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
+import com.parse.ParseObject
 import java.text.SimpleDateFormat
 
 class MyRidesAdapter(private val context: Context, private val rides: MutableList<Ride>) : RecyclerView.Adapter<MyRidesAdapter.ViewHolder>() {
@@ -73,6 +74,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         //private val btnChat: Button = itemView.findViewById(R.id.btnChat)
         private val tvState: TextView = itemView.findViewById(R.id.tvState)
         //private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
+        private val tvSeatsAvailable: TextView = itemView.findViewById(R.id.tvSeatsAvailable)
         private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
 
 
@@ -97,6 +99,15 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
                         .circleCrop()
                         .into(ivProfilePicture)
             }
+
+            // fetch car data
+            try {
+                (ride.driver as User?)?.car?.fetch<ParseObject>()
+            } catch (e: Exception) {
+                Log.e(TAG, "Couldn't fetch car", e)
+            }
+            var seatsAvailableText = ride.seatsAvailable.toString() + "/" + (ride?.driver as User?)?.car?.carCapacity.toString()
+            tvSeatsAvailable.text = seatsAvailableText
 
             // If price is per person then show it
             if (ride.pricePerParticipant) {
