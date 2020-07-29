@@ -92,6 +92,7 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
             }
             var seatsAvailableText = ride.seatsAvailable.toString() + "/" + (ride?.driver as User?)?.car?.carCapacity.toString()
             tvSeatsAvailable.text = seatsAvailableText
+
             if (ParseUser.getCurrentUser().objectId == ride.driver!!.objectId) btnRequest.visibility = View.GONE else {
                 btnRequest.visibility = View.VISIBLE
             }

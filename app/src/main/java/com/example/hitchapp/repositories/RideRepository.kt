@@ -14,8 +14,12 @@ class RideRepository {
         query.include(Ride.KEY_DRIVER)
         var currentUser: User = ParseUser.getCurrentUser() as User
 
+        // If there's no more available seats then don't show since it's full
+        query.whereNotEqualTo(Ride.KEY_SEATS_AVAILABLE, 0)
+
         // get rides within 20 miles
         query.whereWithinMiles(Ride.KEY_FROM_LOCATION, currentUser.currentLocation, 20.0)
+
 
         // Get only rides that are scheduled
         query.whereEqualTo(Ride.KEY_STATE, "Scheduled")
@@ -23,7 +27,7 @@ class RideRepository {
         query.limit = rides
 
         // Sort by departure date
-        query.addAscendingOrder("departureDate")
+        query.addAscendingOrder(Ride.KEY_DEPARTURE_DATE)
 
         // Finds the posts asynchronously
         query.findInBackground(findCallback)
@@ -41,7 +45,7 @@ class RideRepository {
         query.limit = rides
 
         // Sort by created at
-        query.addDescendingOrder("createdAt")
+        query.addAscendingOrder(Ride.KEY_DEPARTURE_DATE)
 
         // Finds the posts asynchronously
         query.findInBackground(findCallback)
