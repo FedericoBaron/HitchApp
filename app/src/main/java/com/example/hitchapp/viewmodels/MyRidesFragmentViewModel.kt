@@ -2,13 +2,17 @@ package com.example.hitchapp.viewmodels
 
 import android.text.format.DateUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.hitchapp.activities.LoginActivity
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.RideRepository
 import com.example.hitchapp.repositories.RideRepository.Companion.instance
+import com.parse.DeleteCallback
 import com.parse.FindCallback
+import com.parse.SaveCallback
 import java.util.*
 
 class MyRidesFragmentViewModel : ViewModel() {
@@ -36,11 +40,11 @@ class MyRidesFragmentViewModel : ViewModel() {
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
                 for(i in 0 until rides.size) {
-                    if (rides[i].state.equals("Scheduled") && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
+                    if (rides[i].state == "Scheduled" && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
                         rides[i].state = "Finished"
                         rides[i].save()
                     }
-                    else if(rides[i].state.equals("Finished") && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! >= 0){
+                    else if(rides[i].state == "Finished" && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! >= 0){
                         rides[i].state = "Scheduled"
                         rides[i].save()
                     }
@@ -63,6 +67,33 @@ class MyRidesFragmentViewModel : ViewModel() {
         // Query rides from repo
         queryMyRides()
     }
+
+    fun save(ride: Ride){
+        val saveCallback = SaveCallback{ e ->
+            if(e == null){
+                Log.i(TAG, "saved ride")
+            }
+            else{
+                Log.e(TAG, "Issue with save", e)
+            }
+        }
+
+        mRepo?.saveRide(ride, saveCallback)
+    }
+
+    fun delete(ride: Ride){
+        val deleteCallback = DeleteCallback{ e ->
+            if(e == null){
+                Log.i(TAG, "deleted ride")
+            }
+            else{
+                Log.e(TAG, "Issue with delete", e)
+            }
+        }
+
+        mRepo?.deleteRide(ride, deleteCallback)
+    }
+
 
     companion object {
         const val TAG = "MyRidesFragmentViewMode"

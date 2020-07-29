@@ -119,7 +119,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestPermissions(){
-        val contextProvider= activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permissionFineLocation) }
+        val contextProvider = activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permissionFineLocation) }
 
         if(contextProvider!!){
             Toast.makeText(activity?.applicationContext, "Permission is required to obtain location", Toast.LENGTH_SHORT).show()
@@ -164,11 +164,9 @@ class HomeFragment : Fragment() {
     @SuppressWarnings("MissingPermission")
     //@NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     fun getMyLocation() {
-        Log.i(TAG, "GETTING  LIOCATION ")
         map?.isMyLocationEnabled = true
         map?.uiSettings?.isMyLocationButtonEnabled = true
         val locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
-        Log.i(TAG, "LOCATION CLIENT " + locationClient)
         mHomeFragmentViewModel?.getMyLocation(locationClient)
 
     }

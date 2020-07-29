@@ -108,6 +108,8 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
         }
 
         override fun onClick(v: View) {}
+
+        // Listener for accept button click
         private fun btnAcceptListener() {
             btnAccept.setOnClickListener {
                 val position = adapterPosition

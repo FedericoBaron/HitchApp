@@ -17,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.parse.FindCallback
 import com.parse.ParseGeoPoint
 import com.parse.ParseUser
+import com.parse.SaveCallback
 import java.util.*
 
 class HomeFragmentViewModel : ViewModel() {
@@ -50,7 +51,7 @@ class HomeFragmentViewModel : ViewModel() {
                 for(i in 0 until rides.size) {
                     if (rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
                         rides[i].state = "Finished"
-                        rides[i].save()
+                        save(rides[i])
                         Log.i(TAG, rides[i].departureDate.toString())
                     }
                 }
@@ -63,6 +64,19 @@ class HomeFragmentViewModel : ViewModel() {
         }
 
         mRepo?.ridesQuery(totalRides, findCallback)
+    }
+
+    fun save(ride: Ride){
+        val saveCallback = SaveCallback{ e ->
+            if(e == null){
+                Log.i(MyRidesFragmentViewModel.TAG, "saved ride")
+            }
+            else{
+                Log.e(MyRidesFragmentViewModel.TAG, "Issue with save", e)
+            }
+        }
+
+        mRepo?.saveRide(ride, saveCallback)
     }
 
     // Loads more rides when we reach the bottom of TL

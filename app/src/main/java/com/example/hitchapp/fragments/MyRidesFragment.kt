@@ -155,44 +155,47 @@ class MyRidesFragment : Fragment() {
     }
 
     private fun leaveRide(ride: Ride){
-//        try {
-//            ride!!.fetch<ParseObject>()
-//        } catch (e: ParseException) {
-//            e.printStackTrace()
-//        }
-        var participantList = ride.getList<User>("participants")
-//        var location = participantList?.indexOf(currentUser)
-//        Log.i(TAG, "location id of user" + location)
-//        if (location != null) {
-//            Log.i(TAG, "THIS IS THE OBJECT AT LOCATION" + ride.participants?.remove(location))
-//            ride.save()
-//        }
+
+        // Gets list of participants
+        var participantList = ride.getList<User>(Ride.KEY_PARTICIPANTS)
+
+        // Goes through each participant and finds current user index
         for (i in participantList?.indices!!) {
-                try {
-                    participantList[i].fetch()
-                    if (currentUser != null) {
-                        if (currentUser.objectId == participantList[i].objectId) {
-                            //Log.i(TAG,"HELLOOOOOOOOOOOOOOOO THERE" + ride.participants?.remove(i))
-                            ride.participants?.remove(i)
-                            ride.save()
-                            Log.i(TAG, ride.participants?.toString())
-                            break
-                        }
-                    }
-                } catch (e: ParseException) {
-                    Log.e(TAG, "exception fetching participants", e)
+            try {
+
+                // Gets the participant at position i
+                participantList[i].fetch()
+
+                // checks if current user is at index i
+                if(participantList[i].objectId == currentUser?.objectId) {
+                    // removes current user from the ride
+                    var participants = ride.participants
+                    participants?.remove(i);
+                    ride.participants = participants
+                    ride.seatsAvailable++
+                    break
                 }
+            } catch (e: ParseException) {
+                Log.e(TAG, "exception fetching participants", e)
+            }
         }
 
-        if(currentUser == ride.driver){
+        // If the driver is the user that means the ride got cancelled
+        if(currentUser?.objectId == ride.driver?.objectId && ride.state != "Finished"){
             ride.state = "Cancelled"
+            Log.i(TAG, "Cancelled")
         }
+
+        // If the size is 1 it means the ride is going to be empty and should be deleted
         if(participantList?.size == 1)
-            ride.delete()
+            myRidesFragmentViewModel?.delete(ride)
+        // Otherwise we save the ride and query for the rides without the deleted one
         else{
-            ride.save()
-            myRidesFragmentViewModel?.queryMyRides()
+            myRidesFragmentViewModel?.save(ride)
         }
+
+        myRidesFragmentViewModel?.queryMyRides()
+
         Toast.makeText(context, "You left the ride", Toast.LENGTH_SHORT).show()
     }
 

@@ -2,10 +2,7 @@ package com.example.hitchapp.repositories
 
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
-import com.parse.FindCallback
-import com.parse.ParseQuery
-import com.parse.ParseUser
-import com.parse.SaveCallback
+import com.parse.*
 
 class RideRepository {
     // Gets rides
@@ -23,6 +20,7 @@ class RideRepository {
 
         // Get only rides that are scheduled
         query.whereEqualTo(Ride.KEY_STATE, "Scheduled")
+
         // Set a limit
         query.limit = rides
 
@@ -54,6 +52,11 @@ class RideRepository {
     // Saves the ride
     fun saveRide(ride: Ride, saveCallback: SaveCallback?) {
         ride.saveInBackground(saveCallback)
+    }
+
+    // Deletes the ride
+    fun deleteRide(ride: Ride, deleteCallback: DeleteCallback) {
+        ride.deleteInBackground(deleteCallback)
     }
 
     companion object {
