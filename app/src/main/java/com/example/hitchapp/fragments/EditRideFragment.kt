@@ -102,6 +102,10 @@ class EditRideFragment: ComposeFragment() {
                 Toast.makeText(context, "seats available cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
+            if(departureDate.compareTo(Calendar.getInstance().time as Date)!! < 0){
+                Toast.makeText(context, "invalid date", Toast.LENGTH_SHORT).show()
+                return@OnClickListener
+            }
             try{
                 seatsAvailable.toInt()
             }

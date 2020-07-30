@@ -53,7 +53,6 @@ class MyRidesFragment : Fragment() {
         val itemDecoration: ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvRides?.addItemDecoration(itemDecoration)
 
-
         startViewModel()
 
         initRecyclerView()
@@ -264,3 +263,7 @@ class MyRidesFragment : Fragment() {
         var allRides: List<Ride>? = null
     }
 }
+
+
+
+
