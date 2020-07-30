@@ -83,13 +83,6 @@ class Ride : ParseObject() {
         set(seatsAvailable) {
             put(KEY_SEATS_AVAILABLE, seatsAvailable)
         }
-
-    var messages: JSONArray?
-        get() = getJSONArray(KEY_MESSAGES)
-        set(messages) {
-            messages?.let { put(KEY_MESSAGES, it) }
-        }
-
     companion object {
         const val KEY_DRIVER = "driver"
         const val KEY_FROM = "from"
@@ -100,7 +93,6 @@ class Ride : ParseObject() {
         const val KEY_PRICE_PER_PARTICIPANT = "pricePerParticipant"
         const val KEY_SEATS_AVAILABLE = "seatsAvailable"
         const val KEY_DEPARTURE_DATE = "departureDate"
-        const val KEY_MESSAGES = "messages"
         const val KEY_REQUESTS = "requests"
         const val KEY_FROM_LOCATION = "fromLocation"
         const val KEY_STATE = "state"

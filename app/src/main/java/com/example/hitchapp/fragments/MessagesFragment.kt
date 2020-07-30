@@ -36,7 +36,6 @@ import org.json.JSONArray
 
 class MessagesFragment : Fragment() {
     private var rvMessages: RecyclerView? = null
-    var messages: JSONArray? = null
     private var currentUser: User? = null
     private var layoutManager: LinearLayoutManager? = null
     private var ride: Ride? = null
@@ -67,16 +66,10 @@ class MessagesFragment : Fragment() {
         // Unwrap the ride passed in via bundle, using its simple name as a key
         val bundle = this.arguments
         ride = bundle?.getParcelable<Parcelable>("ride") as Ride?
-        if (ride?.messages == null) {
-            ride?.messages = JSONArray()
-            save()
-        }
 
-        messages = ride?.messages
         ride?.let { startViewModel(it) }
         initRecyclerView()
 
-        //queryMessages()
         setupMessagePosting()
 
         // Listens for when you need to load more data
@@ -139,11 +132,9 @@ class MessagesFragment : Fragment() {
             message.content = content
             message.authorId = currentUser?.objectId
             message.rideId = ride?.objectId
-            messages?.put(message)
-            ride?.messages = messages
-            message.saveInBackground();
-            save()
-            //queryMessages()
+
+            message.saveInBackground()
+
             etMessage?.text = null
             mMessagesFragmentViewModel?.queryMessages()
         }
@@ -176,7 +167,7 @@ class MessagesFragment : Fragment() {
         subscriptionHandling.handleError { query, exception ->
             Log.i(TAG,"exception")
         }
-        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE){ parseQuery: ParseQuery<Message>, message: Message ->
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE){ parseQuery: ParseQuery<Message>, message: Message ->
             val handler = Handler(Looper.getMainLooper())
             handler.post(Runnable {
                 mMessagesFragmentViewModel?.queryMessages()
