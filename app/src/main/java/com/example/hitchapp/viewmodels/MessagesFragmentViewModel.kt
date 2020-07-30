@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.MessageRepository
+import com.parse.FindCallback
+import java.util.*
 
 class MessagesFragmentViewModel: ViewModel(){
 
@@ -33,11 +35,26 @@ class MessagesFragmentViewModel: ViewModel(){
 
     // Query messages from repo
     fun queryMessages() {
-        Log.i(TAG, "here")
+        val findCallback = FindCallback<Message>{ messages, e ->
+            if(e == null){
+                Log.i(TAG, messages.toString())
+                mMessages?.postValue(messages)
+            }
+            else{
+                Log.i(TAG, "Error querying for rides")
+            }
+        }
 
-        var messages: List<Message>? = this.ride?.let { mRepo?.messagesQuery(it) }
-        Log.i(TAG, messages.toString())
-        mMessages?.postValue(messages)
+        ride?.let { mRepo?.messagesQuery(it, totalMessages, findCallback) }
+    }
+
+    // Loads more rides when we reach the bottom of TL
+    fun loadMoreData() {
+        // Adds more rides to the amount of rides queried in the repository
+        totalMessages += OLD_MESSAGES
+
+        // Query rides from repo
+        queryMessages()
     }
 
     val messages: LiveData<List<Message>>
@@ -50,5 +67,6 @@ class MessagesFragmentViewModel: ViewModel(){
 
     companion object {
         const val TAG = "MessagesFragmentViewMod"
+        protected const val OLD_MESSAGES = 5
     }
 }

@@ -35,10 +35,7 @@ class HomeFragment : Fragment() {
     protected var layoutManager: LinearLayoutManager? = null
     protected var pbLoading: ProgressBar? = null
     private var mHomeFragmentViewModel: HomeFragmentViewModel? = null
-    private val mapFragment: SupportMapFragment? = null
     private val map: GoogleMap? = null
-    private val mLocationRequest: LocationRequest? = null
-    //var mCurrentLocation: Location? = null
     private val permissionFineLocation=android.Manifest.permission.ACCESS_FINE_LOCATION
     private val permissionCoarseLocation=android.Manifest.permission.ACCESS_COARSE_LOCATION
 
@@ -89,7 +86,7 @@ class HomeFragment : Fragment() {
         val ridesObserver: Observer<List<Ride>?> = Observer { rides -> // Update the UI
             if (rides != null) {
                 for (ride in rides) {
-                    Log.i(TAG, "Ride: " + ride?.driver + ", username: " + ride?.messages)
+                    Log.i(TAG, "Ride: " + ride?.driver)
                 }
             }
             adapter?.setAll(rides)

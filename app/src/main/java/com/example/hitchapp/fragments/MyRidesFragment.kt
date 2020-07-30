@@ -220,7 +220,7 @@ class MyRidesFragment : Fragment() {
         val ridesObserver: Observer<List<Ride?>?> = Observer { rides -> // Update the UI
             if (rides != null) {
                 for (ride in rides) {
-                    Log.i(TAG, "Ride: " + ride?.driver + ", username: " + ride?.messages)
+                    Log.i(TAG, "Ride: " + ride?.driver)
                 }
             }
             adapter?.setAll(rides)

@@ -26,9 +26,16 @@ class Message : ParseObject() {
             authorId?.let { put(KEY_AUTHOR_ID, it) }
         }
 
+    var rideId: String?
+        get() = getString(KEY_RIDE_ID)
+        set(authorId) {
+            authorId?.let { put(KEY_RIDE_ID, it) }
+        }
+
     companion object {
         const val KEY_CONTENT = "content"
         const val KEY_AUTHOR = "author"
         const val KEY_AUTHOR_ID = "authorId"
+        const val KEY_RIDE_ID = "rideId"
     }
 }
