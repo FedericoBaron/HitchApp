@@ -9,11 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.hitchapp.R
-import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.fragments.*
 import com.example.hitchapp.models.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.parse.ParseCloud
+import com.parse.ParseInstallation
 import com.parse.ParseUser
+import org.json.JSONException
+import org.json.JSONObject
+
 
 class MainActivity : AppCompatActivity() {
     private var bottomNavigationView: BottomNavigationView? = null

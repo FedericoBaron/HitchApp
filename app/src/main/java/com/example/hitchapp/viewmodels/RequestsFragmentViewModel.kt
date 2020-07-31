@@ -40,7 +40,7 @@ class RequestsFragmentViewModel: ViewModel(){
                 mRequests?.postValue(requests)
             }
             else{
-                Log.i(HomeFragmentViewModel.TAG, "Error querying for rides")
+                Log.i(TAG, "Error querying for rides")
             }
         }
 

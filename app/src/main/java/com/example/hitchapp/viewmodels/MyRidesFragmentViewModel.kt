@@ -52,7 +52,7 @@ class MyRidesFragmentViewModel : ViewModel() {
                 mRides?.postValue(rides)
             }
             else{
-                Log.i(HomeFragmentViewModel.TAG, "Error querying for rides")
+                Log.i(TAG, "Error querying for rides")
             }
         }
         mRepo?.myRidesQuery(totalRides, findCallback)
