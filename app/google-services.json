@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1021704734677",
+    "firebase_url": "https://big-coil-282716.firebaseio.com",
+    "project_id": "big-coil-282716",
+    "storage_bucket": "big-coil-282716.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1021704734677:android:5b13ff7435745479af1f5c",
+        "android_client_info": {
+          "package_name": "com.example.hitchapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1021704734677-30b3fp7lu9nkhuv2ibjcp11qmkmm7u20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC47pRllsf4QZQmtTpI8vTVFAwOX8gtkIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1021704734677-30b3fp7lu9nkhuv2ibjcp11qmkmm7u20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

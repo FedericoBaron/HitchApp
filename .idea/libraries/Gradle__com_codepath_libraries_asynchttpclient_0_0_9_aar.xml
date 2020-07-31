@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.codepath.libraries:asynchttpclient:0.0.9@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eb73150fc3ebbd54d7b664ec4994a674/jetified-asynchttpclient-0.0.9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eb73150fc3ebbd54d7b664ec4994a674/jetified-asynchttpclient-0.0.9/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b6c7988dbccfb2fd41bbb7b355f1dbc/jetified-asynchttpclient-0.0.9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2b6c7988dbccfb2fd41bbb7b355f1dbc/jetified-asynchttpclient-0.0.9/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
