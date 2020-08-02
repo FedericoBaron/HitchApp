@@ -17,15 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RidesAdapter
+import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
+import com.parse.ParseCloud
+import com.parse.ParseInstallation
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -49,6 +51,20 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        val payload = JSONObject()
+
+        try {
+            payload.put("sender", ParseInstallation.getCurrentInstallation().installationId)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val data: HashMap<String, String> = HashMap()
+        data["customData"] = payload.toString()
+
+        ParseCloud.callFunctionInBackground<Any>("pingReply", data)
 
         rvRides = view.findViewById(R.id.rvRides)
         pbLoading = view.findViewById(R.id.pbLoading)

@@ -12,11 +12,9 @@ import com.example.hitchapp.R
 import com.example.hitchapp.fragments.*
 import com.example.hitchapp.models.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.parse.ParseCloud
 import com.parse.ParseInstallation
+import com.parse.ParsePush
 import com.parse.ParseUser
-import org.json.JSONException
-import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +23,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Save the current Installation to Parse.
+        ParseInstallation.getCurrentInstallation().saveInBackground()
+
+        ParsePush.subscribeInBackground("Giants");
+
 
         // Find the toolbar view inside the activity layout
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
@@ -18,20 +17,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.MyRidesAdapter
-import com.example.hitchapp.adapters.RidesAdapter
+import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.helpers.SwipeHelper
+import com.example.hitchapp.helpers.SwipeHelper.UnderlayButtonClickListener
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MyRidesFragmentViewModel
-import com.google.android.material.snackbar.Snackbar
+import com.parse.ParseCloud
 import com.parse.ParseException
-import com.parse.ParseObject
+import com.parse.ParseInstallation
 import com.parse.ParseUser
-import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.indices
+import kotlin.collections.set
 
 class MyRidesFragment : Fragment() {
     protected var pbLoading: ProgressBar? = null
@@ -58,7 +62,6 @@ class MyRidesFragment : Fragment() {
         initRecyclerView()
 
         swipeHelper()
-
 
         // Show progress bar loading
         pbLoading?.visibility = View.VISIBLE
