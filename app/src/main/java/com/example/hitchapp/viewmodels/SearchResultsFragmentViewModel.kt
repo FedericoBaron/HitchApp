@@ -21,10 +21,8 @@ class SearchResultsFragmentViewModel: ViewModel() {
     protected var allRides: MutableLiveData<List<Ride>>? = null
     protected var repo: RideRepository? = null
     protected var totalRides = 5
-    private val currentUser = ParseUser.getCurrentUser() as User
 
     fun init(from: ParseGeoPoint, distance: Int) {
-        Log.i(TAG, "we made it here")
         if (allRides != null) {
             return
         }

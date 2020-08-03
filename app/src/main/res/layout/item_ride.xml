@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rideCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="10dp"
+
     android:background="@color/colorPrimaryDark"
-    android:gravity="left">
+    android:gravity="left"
+    app:cardBackgroundColor="@color/colorAccentDark"
+    app:contentPadding="15dp"
+    card_view:cardCornerRadius="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/tvFirstName"
@@ -201,4 +212,6 @@
         android:textSize="16sp"
         android:textStyle="bold"
         tools:text="4/5" />
-</RelativeLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

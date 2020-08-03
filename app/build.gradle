@@ -72,6 +72,11 @@ dependencies {
     // add Parse dependencies too
     implementation 'com.github.parse-community:ParseLiveQuery-Android:1.2.1'
 
+    // Shimmer RV
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+
 }
 repositories {
     mavenCentral()

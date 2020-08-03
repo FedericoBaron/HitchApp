@@ -33,8 +33,6 @@ class SearchResultsFragment: HomeFragment() {
 
     }
     override fun startViewModel() {
-        Log.i(TAG, "w here again " + from.toString())
-
         searchResultsFragmentViewModel = ViewModelProviders.of(this).get(SearchResultsFragmentViewModel::class.java)
         from?.let { distance?.let { it1 -> searchResultsFragmentViewModel?.init(it, it1) } }
         // Create the observer which updates the UI.
