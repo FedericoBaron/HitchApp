@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -113,12 +114,19 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
         // Listener for accept button click
         private fun btnAcceptListener() {
             btnAccept.setOnClickListener {
+
+
                 val position = adapterPosition
+                val request = requests[position]
+                val ride = request.ride
+                val participants = ride!!.participants
+                if(ride.seatsAvailable == 0){
+                    Toast.makeText(context, "Car is already full", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 // Make sure the position is valid i.e actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
-                    val request = requests[position]
-                    val ride = request.ride
-                    val participants = ride!!.participants
+
                     participants!!.put(request.requester)
                     ride.participants = participants
                     ride.seatsAvailable--

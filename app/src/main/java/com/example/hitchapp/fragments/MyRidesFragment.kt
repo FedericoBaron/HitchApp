@@ -23,10 +23,7 @@ import com.example.hitchapp.helpers.SwipeHelper.UnderlayButtonClickListener
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MyRidesFragmentViewModel
-import com.parse.ParseCloud
-import com.parse.ParseException
-import com.parse.ParseInstallation
-import com.parse.ParseUser
+import com.parse.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -184,6 +181,13 @@ class MyRidesFragment : Fragment() {
                     participants?.remove(i);
                     ride.participants = participants
                     ride.seatsAvailable++
+                    ParsePush.unsubscribeInBackground(ride.objectId.toString()) { e ->
+                        if (e != null) {
+                            Log.e(MyRidesFragmentViewModel.TAG, "failed to unsubscribe for push")
+                        } else {
+                            ParseInstallation.getCurrentInstallation().saveInBackground()
+                        }
+                    }
                     break
                 }
             } catch (e: ParseException) {

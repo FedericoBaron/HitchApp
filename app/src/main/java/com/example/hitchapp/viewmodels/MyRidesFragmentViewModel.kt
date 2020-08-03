@@ -1,19 +1,13 @@
 package com.example.hitchapp.viewmodels
 
-import android.text.format.DateUtils
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hitchapp.activities.LoginActivity
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.RideRepository
 import com.example.hitchapp.repositories.RideRepository.Companion.instance
-import com.parse.DeleteCallback
-import com.parse.FindCallback
-import com.parse.ParsePush
-import com.parse.SaveCallback
+import com.parse.*
 import java.util.*
 
 class MyRidesFragmentViewModel : ViewModel() {
@@ -94,7 +88,6 @@ class MyRidesFragmentViewModel : ViewModel() {
             }
         }
 
-        ParsePush.unsubscribeInBackground(ride.objectId.toString())
         mRepo?.deleteRide(ride, deleteCallback)
     }
 
