@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,6 +42,10 @@ class SearchFragment: Fragment() {
     // either dynamically or via XML layout inflation.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        // Show toolbar menu items
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
@@ -57,6 +59,12 @@ class SearchFragment: Fragment() {
         editFromListener()
         editToListener()
         btnSearchListener()
+    }
+
+    // Hide search from toolbar
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     private fun wireUI(){

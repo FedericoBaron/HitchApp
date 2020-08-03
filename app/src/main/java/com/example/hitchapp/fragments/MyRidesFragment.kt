@@ -3,9 +3,7 @@ package com.example.hitchapp.fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -47,6 +45,11 @@ class MyRidesFragment : Fragment() {
     private val currentUser: User? = ParseUser.getCurrentUser() as User
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+
+        // show toolbar menu
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -74,6 +77,12 @@ class MyRidesFragment : Fragment() {
 
         // Listens for when you need to load more data
         createScrollListener()
+    }
+
+    // Hide search from toolbar
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     val bundle = null

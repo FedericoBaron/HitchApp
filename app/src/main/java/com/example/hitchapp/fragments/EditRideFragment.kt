@@ -3,9 +3,7 @@ package com.example.hitchapp.fragments
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
@@ -34,6 +32,10 @@ class EditRideFragment: ComposeFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        // Show toolbar menu items
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_ride, container, false)
     }
@@ -61,6 +63,12 @@ class EditRideFragment: ComposeFragment() {
 
         btnPostRideListener()
 
+    }
+
+    // Hide search from toolbar
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     // Listens for when the post ride button gets clicked

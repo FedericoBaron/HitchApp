@@ -5,9 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -50,6 +48,7 @@ class MessagesFragment : Fragment() {
     private var btnSend: Button? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_messages, container, false)
     }
@@ -76,6 +75,11 @@ class MessagesFragment : Fragment() {
         createScrollListener()
 
         liveQuery()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     protected fun startViewModel(ride: Ride) {

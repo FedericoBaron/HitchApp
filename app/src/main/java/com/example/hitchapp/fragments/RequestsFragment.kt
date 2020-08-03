@@ -2,9 +2,7 @@ package com.example.hitchapp.fragments
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.lifecycle.Observer
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -30,6 +28,10 @@ class RequestsFragment : Fragment() {
     private var mRequestsFragmentViewModel: RequestsFragmentViewModel? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        // Show toolbar menu options
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_requests, container, false)
     }
@@ -56,6 +58,12 @@ class RequestsFragment : Fragment() {
         // Listener for infinite scrolling
         createScrollListener()
 
+    }
+
+    // Hide search from toolbar
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     protected fun startViewModel() {

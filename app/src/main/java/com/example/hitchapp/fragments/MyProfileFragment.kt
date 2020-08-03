@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -54,6 +52,9 @@ class MyProfileFragment : Fragment() {
     private var etLicensePlate: EditText? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        // Show toolbar menu
+        setHasOptionsMenu(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_profile, container, false)
     }
@@ -87,6 +88,12 @@ class MyProfileFragment : Fragment() {
 
         // Listens for logout button click
         logoutListener()
+    }
+
+    // Hide search from toolbar
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val item: MenuItem = menu.findItem(R.id.miSearch)
+        item.isVisible = false
     }
 
     // Sets variables to views
