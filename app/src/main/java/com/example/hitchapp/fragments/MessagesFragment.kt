@@ -139,16 +139,17 @@ class MessagesFragment : Fragment() {
 
             message.saveInBackground()
 
-            notifyChannel(ride?.objectId.toString())
+            notifyChannel(ride?.objectId.toString(), message?.content.toString())
 
             etMessage?.text = null
             mMessagesFragmentViewModel?.queryMessages()
         }
     }
 
-    private fun notifyChannel(channel: String) {
+    private fun notifyChannel(channel: String, message: String) {
         var params: HashMap<String, String> = HashMap()
         params["channel"] = channel
+        params["message"] = message
 
         try {
             ParseCloud.callFunctionInBackground<Any>("sendPushNotificationChannel", params)

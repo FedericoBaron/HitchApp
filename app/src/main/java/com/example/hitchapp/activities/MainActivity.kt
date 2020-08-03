@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
         // Save the current Installation to Parse.
         ParseInstallation.getCurrentInstallation().saveInBackground()
 
-        ParsePush.subscribeInBackground("Giants");
-
         // Find the toolbar view inside the activity layout
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         // Sets the Toolbar to act as the ActionBar for this Activity window.
