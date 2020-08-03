@@ -118,44 +118,6 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         }
 
         override fun onClick(v: View) {}
-//        private fun btnChatClickListener() {
-//            btnChat.setOnClickListener { v ->
-//                val position = adapterPosition
-//                // Make sure the position is valid i.e actually exists in the view
-//                if (position != RecyclerView.NO_POSITION) {
-//                    // Get the ride at the position, this won't work if the class is static
-//                    val ride = rides[position]
-//                    val bundle = Bundle()
-//                    Log.i(TAG, ride.toString())
-//                    bundle.putParcelable("ride", ride)
-//                    val fragment: Fragment = MessagesFragment()
-//                    fragment.arguments = bundle
-//                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
-//                            .replace(R.id.flContainer, fragment)
-//                            .addToBackStack(TAG)
-//                            .commit()
-//                }
-//            }
-//        }
-//        private fun btnEditClickListener() {
-//            btnEdit.setOnClickListener { v ->
-//                val position = adapterPosition
-//                // Make sure the position is valid i.e actually exists in the view
-//                if (position != RecyclerView.NO_POSITION) {
-//                    // Get the ride at the position, this won't work if the class is static
-//                    val ride = rides[position]
-//                    val bundle = Bundle()
-//                    Log.i(TAG, ride.toString())
-//                    bundle.putParcelable("ride", ride)
-//                    val fragment: Fragment = EditRideFragment()
-//                    fragment.arguments = bundle
-//                    (v.context as FragmentActivity).supportFragmentManager.beginTransaction()
-//                            .replace(R.id.flContainer, fragment)
-//                            .addToBackStack(TAG)
-//                            .commit()
-//                }
-//            }
-//        }
 
         // When someone's profile pic gets clicked you get taken to their profile
         private fun profilePicListener() {

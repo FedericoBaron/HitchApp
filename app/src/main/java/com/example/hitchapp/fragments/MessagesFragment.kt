@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,20 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.example.hitchapp.R
+import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.adapters.MessagesAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MessagesFragmentViewModel
-import com.parse.ParseException
 import com.parse.ParseQuery
 import com.parse.ParseUser
 import com.parse.livequery.ParseLiveQueryClient
 import com.parse.livequery.SubscriptionHandling
-import okhttp3.internal.wait
-import okhttp3.internal.waitMillis
-import org.json.JSONArray
 
 class MessagesFragment : Fragment() {
     private var rvMessages: RecyclerView? = null
@@ -49,6 +45,7 @@ class MessagesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
+        (activity as MainActivity?)?.setToolbar(false)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_messages, container, false)
     }

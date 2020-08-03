@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.hitchapp.R
+import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.models.Ride
@@ -23,6 +24,7 @@ import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.material.badge.BadgeDrawable
 import com.parse.ParseCloud
 import com.parse.ParseInstallation
 import com.parse.ParseUser
@@ -46,6 +48,10 @@ open class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        // Show toolbar
+        (activity as MainActivity?)?.setToolbar(true)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }

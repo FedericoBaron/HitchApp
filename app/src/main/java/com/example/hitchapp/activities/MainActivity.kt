@@ -7,10 +7,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.example.hitchapp.R
 import com.example.hitchapp.fragments.*
 import com.example.hitchapp.models.User
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.parse.ParseInstallation
 import com.parse.ParsePush
@@ -20,15 +23,18 @@ import com.parse.ParseUser
 class MainActivity : AppCompatActivity() {
     private var bottomNavigationView: BottomNavigationView? = null
     private val fragmentManager = supportFragmentManager
+    private var appBarLayout: AppBarLayout? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        appBarLayout = findViewById(R.id.appBar)
 
         // Save the current Installation to Parse.
         ParseInstallation.getCurrentInstallation().saveInBackground()
 
         ParsePush.subscribeInBackground("Giants");
-
 
         // Find the toolbar view inside the activity layout
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -81,5 +87,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+    }
+
+    fun setToolbar(expanded: Boolean){
+        appBarLayout?.setExpanded(expanded, true);
     }
 }

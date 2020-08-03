@@ -4,23 +4,23 @@
 
     <item
         android:id="@+id/action_home"
-        android:icon="@drawable/instagram_home_filled_24"
+        android:icon="@drawable/ic_baseline_home_24"
         android:title="Home"
         app:showAsAction="always"
         />
     <item
         android:id="@+id/action_my_rides"
-        android:icon="@drawable/instagram_user_filled_24"
+        android:icon="@drawable/ic_baseline_directions_car_24"
         android:title="My Rides"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_post"
-        android:icon="@drawable/instagram_new_post_filled_24"
+        android:icon="@drawable/ic_baseline_add_circle_24"
         android:title="Post"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_profile"
-        android:icon="@drawable/instagram_user_filled_24"
+        android:icon="@drawable/ic_baseline_person_24"
         android:title="Profile"
         app:showAsAction="always" />
 </menu>
