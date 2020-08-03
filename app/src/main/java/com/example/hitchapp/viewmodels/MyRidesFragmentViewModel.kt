@@ -12,6 +12,7 @@ import com.example.hitchapp.repositories.RideRepository
 import com.example.hitchapp.repositories.RideRepository.Companion.instance
 import com.parse.DeleteCallback
 import com.parse.FindCallback
+import com.parse.ParsePush
 import com.parse.SaveCallback
 import java.util.*
 
@@ -40,6 +41,8 @@ class MyRidesFragmentViewModel : ViewModel() {
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
                 for(i in 0 until rides.size) {
+                    ParsePush.subscribeInBackground(rides[i].objectId.toString())
+
                     if (rides[i].state == "Scheduled" && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
                         rides[i].state = "Finished"
                         rides[i].save()
@@ -91,6 +94,7 @@ class MyRidesFragmentViewModel : ViewModel() {
             }
         }
 
+        ParsePush.unsubscribeInBackground(ride.objectId.toString())
         mRepo?.deleteRide(ride, deleteCallback)
     }
 

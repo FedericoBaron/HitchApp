@@ -1,10 +1,14 @@
 package com.example.hitchapp.viewmodels
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.example.hitchapp.activities.SignupActivity
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.repositories.RideRepository
 import com.parse.ParseGeoPoint
+import com.parse.ParsePush
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import org.json.JSONArray
@@ -43,8 +47,18 @@ class ComposeFragmentViewModel : ViewModel(){
         participants?.put(currentUser);
         ride.participants = participants
 
+        val saveRideCallback = SaveCallback {e ->
+            if (e == null) {
+                ParsePush.subscribeInBackground(ride.objectId.toString())
+            }
+            else{
+                Log.e(TAG, "Error while saving", e)
+            }
+        }
+
         // Calls repo to method to save ride
         mRepo?.saveRide(ride, saveRideCallback)
+
     }
 
 

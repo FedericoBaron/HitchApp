@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.material.badge.BadgeDrawable
 import com.parse.ParseCloud
+import com.parse.ParseException
 import com.parse.ParseInstallation
 import com.parse.ParseUser
 import org.json.JSONException
@@ -62,7 +63,8 @@ open class HomeFragment : Fragment() {
 
         //testNotif()
         //testNotif2()
-
+        //testNotif3()
+        //testNotif4()
 
         rvRides = view.findViewById(R.id.rvRides)
         pbLoading = view.findViewById(R.id.pbLoading)
@@ -120,6 +122,28 @@ open class HomeFragment : Fragment() {
         data["customData"] = payload.toString()
 
         ParseCloud.callFunctionInBackground<Any>("sendPushNotification", data)
+    }
+
+    private fun testNotif3(){
+        var params: HashMap<String, String> = HashMap()
+        params["user"] = currentUser?.objectId.toString()
+
+        try {
+            ParseCloud.callFunctionInBackground<Any>("sendPushNotification", params)
+        } catch(e: ParseException){
+            Log.e(TAG,"couldnt do it", e)
+        }
+    }
+
+    private fun testNotif4(){
+        var params: HashMap<String, String> = HashMap()
+        params["channel"] = "Giants"
+
+        try {
+            ParseCloud.callFunctionInBackground<Any>("sendPushNotificationChannel", params)
+        } catch(e: ParseException){
+            Log.e(TAG,"couldnt do it", e)
+        }
     }
 
 

@@ -23,10 +23,13 @@ import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MessagesFragmentViewModel
+import com.parse.ParseCloud
+import com.parse.ParseException
 import com.parse.ParseQuery
 import com.parse.ParseUser
 import com.parse.livequery.ParseLiveQueryClient
 import com.parse.livequery.SubscriptionHandling
+import java.util.HashMap
 
 class MessagesFragment : Fragment() {
     private var rvMessages: RecyclerView? = null
@@ -136,8 +139,21 @@ class MessagesFragment : Fragment() {
 
             message.saveInBackground()
 
+            notifyChannel(ride?.objectId.toString())
+
             etMessage?.text = null
             mMessagesFragmentViewModel?.queryMessages()
+        }
+    }
+
+    private fun notifyChannel(channel: String) {
+        var params: HashMap<String, String> = HashMap()
+        params["channel"] = channel
+
+        try {
+            ParseCloud.callFunctionInBackground<Any>("sendPushNotificationChannel", params)
+        } catch(e: ParseException){
+            Log.e(TAG,"Failed to notify!", e)
         }
     }
 

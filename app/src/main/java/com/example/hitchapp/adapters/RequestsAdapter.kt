@@ -20,6 +20,7 @@ import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.parse.ParseException
 import com.parse.ParseObject
+import com.parse.ParsePush
 import java.text.SimpleDateFormat
 
 class RequestsAdapter(private val context: Context, private val requests: MutableList<Request>) : RecyclerView.Adapter<RequestsAdapter.ViewHolder>() {
@@ -125,6 +126,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
                     request.deleteInBackground()
                     save(ride)
                     notifyItemRemoved(position)
+                    Log.i(TAG, "THIS IS THE RIDE OBJECT ID" + ride.objectId.toString())
                 }
             }
         }
