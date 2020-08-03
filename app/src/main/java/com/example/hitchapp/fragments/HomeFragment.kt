@@ -21,25 +21,28 @@ import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.models.Ride
+import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.parse.ParseCloud
 import com.parse.ParseInstallation
+import com.parse.ParseUser
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
-class HomeFragment : Fragment() {
-    private var rvRides: RecyclerView? = null
+open class HomeFragment : Fragment() {
+    protected var rvRides: RecyclerView? = null
     protected var swipeContainer: SwipeRefreshLayout? = null
-    private var scrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var scrollListener: EndlessRecyclerViewScrollListener? = null
     protected var layoutManager: LinearLayoutManager? = null
     protected var pbLoading: ProgressBar? = null
     private var mHomeFragmentViewModel: HomeFragmentViewModel? = null
     private val map: GoogleMap? = null
     private val permissionFineLocation=android.Manifest.permission.ACCESS_FINE_LOCATION
     private val permissionCoarseLocation=android.Manifest.permission.ACCESS_COARSE_LOCATION
+    private val currentUser: User? = ParseUser.getCurrentUser() as User
 
     private val REQUEST_CODE_LOCATION=100
 
@@ -53,18 +56,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val payload = JSONObject()
+        //testNotif()
+        //testNotif2()
 
-        try {
-            payload.put("sender", ParseInstallation.getCurrentInstallation().installationId)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        val data: HashMap<String, String> = HashMap()
-        data["customData"] = payload.toString()
-
-        ParseCloud.callFunctionInBackground<Any>("pingReply", data)
 
         rvRides = view.findViewById(R.id.rvRides)
         pbLoading = view.findViewById(R.id.pbLoading)
@@ -73,7 +67,6 @@ class HomeFragment : Fragment() {
         startViewModel()
 
         if (validatePermissionsLocation()){
-            Log.i(TAG, "permission")
             getMyLocation()
         }
         else{
@@ -94,7 +87,40 @@ class HomeFragment : Fragment() {
         createScrollListener()
     }
 
-    protected fun startViewModel() {
+    private fun testNotif(){
+        val payload = JSONObject()
+
+        try {
+            payload.put("sender", ParseInstallation.getCurrentInstallation().installationId)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val data: HashMap<String, String?> = HashMap()
+        data["customData"] = payload.toString()
+
+        ParseCloud.callFunctionInBackground<Any>("pingReply", data)
+    }
+
+    private fun testNotif2(){
+        val payload = JSONObject()
+
+        try {
+            payload.put("userId", currentUser?.objectId.toString())
+            Log.i(TAG, "ID IS" + currentUser?.objectId)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val data: HashMap<String, String> = HashMap()
+        data["customData"] = payload.toString()
+
+        ParseCloud.callFunctionInBackground<Any>("sendPushNotification", data)
+    }
+
+
+
+    protected open fun startViewModel() {
         mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel::class.java)
         mHomeFragmentViewModel?.init()
 
@@ -149,7 +175,7 @@ class HomeFragment : Fragment() {
         return fineLocationAvailable && coarseLocationAvailable
     }
 
-    protected fun refreshListener() {
+    protected open fun refreshListener() {
         // Setup refresh listener which triggers new data loading
         swipeContainer?.setOnRefreshListener { // Your code to refresh the list here.
             mHomeFragmentViewModel?.queryRides()
@@ -162,7 +188,7 @@ class HomeFragment : Fragment() {
     }
 
     // Listens for when you need to load more data
-    protected fun createScrollListener() {
+    protected open fun createScrollListener() {
         scrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 Log.i(TAG, "onLoadMore: $page")

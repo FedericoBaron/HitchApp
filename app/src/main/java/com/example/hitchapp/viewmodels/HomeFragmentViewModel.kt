@@ -20,10 +20,10 @@ import com.parse.ParseUser
 import com.parse.SaveCallback
 import java.util.*
 
-class HomeFragmentViewModel : ViewModel() {
-    private var mRides: MutableLiveData<List<Ride>>? = null
-    private var mRepo: RideRepository? = null
-    private var totalRides = 5
+open class HomeFragmentViewModel : ViewModel() {
+    protected var mRides: MutableLiveData<List<Ride>>? = null
+    protected var mRepo: RideRepository? = null
+    protected var totalRides = 5
     private var mCurrentLocation: Location? = null
     private val currentUser = ParseUser.getCurrentUser() as User
 

@@ -127,10 +127,6 @@ open class ComposeFragment : Fragment() {
                 return@OnClickListener
             }
             if (seatsAvailable.isEmpty()) {
-                Toast.makeText(context, "price cannot be empty", Toast.LENGTH_SHORT).show()
-                return@OnClickListener
-            }
-            if (seatsAvailable.isEmpty()) {
                 Toast.makeText(context, "seats available cannot be empty", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             }
@@ -146,7 +142,7 @@ open class ComposeFragment : Fragment() {
                 return@OnClickListener
             }
             try{
-                seatsAvailable.toInt()
+                price.toInt()
             }
             catch(e: Exception){
                 Toast.makeText(context, "price has to be a number", Toast.LENGTH_SHORT).show()

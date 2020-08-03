@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         val fragment: Fragment
         fragment = when (item.itemId) {
             R.id.miRequests -> RequestsFragment()
+            R.id.miSearch -> SearchFragment()
             else -> HomeFragment()
         }
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit()

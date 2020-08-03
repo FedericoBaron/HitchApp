@@ -59,6 +59,12 @@ class Ride : ParseObject() {
             fromLocation?.let { put(KEY_FROM_LOCATION, it) }
         }
 
+    var toLocation: ParseGeoPoint?
+        get() = getParseGeoPoint(KEY_FROM_LOCATION)
+        set(fromLocation) {
+            fromLocation?.let { put(KEY_FROM_LOCATION, it) }
+        }
+
 
     var departureDate: Date?
         get() = getDate(KEY_DEPARTURE_DATE)
@@ -95,6 +101,7 @@ class Ride : ParseObject() {
         const val KEY_DEPARTURE_DATE = "departureDate"
         const val KEY_REQUESTS = "requests"
         const val KEY_FROM_LOCATION = "fromLocation"
+        const val KEY_TO_LOCATION = "fromLocation"
         const val KEY_STATE = "state"
     }
 }
