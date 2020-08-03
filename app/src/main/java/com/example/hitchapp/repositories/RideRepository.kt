@@ -77,6 +77,21 @@ class RideRepository {
         query.findInBackground(findCallback)
     }
 
+    // Gets rides
+    fun allMyRidesQuery(findCallback: FindCallback<Ride>?) {
+        val query = ParseQuery.getQuery(Ride::class.java)
+        val currentUser = ParseUser.getCurrentUser() as User
+        query.whereEqualTo("participants", currentUser)
+        query.include("participants")
+        query.include("driver")
+
+        // Sort by created at
+        query.addAscendingOrder(Ride.KEY_DEPARTURE_DATE)
+
+        // Finds the posts asynchronously
+        query.findInBackground(findCallback)
+    }
+
     // Saves the ride
     fun saveRide(ride: Ride, saveCallback: SaveCallback?) {
         ride.saveInBackground(saveCallback)

@@ -3,7 +3,9 @@ package com.example.hitchapp.fragments
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -24,7 +26,6 @@ import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.material.badge.BadgeDrawable
 import com.parse.ParseCloud
 import com.parse.ParseException
 import com.parse.ParseInstallation
@@ -61,6 +62,8 @@ open class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+        currentUser?.put("installation", ParseInstallation.getCurrentInstallation())
+        currentUser?.save()
         //testNotif()
         //testNotif2()
         //testNotif3()
@@ -126,7 +129,7 @@ open class HomeFragment : Fragment() {
 
     private fun testNotif3(){
         var params: HashMap<String, String> = HashMap()
-        params["user"] = currentUser?.objectId.toString()
+        params["objectId"] = currentUser?.objectId.toString()
 
         try {
             ParseCloud.callFunctionInBackground<Any>("sendPushNotification", params)

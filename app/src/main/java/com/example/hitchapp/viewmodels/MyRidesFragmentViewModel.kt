@@ -35,7 +35,13 @@ class MyRidesFragmentViewModel : ViewModel() {
         val findCallback = FindCallback<Ride>{ rides, e ->
             if(e == null){
                 for(i in 0 until rides.size) {
-                    ParsePush.subscribeInBackground(rides[i].objectId.toString())
+                    ParsePush.subscribeInBackground(rides[i].objectId.toString()) { e ->
+                        if (e != null) {
+                            Log.e(TAG, "failed to subscribe for push", e)
+                        } else {
+                            ParseInstallation.getCurrentInstallation().saveInBackground()
+                        }
+                    }
 
                     if (rides[i].state == "Scheduled" && rides[i].departureDate?.compareTo(Calendar.getInstance().time as Date)!! < 0) {
                         rides[i].state = "Finished"

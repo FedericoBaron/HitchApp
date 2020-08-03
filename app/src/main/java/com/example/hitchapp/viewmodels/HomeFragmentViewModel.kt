@@ -14,10 +14,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
-import com.parse.FindCallback
-import com.parse.ParseGeoPoint
-import com.parse.ParseUser
-import com.parse.SaveCallback
+import com.parse.*
 import java.util.*
 
 open class HomeFragmentViewModel : ViewModel() {
@@ -33,6 +30,7 @@ open class HomeFragmentViewModel : ViewModel() {
         }
         mRepo = RideRepository.instance
         queryRides()
+        subscribe()
     }
 
     val rides: LiveData<List<Ride>>
@@ -65,6 +63,29 @@ open class HomeFragmentViewModel : ViewModel() {
 
         mRepo?.ridesQuery(totalRides, findCallback)
     }
+
+    private fun subscribe(){
+        val findCallback = FindCallback<Ride> { rides, e ->
+            if (e == null) {
+                for (i in 0 until rides.size) {
+                    ParsePush.subscribeInBackground(rides[i].objectId.toString()) { e ->
+                        if (e != null) {
+                            Log.e(TAG, "failed to subscribe for push", e)
+                        } else {
+                            ParseInstallation.getCurrentInstallation().saveInBackground()
+                        }
+                    }
+                }
+                Log.i(TAG, rides.toString())
+                mRides?.postValue(rides)
+            } else {
+                Log.i(TAG, "Error querying for rides", e)
+            }
+        }
+
+        mRepo?.allMyRidesQuery(findCallback)
+    }
+
 
     fun save(ride: Ride){
         val saveCallback = SaveCallback{ e ->

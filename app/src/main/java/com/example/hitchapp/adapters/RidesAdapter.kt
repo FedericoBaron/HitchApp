@@ -15,15 +15,14 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hitchapp.R
+import com.example.hitchapp.fragments.HomeFragment
 import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
-import com.parse.ParseException
-import com.parse.ParseObject
-import com.parse.ParseQuery
-import com.parse.ParseUser
+import com.parse.*
 import java.text.SimpleDateFormat
+import java.util.HashMap
 
 class RidesAdapter(private val context: Context, private val rides: MutableList<Ride>) : RecyclerView.Adapter<RidesAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -172,6 +171,8 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
                             request.requester = currentUser
                             request.ride = ride
                             request.driver = ride.driver
+                            sendRequestNotifToDriver(ride.driver)
+
                             save(request)
                         } else {
                             Toast.makeText(context, "You already requested to join this ride", Toast.LENGTH_SHORT).show()
@@ -179,6 +180,17 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
                     }
                 }
             })
+        }
+
+        private fun sendRequestNotifToDriver(driver: ParseUser?) {
+            var params: HashMap<String, String> = HashMap()
+            params["objectId"] = driver?.objectId.toString()
+
+            try {
+                ParseCloud.callFunctionInBackground<Any>("sendPushNotification", params)
+            } catch(e: ParseException){
+                Log.e(TAG,"couldnt do it", e)
+            }
         }
 
         private fun save(request: Request) {
