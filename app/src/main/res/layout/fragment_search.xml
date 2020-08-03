@@ -37,6 +37,6 @@
         android:layout_below="@+id/etDistance"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/button_round"
         android:text="Search" />
     </RelativeLayout>

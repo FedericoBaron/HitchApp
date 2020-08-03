@@ -88,7 +88,7 @@
                 android:layout_below="@id/etEmail"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_round"
                 android:text="Update profile" />
 
             <Switch
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_round"
                 android:text="Save driver profile" />
 
             <EditText
@@ -172,19 +172,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_round"
                 android:text="Change password" />
 
             <Button
                 android:id="@+id/btnLogout"
-                android:layout_below="@id/btnChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/btnChangePassword"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/button_round"
                 android:text="Logout" />
         </RelativeLayout>
     </ScrollView>
