@@ -62,12 +62,9 @@ open class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        currentUser?.put("installation", ParseInstallation.getCurrentInstallation())
-        currentUser?.save()
-        //testNotif()
-        //testNotif2()
-        //testNotif3()
-        //testNotif4()
+        val currentInstall = ParseInstallation.getCurrentInstallation()
+        currentInstall.put("user", ParseUser.getCurrentUser())
+        currentInstall.saveInBackground()
 
         rvRides = view.findViewById(R.id.rvRides)
         pbLoading = view.findViewById(R.id.pbLoading)
@@ -95,61 +92,6 @@ open class HomeFragment : Fragment() {
         // Listens for when you need to load more data
         createScrollListener()
     }
-
-    private fun testNotif(){
-        val payload = JSONObject()
-
-        try {
-            payload.put("sender", ParseInstallation.getCurrentInstallation().installationId)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        val data: HashMap<String, String?> = HashMap()
-        data["customData"] = payload.toString()
-
-        ParseCloud.callFunctionInBackground<Any>("pingReply", data)
-    }
-
-    private fun testNotif2(){
-        val payload = JSONObject()
-
-        try {
-            payload.put("userId", currentUser?.objectId.toString())
-            Log.i(TAG, "ID IS" + currentUser?.objectId)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        val data: HashMap<String, String> = HashMap()
-        data["customData"] = payload.toString()
-
-        ParseCloud.callFunctionInBackground<Any>("sendPushNotification", data)
-    }
-
-    private fun testNotif3(){
-        var params: HashMap<String, String> = HashMap()
-        params["objectId"] = currentUser?.objectId.toString()
-
-        try {
-            ParseCloud.callFunctionInBackground<Any>("sendPushNotification", params)
-        } catch(e: ParseException){
-            Log.e(TAG,"couldnt do it", e)
-        }
-    }
-
-    private fun testNotif4(){
-        var params: HashMap<String, String> = HashMap()
-        params["channel"] = "Giants"
-
-        try {
-            ParseCloud.callFunctionInBackground<Any>("sendPushNotificationChannel", params)
-        } catch(e: ParseException){
-            Log.e(TAG,"couldnt do it", e)
-        }
-    }
-
-
 
     protected open fun startViewModel() {
         mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel::class.java)

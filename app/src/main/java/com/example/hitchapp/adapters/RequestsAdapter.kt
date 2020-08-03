@@ -19,10 +19,12 @@ import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
+import com.parse.ParseCloud
 import com.parse.ParseException
 import com.parse.ParseObject
-import com.parse.ParsePush
+import com.parse.ParseUser
 import java.text.SimpleDateFormat
+import java.util.HashMap
 
 class RequestsAdapter(private val context: Context, private val requests: MutableList<Request>) : RecyclerView.Adapter<RequestsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -127,6 +129,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
                 // Make sure the position is valid i.e actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
 
+                    sendJoinNotify(request.requester, request.driver)
                     participants!!.put(request.requester)
                     ride.participants = participants
                     ride.seatsAvailable--
@@ -139,6 +142,17 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             }
         }
 
+        private fun sendJoinNotify(requester: ParseUser?, driver: ParseUser?) {
+            var params: HashMap<String, String> = HashMap()
+            params["objectId"] = requester?.objectId.toString()
+            params["driver"] = driver?.username.toString()
+            Log.i(TAG, "trying to join notif")
+            try {
+                ParseCloud.callFunctionInBackground<Any>("sendPushNotificationAccepted", params)
+            } catch(e: ParseException){
+                Log.e(TAG,"couldnt do it", e)
+            }
+        }
         private fun btnDeclineListener() {
             btnDecline.setOnClickListener {
                 val position = adapterPosition
