@@ -129,7 +129,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
                 // Make sure the position is valid i.e actually exists in the view
                 if (position != RecyclerView.NO_POSITION) {
 
-                    sendJoinNotify(request.requester, request.driver)
+                    sendJoinNotification(request.requester, request.driver)
                     participants!!.put(request.requester)
                     ride.participants = participants
                     ride.seatsAvailable--
@@ -142,7 +142,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             }
         }
 
-        private fun sendJoinNotify(requester: ParseUser?, driver: ParseUser?) {
+        private fun sendJoinNotification(requester: ParseUser?, driver: ParseUser?) {
             var params: HashMap<String, String> = HashMap()
             params["objectId"] = requester?.objectId.toString()
             params["driver"] = driver?.username.toString()

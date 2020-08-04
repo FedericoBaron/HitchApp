@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.MyRidesAdapter
+import com.example.hitchapp.adapters.RequestsAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.helpers.SwipeHelper
 import com.example.hitchapp.helpers.SwipeHelper.UnderlayButtonClickListener
@@ -24,13 +25,10 @@ import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MyRidesFragmentViewModel
 import com.parse.*
-import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
 import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlin.collections.indices
-import kotlin.collections.set
 
 class MyRidesFragment : Fragment() {
     protected var pbLoading: ProgressBar? = null
@@ -185,6 +183,7 @@ class MyRidesFragment : Fragment() {
                         if (e != null) {
                             Log.e(MyRidesFragmentViewModel.TAG, "failed to unsubscribe for push")
                         } else {
+                            Log.i(TAG,"success subscribing to push")
                             ParseInstallation.getCurrentInstallation().saveInBackground()
                         }
                     }
@@ -198,6 +197,7 @@ class MyRidesFragment : Fragment() {
         // If the driver is the user that means the ride got cancelled
         if(currentUser?.objectId == ride.driver?.objectId && ride.state != "Finished"){
             ride.state = "Cancelled"
+            sendCancelNotification(ride.objectId.toString())
             Log.i(TAG, "Cancelled")
         }
 
@@ -213,6 +213,19 @@ class MyRidesFragment : Fragment() {
 
         Toast.makeText(context, "You left the ride", Toast.LENGTH_SHORT).show()
     }
+
+    private fun sendCancelNotification(rideId: String) {
+        var params: HashMap<String, String> = HashMap()
+        params["channel"] = rideId
+        params["username"] = currentUser?.username.toString()
+        Log.i(TAG, "trying to send cancel notif")
+        try {
+            ParseCloud.callFunctionInBackground<Any>("cancelRideNotification", params)
+        } catch(e: ParseException){
+            Log.e(TAG,"couldnt do it", e)
+        }
+    }
+
 
 
     private fun initRecyclerView() {
