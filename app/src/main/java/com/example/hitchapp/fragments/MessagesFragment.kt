@@ -158,16 +158,6 @@ class MessagesFragment : Fragment() {
         }
     }
 
-    private fun save() {
-        ride?.saveInBackground { e ->
-            if (e != null) {
-                Log.e(TAG, "Error while saving", e)
-                //Toast.makeText(getContext(), "Update unsuccessful!", Toast.LENGTH_SHORT).show();
-            }
-            Log.i(TAG, "update save was successful!")
-        }
-    }
-
     private fun liveQuery(){
 
         //Build Live Query Client

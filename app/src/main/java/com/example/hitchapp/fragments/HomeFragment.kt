@@ -3,6 +3,7 @@ package com.example.hitchapp.fragments
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,16 +24,16 @@ import com.example.hitchapp.R
 import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
+import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
-import com.parse.ParseCloud
-import com.parse.ParseException
-import com.parse.ParseInstallation
-import com.parse.ParseUser
+import com.parse.*
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -97,6 +98,8 @@ open class HomeFragment : Fragment() {
 
         // Listens for when you need to load more data
         createScrollListener()
+
+        liveQuery()
     }
 
     private fun runnable() {
@@ -142,6 +145,40 @@ open class HomeFragment : Fragment() {
         rvRides?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRides?.layoutManager as LinearLayoutManager?
 
+    }
+
+    private fun liveQuery(){
+
+        //Build Live Query Client
+        val parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+
+        //Build Query
+        var parseQuery = ParseQuery.getQuery<Ride>("Ride")
+
+        //Build Live Query Listener
+        var subscriptionHandling: SubscriptionHandling<Ride> = parseLiveQueryClient.subscribe(parseQuery)
+        subscriptionHandling.handleSubscribe {
+            Log.i(TAG, "subs")
+        }
+
+        subscriptionHandling.handleError { query, exception ->
+            Log.i(TAG,"exception")
+        }
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE){ parseQuery: ParseQuery<Ride>, ride: Ride ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(Runnable {
+                Log.i(TAG, "we in create")
+                mHomeFragmentViewModel?.queryRides()
+                rvRides?.scrollToPosition(0)
+            })
+        }
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE){ parseQuery: ParseQuery<Ride>, ride: Ride ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(Runnable {
+                mHomeFragmentViewModel?.queryRides()
+                rvRides?.scrollToPosition(0)
+            })
+        }
     }
 
     private fun requestPermissions(){
