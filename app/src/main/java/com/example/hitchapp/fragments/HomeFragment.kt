@@ -169,14 +169,12 @@ open class HomeFragment : Fragment() {
             handler.post(Runnable {
                 Log.i(TAG, "we in create")
                 mHomeFragmentViewModel?.queryRides()
-                rvRides?.scrollToPosition(0)
             })
         }
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE){ parseQuery: ParseQuery<Ride>, ride: Ride ->
             val handler = Handler(Looper.getMainLooper())
             handler.post(Runnable {
                 mHomeFragmentViewModel?.queryRides()
-                rvRides?.scrollToPosition(0)
             })
         }
     }

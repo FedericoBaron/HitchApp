@@ -2,6 +2,8 @@ package com.example.hitchapp.fragments
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
@@ -25,6 +27,8 @@ import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.MyRidesFragmentViewModel
 import com.parse.*
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
 import java.util.*
 import kotlin.collections.List
 import kotlin.collections.MutableList
@@ -72,6 +76,8 @@ class MyRidesFragment : Fragment() {
 
         // Listens for when you need to load more data
         createScrollListener()
+
+        liveQuery()
     }
 
     // Hide search from toolbar
@@ -158,6 +164,38 @@ class MyRidesFragment : Fragment() {
             }
         }
         swipeHelper.attachToRecyclerView(rvRides)
+    }
+
+    private fun liveQuery(){
+
+        //Build Live Query Client
+        val parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+
+        //Build Query
+        var parseQuery = ParseQuery.getQuery<Ride>("Ride")
+
+        //Build Live Query Listener
+        var subscriptionHandling: SubscriptionHandling<Ride> = parseLiveQueryClient.subscribe(parseQuery)
+        subscriptionHandling.handleSubscribe {
+            Log.i(TAG, "subs")
+        }
+
+        subscriptionHandling.handleError { query, exception ->
+            Log.i(TAG,"exception")
+        }
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE){ parseQuery: ParseQuery<Ride>, ride: Ride ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(Runnable {
+                Log.i(TAG, "we in create")
+                myRidesFragmentViewModel?.queryMyRides()
+            })
+        }
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE){ parseQuery: ParseQuery<Ride>, ride: Ride ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(Runnable {
+                myRidesFragmentViewModel?.queryMyRides()
+            })
+        }
     }
 
     private fun leaveRide(ride: Ride){
