@@ -181,7 +181,7 @@ class MyRidesFragment : Fragment() {
                     ride.seatsAvailable++
                     ParsePush.unsubscribeInBackground(ride.objectId.toString()) { e ->
                         if (e != null) {
-                            Log.e(MyRidesFragmentViewModel.TAG, "failed to unsubscribe for push")
+                            Log.e(TAG, "failed to unsubscribe for push")
                         } else {
                             Log.i(TAG,"success subscribing to push")
                             ParseInstallation.getCurrentInstallation().saveInBackground()

@@ -142,7 +142,6 @@ open class HomeFragment : Fragment() {
         rvRides?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRides?.layoutManager as LinearLayoutManager?
 
-        //mHomeFragmentViewModel?.queryRides()
     }
 
     private fun requestPermissions(){

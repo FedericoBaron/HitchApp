@@ -161,27 +161,15 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tvStateText"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/tvLastName"
-            android:gravity="center_vertical"
-            android:text="State: "
-            android:textSize="18sp" />
-
-        <TextView
             android:id="@+id/tvState"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_toEndOf="@+id/tvStateText"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/tvLastName"
+            android:gravity="right|center_vertical"
+            android:textSize="16sp"
             tools:text="Finished" />
 
         <TextView
