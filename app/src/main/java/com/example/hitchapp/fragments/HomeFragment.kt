@@ -68,6 +68,12 @@ open class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (validatePermissionsLocation()){
+            runnable()
+        }
+        else{
+            requestPermissions()
+        }
 
         val currentInstall = ParseInstallation.getCurrentInstallation()
         currentInstall.put("user", ParseUser.getCurrentUser())
@@ -79,12 +85,7 @@ open class HomeFragment : Fragment() {
         rvRides?.addItemDecoration(itemDecoration)
         startViewModel()
 
-        if (validatePermissionsLocation()){
-            runnable()
-        }
-        else{
-            requestPermissions()
-        }
+
 
         // Show progress bar loading
         pbLoading?.visibility = View.VISIBLE

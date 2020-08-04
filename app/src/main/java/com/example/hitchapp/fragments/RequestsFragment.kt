@@ -1,6 +1,8 @@
 package com.example.hitchapp.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.*
 import androidx.lifecycle.Observer
@@ -15,8 +17,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.R
 import com.example.hitchapp.adapters.RequestsAdapter
+import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Request
 import com.example.hitchapp.viewmodels.RequestsFragmentViewModel
+import com.parse.ParseQuery
+import com.parse.livequery.ParseLiveQueryClient
+import com.parse.livequery.SubscriptionHandling
 import java.util.*
 
 class RequestsFragment : Fragment() {
@@ -57,6 +63,9 @@ class RequestsFragment : Fragment() {
 
         // Listener for infinite scrolling
         createScrollListener()
+
+        // Live query for updating requests
+        liveQuery()
 
     }
 
@@ -99,6 +108,32 @@ class RequestsFragment : Fragment() {
         // Set the layout manager on the recycler view
         rvRequests?.layoutManager = LinearLayoutManager(context)
         layoutManager = rvRequests?.layoutManager as LinearLayoutManager?
+    }
+
+    private fun liveQuery(){
+
+        //Build Live Query Client
+        val parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient()
+
+        //Build Query
+        var parseQuery = ParseQuery.getQuery<Request>("Request")
+
+        //Build Live Query Listener
+        var subscriptionHandling: SubscriptionHandling<Request> = parseLiveQueryClient.subscribe(parseQuery)
+        subscriptionHandling.handleSubscribe {
+            Log.i(TAG, "subs")
+        }
+
+        subscriptionHandling.handleError { query, exception ->
+            Log.i(TAG,"exception")
+        }
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE){ parseQuery: ParseQuery<Request>, request: Request ->
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(Runnable {
+                mRequestsFragmentViewModel?.queryRequests()
+                rvRequests?.scrollToPosition(0)
+            })
+        }
     }
 
     protected fun createScrollListener() {

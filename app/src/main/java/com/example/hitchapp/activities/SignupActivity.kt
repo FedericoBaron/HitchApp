@@ -12,8 +12,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.hitchapp.R
+import com.example.hitchapp.fragments.HomeFragment
+import com.example.hitchapp.fragments.MyRidesFragment
+import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.SignupActivityViewModel
 import com.parse.ParseFile
@@ -103,6 +108,7 @@ class SignupActivity : AppCompatActivity() {
 
         // Can't go back to login if you finish activity
         finish()
+
     }
 
     private fun launchCamera() {
