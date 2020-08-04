@@ -2,6 +2,7 @@ package com.example.hitchapp.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.os.HandlerCompat.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +26,7 @@ import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.parse.ParseCloud
@@ -45,6 +48,9 @@ open class HomeFragment : Fragment() {
     private val permissionFineLocation=android.Manifest.permission.ACCESS_FINE_LOCATION
     private val permissionCoarseLocation=android.Manifest.permission.ACCESS_COARSE_LOCATION
     private val currentUser: User? = ParseUser.getCurrentUser() as User
+    private var locationClient: FusedLocationProviderClient? = null
+    private var handler: Handler = Handler()
+
 
     private val REQUEST_CODE_LOCATION=100
 
@@ -73,7 +79,7 @@ open class HomeFragment : Fragment() {
         startViewModel()
 
         if (validatePermissionsLocation()){
-            getMyLocation()
+            runnable()
         }
         else{
             requestPermissions()
@@ -93,9 +99,18 @@ open class HomeFragment : Fragment() {
         createScrollListener()
     }
 
+    private fun runnable() {
+        //Code here
+        getMyLocation()
+
+        // Run code again after 5 seconds
+        handler.postDelayed(Runnable { runnable() }, 300000)
+    }
+
     protected open fun startViewModel() {
         mHomeFragmentViewModel = ViewModelProviders.of(this).get(HomeFragmentViewModel::class.java)
         mHomeFragmentViewModel?.init()
+        Log.i(TAG, "we are in here")
 
         // Create the observer which updates the UI.
         val ridesObserver: Observer<List<Ride>?> = Observer { rides -> // Update the UI
@@ -178,7 +193,7 @@ open class HomeFragment : Fragment() {
     fun getMyLocation() {
         map?.isMyLocationEnabled = true
         map?.uiSettings?.isMyLocationButtonEnabled = true
-        val locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
+        locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
         mHomeFragmentViewModel?.getMyLocation(locationClient)
 
     }

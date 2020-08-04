@@ -76,8 +76,6 @@ open class HomeFragmentViewModel : ViewModel() {
                         }
                     }
                 }
-                Log.i(TAG, rides.toString())
-                mRides?.postValue(rides)
             } else {
                 Log.i(TAG, "Error querying for rides", e)
             }
@@ -112,7 +110,6 @@ open class HomeFragmentViewModel : ViewModel() {
     @SuppressWarnings("MissingPermission")
     //@NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     fun getMyLocation(locationClient: FusedLocationProviderClient?) {
-        Log.i(TAG, "THIS IS THE LOCATION")
         locationClient?.lastLocation
                 ?.addOnSuccessListener { location ->
                     onLocationChanged(location)
@@ -123,17 +120,15 @@ open class HomeFragmentViewModel : ViewModel() {
     }
 
     private fun onLocationChanged(location: Location?) {
-        Log.i(TAG, "location is this")
         // GPS may be turned off
         if (location == null) {
-            Log.i(TAG, "location is NULL")
             return
         }
 
         // Report to the UI that the location was updated
         mCurrentLocation = location
-        Log.i(TAG, "THE FINAL LIOCATION OS" + mCurrentLocation?.latitude.toString())
-        Log.i(TAG, "THE FINAL LIOCATION OS" + mCurrentLocation?.longitude.toString())
+        Log.i(TAG, "Latitude" + mCurrentLocation?.latitude.toString())
+        Log.i(TAG, "Longitude" + mCurrentLocation?.longitude.toString())
 
         var geoPoint = ParseGeoPoint(location.latitude, location.longitude)
 
