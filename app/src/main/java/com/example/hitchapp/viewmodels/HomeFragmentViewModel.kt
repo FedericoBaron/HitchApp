@@ -111,7 +111,9 @@ open class HomeFragmentViewModel : ViewModel() {
     //@NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     fun getMyLocation(locationClient: FusedLocationProviderClient?) {
         locationClient?.lastLocation
-                ?.addOnSuccessListener { location ->
+                ?.addOnSuccessListener { location: Location? ->
+                    Log.i(TAG, "Last location is:" + location)
+
                     onLocationChanged(location)
                 }
                 ?.addOnFailureListener { e ->
@@ -139,5 +141,6 @@ open class HomeFragmentViewModel : ViewModel() {
     companion object {
         const val TAG = "HomeFragmentViewModel"
         protected const val NEW_RIDES = 5
+
     }
 }

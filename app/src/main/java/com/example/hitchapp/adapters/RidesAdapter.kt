@@ -75,8 +75,8 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
 
             // Bind the ride data to the view elements
             val user = ride.driver as User?
-            tvFirstName.text = user!!.firstName
-            tvLastName.text = user.lastName
+            tvFirstName.text = user?.firstName
+            tvLastName.text = user?.lastName
             tvFrom.text = ride.from
             tvTo.text = ride.to
             tvDepartureTime.text = ride.departureTime
@@ -92,7 +92,7 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
             var seatsAvailableText = ride.seatsAvailable.toString() + "/" + (ride?.driver as User?)?.car?.carCapacity.toString()
             tvSeatsAvailable.text = seatsAvailableText
 
-            if (ParseUser.getCurrentUser().objectId == ride.driver!!.objectId) btnRequest.visibility = View.GONE else {
+            if (ParseUser.getCurrentUser().objectId == ride.driver?.objectId) btnRequest.visibility = View.GONE else {
                 btnRequest.visibility = View.VISIBLE
             }
             if (ride.pricePerParticipant) {
@@ -100,7 +100,7 @@ class RidesAdapter(private val context: Context, private val rides: MutableList<
             } else {
                 tvPerPerson.visibility = View.GONE
             }
-            val profile = user.profilePicture
+            val profile = user?.profilePicture
             if (profile != null) {
                 Glide.with(context)
                         .load(profile.url)

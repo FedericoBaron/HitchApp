@@ -56,9 +56,6 @@ dependencies {
     implementation "androidx.core:core-ktx:+"
 
     implementation "com.github.parse-community.Parse-SDK-Android:fcm:1.25.0"
-//    implementation "com.parse:parse-android:1.17.3"
-//    // Add this line
-//    implementation "com.parse:parse-fcm-android:1.17.3"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

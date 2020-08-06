@@ -78,21 +78,21 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             val requester = request.requester as User?
             val ride = request.ride
             try {
-                requester!!.fetch()
-                ride!!.fetch<ParseObject>()
+                requester?.fetch()
+                ride?.fetch<ParseObject>()
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
-            tvFirstName.text = requester!!.firstName
-            tvLastName.text = requester.lastName
-            tvFrom.text = ride!!.from
-            tvTo.text = ride.to
-            tvDepartureTime.text = ride.departureTime
-            tvDepartureDate.text = dateFor.format(ride.departureDate)
-            tvPrice.text = ride.price.toString()
+            tvFirstName.text = requester?.firstName
+            tvLastName.text = requester?.lastName
+            tvFrom.text = ride?.from
+            tvTo.text = ride?.to
+            tvDepartureTime.text = ride?.departureTime
+            tvDepartureDate.text = dateFor.format(ride?.departureDate)
+            tvPrice.text = ride?.price.toString()
 
             // Set profile picture with Glide
-            val profile = requester.profilePicture
+            val profile = requester?.profilePicture
             if (profile != null) {
                 Glide.with(context)
                         .load(profile.url)
@@ -102,7 +102,7 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             }
 
             // If price is per person then show it
-            if (ride.pricePerParticipant) {
+            if (ride?.pricePerParticipant!!) {
                 tvPerPerson.visibility = View.VISIBLE
             }
             // Otherwise don't show it

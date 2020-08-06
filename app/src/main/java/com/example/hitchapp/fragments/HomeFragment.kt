@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.os.HandlerCompat.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,14 +23,16 @@ import com.example.hitchapp.R
 import com.example.hitchapp.activities.MainActivity
 import com.example.hitchapp.adapters.RidesAdapter
 import com.example.hitchapp.helpers.EndlessRecyclerViewScrollListener
-import com.example.hitchapp.models.Message
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.example.hitchapp.viewmodels.HomeFragmentViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
-import com.parse.*
+import com.parse.ParseCloud
+import com.parse.ParseInstallation
+import com.parse.ParseQuery
+import com.parse.ParseUser
 import com.parse.livequery.ParseLiveQueryClient
 import com.parse.livequery.SubscriptionHandling
 import org.json.JSONException
@@ -44,7 +45,7 @@ open class HomeFragment : Fragment() {
     protected var scrollListener: EndlessRecyclerViewScrollListener? = null
     protected var layoutManager: LinearLayoutManager? = null
     protected var pbLoading: ProgressBar? = null
-    private var mHomeFragmentViewModel: HomeFragmentViewModel? = null
+    var mHomeFragmentViewModel: HomeFragmentViewModel? = null
     private val map: GoogleMap? = null
     private val permissionFineLocation=android.Manifest.permission.ACCESS_FINE_LOCATION
     private val permissionCoarseLocation=android.Manifest.permission.ACCESS_COARSE_LOCATION
@@ -53,7 +54,7 @@ open class HomeFragment : Fragment() {
     private var handler: Handler = Handler()
 
 
-    private val REQUEST_CODE_LOCATION=100
+   // val REQUEST_CODE_LOCATION=100
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -69,12 +70,16 @@ open class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (validatePermissionsLocation()){
+            Log.i(TAG, "we here now")
+            getMyLocation()
             runnable()
         }
         else{
+            Log.i(TAG,"nah we here")
             requestPermissions()
         }
 
+        Log.i(TAG, "it does")
         val currentInstall = ParseInstallation.getCurrentInstallation()
         currentInstall.put("user", ParseUser.getCurrentUser())
         currentInstall.saveInBackground()
@@ -83,10 +88,10 @@ open class HomeFragment : Fragment() {
         pbLoading = view.findViewById(R.id.pbLoading)
         val itemDecoration: ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvRides?.addItemDecoration(itemDecoration)
+
+
+
         startViewModel()
-
-
-
         // Show progress bar loading
         pbLoading?.visibility = View.VISIBLE
         initRecyclerView()
@@ -107,8 +112,8 @@ open class HomeFragment : Fragment() {
         //Code here
         getMyLocation()
 
-        // Run code again after 5 seconds
-        handler.postDelayed(Runnable { runnable() }, 300000)
+        // Run code again after 5 minutes
+        handler.postDelayed(Runnable { runnable() }, 3000)
     }
 
     protected open fun startViewModel() {
@@ -228,8 +233,10 @@ open class HomeFragment : Fragment() {
     fun getMyLocation() {
         map?.isMyLocationEnabled = true
         map?.uiSettings?.isMyLocationButtonEnabled = true
-        locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
+        val locationClient = activity?.applicationContext?.let { LocationServices.getFusedLocationProviderClient(it) }
+        Log.i(TAG, "location client::::" + locationClient)
         mHomeFragmentViewModel?.getMyLocation(locationClient)
+        Log.i(TAG, "WE in here")
 
     }
 
@@ -240,5 +247,6 @@ open class HomeFragment : Fragment() {
         var allRides: List<Ride>? = null
         private const val PERMISSION_REQUEST_ACCESS_FINE_LOCATION = 100
         private const val PERMISSION_REQUEST_ACCESS_COARSE_LOCATION= 100
+        const val REQUEST_CODE_LOCATION = 100
     }
 }
