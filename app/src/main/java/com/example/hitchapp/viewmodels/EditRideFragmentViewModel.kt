@@ -38,9 +38,6 @@ class EditRideFragmentViewModel: ViewModel(){
         if (ride.participants == null) {
             ride.participants = JSONArray()
         }
-        var participants = ride.participants
-        participants?.put(currentUser);
-        ride.participants = participants
 
         Log.i(TAG, "saveeee")
         // Calls repo to method to save ride

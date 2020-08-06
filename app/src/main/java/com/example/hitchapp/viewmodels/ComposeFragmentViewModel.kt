@@ -44,7 +44,7 @@ class ComposeFragmentViewModel : ViewModel(){
             ride.participants = JSONArray()
         }
         var participants = ride.participants
-        participants?.put(currentUser);
+        participants?.put(currentUser)
         ride.participants = participants
 
         val saveRideCallback = SaveCallback {e ->
