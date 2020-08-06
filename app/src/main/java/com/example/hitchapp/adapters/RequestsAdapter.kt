@@ -79,15 +79,16 @@ class RequestsAdapter(private val context: Context, private val requests: Mutabl
             val ride = request.ride
             try {
                 requester?.fetch()
-                ride?.fetch<ParseObject>()
+                request?.ride?.fetch<Ride>()
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
+            Log.i(TAG, "request that is causing crash is: " + request.objectId)
             tvFirstName.text = requester?.firstName
             tvLastName.text = requester?.lastName
+            tvDepartureTime.text = ride?.departureTime
             tvFrom.text = ride?.from
             tvTo.text = ride?.to
-            tvDepartureTime.text = ride?.departureTime
             tvDepartureDate.text = dateFor.format(ride?.departureDate)
             tvPrice.text = ride?.price.toString()
 

@@ -1,6 +1,7 @@
 package com.example.hitchapp.repositories
 
 import android.util.Log
+import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
 import com.parse.*
@@ -100,6 +101,15 @@ class RideRepository {
     // Deletes the ride
     fun deleteRide(ride: Ride, deleteCallback: DeleteCallback) {
         ride.deleteInBackground(deleteCallback)
+    }
+
+    fun deleteRideRequests(ride: Ride, findCallback: FindCallback<Request>?){
+        val query = ParseQuery.getQuery(Request::class.java)
+        query.include("ride")
+        query.whereEqualTo("ride", ride)
+
+        // Finds the posts asynchronously
+        query.findInBackground(findCallback)
     }
 
     companion object {

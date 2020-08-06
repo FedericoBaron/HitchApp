@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.hitchapp.models.Request
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.repositories.RideRepository
 import com.example.hitchapp.repositories.RideRepository.Companion.instance
@@ -94,7 +95,20 @@ class MyRidesFragmentViewModel : ViewModel() {
             }
         }
 
+        val findCallback = FindCallback<Request>{ requests, e ->
+            if(e == null) {
+                for (i in 0 until requests.size) {
+                    requests[i].deleteInBackground()
+                    Log.i(TAG, "Deleted request matching ride")
+                }
+            }
+            else{
+                Log.e(TAG,"error getting requests")
+            }
+        }
+
         mRepo?.deleteRide(ride, deleteCallback)
+        mRepo?.deleteRideRequests(ride, findCallback)
     }
 
 
