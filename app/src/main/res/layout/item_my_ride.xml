@@ -160,15 +160,16 @@
             android:layout_height="45dp"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/tvState"
+        <Button
+            android:id="@+id/btnState"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/tvLastName"
+            android:background="@drawable/button_round"
             android:gravity="right|center_vertical"
+            android:padding="10dp"
             android:textSize="16sp"
             tools:text="Finished" />
 

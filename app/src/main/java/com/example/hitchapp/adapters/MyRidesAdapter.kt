@@ -1,6 +1,7 @@
 package com.example.hitchapp.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,13 +10,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hitchapp.R
-import com.example.hitchapp.fragments.EditRideFragment
-import com.example.hitchapp.fragments.MessagesFragment
 import com.example.hitchapp.fragments.ProfileFragment
 import com.example.hitchapp.models.Ride
 import com.example.hitchapp.models.User
@@ -72,7 +72,7 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
         private val tvDepartureDate: TextView = itemView.findViewById(R.id.tvDepartureDate)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
         //private val btnChat: Button = itemView.findViewById(R.id.btnChat)
-        private val tvState: TextView = itemView.findViewById(R.id.tvState)
+        private val btnState: Button = itemView.findViewById(R.id.btnState)
         //private val btnEdit: Button = itemView.findViewById(R.id.btnEdit)
         private val tvSeatsAvailable: TextView = itemView.findViewById(R.id.tvSeatsAvailable)
         private val tvPerPerson: TextView = itemView.findViewById(R.id.tvPerPerson)
@@ -90,7 +90,17 @@ class MyRidesAdapter(private val context: Context, private val rides: MutableLis
             tvDepartureTime.text = ride.departureTime
             tvDepartureDate.text = dateFor?.format(ride.departureDate)
             tvPrice.text = ride.price.toString()
-            tvState.text = ride.state
+            btnState.text = ride.state
+            if(ride.state == "Finished"){
+                btnState.background = ContextCompat.getDrawable(context, R.drawable.button_round_finished)
+            }
+            else if(ride.state == "Scheduled")
+            {
+                btnState.background = ContextCompat.getDrawable(context, R.drawable.button_round_scheduled)
+            }
+            else{
+                btnState.background = ContextCompat.getDrawable(context, R.drawable.button_round_cancelled)
+            }
             val profile = user.profilePicture
             if (profile != null) {
                 Glide.with(context)
