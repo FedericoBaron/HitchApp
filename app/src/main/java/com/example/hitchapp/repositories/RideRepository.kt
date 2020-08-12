@@ -82,6 +82,8 @@ class RideRepository {
     fun allMyRidesQuery(findCallback: FindCallback<Ride>?) {
         val query = ParseQuery.getQuery(Ride::class.java)
         val currentUser = ParseUser.getCurrentUser() as User
+
+        // Deep query
         query.whereEqualTo("participants", currentUser)
         query.include("participants")
         query.include("driver")
