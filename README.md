@@ -204,3 +204,5 @@ User
 
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
+
+Video link: https://drive.google.com/file/d/1w4K6CUhdQTjm65jk8IenfHmTrXo0VJIh/view?usp=sharing
